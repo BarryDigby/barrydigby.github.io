@@ -11,7 +11,7 @@ permalink:           pretty
 # Setup
 title:               MA5112
 tagline:             ''
-description:         '<img src="https://raw.githubusercontent.com/BarryDigby/BarryDigby.github.io/master/public/_images/logo_nuigalway.png" height=60 </img>  Follow me on twitter <a href="https://twitter.com/BarryDigby">@BarryDigby</a>'
+description:         '<img src="https://raw.githubusercontent.com/BarryDigby/BarryDigby.github.io/master/_images/logo_nuigalway.png" height=60 </img>  Follow me on twitter <a href="https://twitter.com/BarryDigby">@BarryDigby</a>'
 url:                 https://barrydigby.github.io
 baseurl:             ''
 
