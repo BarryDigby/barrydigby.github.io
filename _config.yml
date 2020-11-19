@@ -1,5 +1,6 @@
 # Dependencies
 gems:                [jekyll-paginate]
+gems:                [jekyll-giphy]
 paginate: 5
 paginate_path: "page:num"
 
