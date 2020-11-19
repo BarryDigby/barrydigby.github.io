@@ -1,7 +1,3 @@
-
-# GIF
-markdown:             GFM
-
 # Dependencies
 gems:                [jekyll-paginate]
 paginate: 5
