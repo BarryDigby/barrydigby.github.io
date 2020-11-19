@@ -1,0 +1,20 @@
+---
+layout: default
+---
+
+<head>
+<script>
+function goBack() {
+    window.history.back()
+}
+</script>
+</head>
+
+
+<div class="page">
+  <A HREF="javascript:javascript:history.go(-1)">&#8617;</A>
+  <h1 class="page-title">{{ page.title }}</h1>
+  
+  {{ content }}
+  
+</div>
