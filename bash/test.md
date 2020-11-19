@@ -1,7 +1,7 @@
 ---
 layout: page
-title: R Projects
-permalink: /bash
+title: Bash1
+permalink: /bash1
 ---
 
 this is a doc testing rendering
