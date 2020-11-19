@@ -14,12 +14,19 @@
       The code below dynamically generates a sidebar nav of pages with
       `layout: page` in the front-matter. See readme for usage.
     {% endcomment %}
-
+          <a class="sidebar-nav-item">Bash </a>
+          <a class="sidebar-nav-item">Nextflow </a>
+          <a class="sidebar-nav-item">SLURM </a>
+          <a class="sidebar-nav-item">Introduction </a>
+          <a class="sidebar-nav-item">RNA-Seq </a>
+          <a class="sidebar-nav-item">scRNA-Seq </a>
+          <a class="sidebar-nav-item">Variant-Calling </a>
+          <a class="sidebar-nav-item">ATAC-Seq </a>
           <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/r_bootcamp">Course: Intro to R Bootcamp</a>
           <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/data_wrangling">Course: Data Wrangling with R</a>
           <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/introduction">Introduction to R</a>
           <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/basics">R Basics</a>
-          
+
           <a class="sidebar-nav-item">Workflow </a>
           <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/r_projects">&nbsp;&nbsp;&nbsp;&nbsp;RStudio Projects</a>
           <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/r_markdown">&nbsp;&nbsp;&nbsp;&nbsp;R Markdown</a>
@@ -33,7 +40,7 @@
           <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/logicals">&nbsp;&nbsp;&nbsp;&nbsp;Dealing with Logical Values</a>
           <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/dates">&nbsp;&nbsp;&nbsp;&nbsp;Dealing with Dates</a>
           <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/missing_values">&nbsp;&nbsp;&nbsp;&nbsp;Dealing with NA's</a>
-          
+
           <a class="sidebar-nav-item">Data Structures </a>
           <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/structure_basics">&nbsp;&nbsp;&nbsp;&nbsp;Basics</a>
           <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/vectors">&nbsp;&nbsp;&nbsp;&nbsp;Managing Vectors</a>
@@ -41,34 +48,34 @@
           <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/matrices">&nbsp;&nbsp;&nbsp;&nbsp;Managing Matrices</a>
           <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/dataframes">&nbsp;&nbsp;&nbsp;&nbsp;Managing Data Frames</a>
           <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/tibbles">&nbsp;&nbsp;&nbsp;&nbsp;Managing Tibbles</a>
-          
+
           <a class="sidebar-nav-item">Functions </a>
           <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/function_basics">&nbsp;&nbsp;&nbsp;&nbsp;Basics</a>
           <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/functions">&nbsp;&nbsp;&nbsp;&nbsp;Writing Functions</a>
           <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/control_statements">&nbsp;&nbsp;&nbsp;&nbsp;Control Statements</a>
           <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/apply_family">&nbsp;&nbsp;&nbsp;&nbsp;Apply Family</a>
-          
+
           <a class="sidebar-nav-item">Importing/Exporting Data </a>
           <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/import">&nbsp;&nbsp;&nbsp;&nbsp;Importing Data</a>
           <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/scraping">&nbsp;&nbsp;&nbsp;&nbsp;Scraping Data</a>
           <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/exporting">&nbsp;&nbsp;&nbsp;&nbsp;Exporting Data</a>
-          
+
           <a class="sidebar-nav-item">Shape & Transform Data </a>
           <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/pipe">&nbsp;&nbsp;&nbsp;&nbsp;Simplify Code with %>%</a>
           <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/tidyr">&nbsp;&nbsp;&nbsp;&nbsp;Reshape Data with tidyr</a>
           <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/dplyr">&nbsp;&nbsp;&nbsp;&nbsp;Transform Data with dplyr</a>
-          
+
           <a class="sidebar-nav-item">Visualizations </a>
           <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/quickplots">&nbsp;&nbsp;&nbsp;&nbsp;Quick Plots</a>
           <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/gda">&nbsp;&nbsp;&nbsp;&nbsp;Visual Data Exploration</a>
           <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/ggplot">&nbsp;&nbsp;&nbsp;&nbsp;Advanced Plots with ggplot</a>
-          
+
           <a class="sidebar-nav-item">Analytics </a>
           <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/descriptive">&nbsp;&nbsp;&nbsp;&nbsp;Descriptive Analytics</a>
           <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/predictive">&nbsp;&nbsp;&nbsp;&nbsp;Predictive Analytics</a>
           <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/prescriptive">&nbsp;&nbsp;&nbsp;&nbsp;Prescriptive Analytics</a>
-          
-          
+
+
   </nav>
 
   <div class="sidebar-item">
