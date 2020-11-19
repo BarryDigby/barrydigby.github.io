@@ -7,70 +7,21 @@ permalink: /Bash/
 the following topics will be discussed heeeeere
 
 - [sed](#sed)
-- [awk](#awk)
 - [grep](#grep)
+- [awk](#awk)
 
 ## Replacing strings with sed {#sed}
+arandom words wronduinoi  wrkuciu erube eouihwcr wrckibw owouiwn owowcnroinwrc,,, wriubnc n crlnr;wrf974w wji wsknwhi8h wff4s8 okhs roi8 woh wd9oy8 9wchiuwhf9u i hwoih wcf49hg wc9ouhg 9w4gf 9wgh4 f9g 394gf 93g9dnbklj34e98yfd lkm3c;34rf...34 f083h 4f9n3 o94hf 3oef9 38y9fchpiegufrvarandom words wronduinoi  wrkuciu erube eouihwcr wrckibw owouiwn owowcnroinwrc,,, wriubnc n crlnr;wrf974w wji wsknwhi8h wff4s8 okhs roi8 woh wd9oy8 9wchiuwhf9u i hwoih wcf49hg wc9ouhg 9w4gf 9wgh4 f9g 394gf 93g9dnbklj34e98yfd lkm3c;34rf...34 f083h 4f9n3 o94hf 3oef9 38y9fchpiegufrv
+arandom words wronduinoi  wrkuciu erube eouihwcr wrckibw owouiwn owowcnroinwrc,,, wriubnc n crlnr;wrf974w wji wsknwhi8h wff4s8 okhs roi8 woh wd9oy8 9wchiuwhf9u i hwoih wcf49hg arandom words wronduinoi  wrkuciu erube eouihwcr wrckibw owouiwn owowcnroinwrc,,, wriubnc n crlnr;wrf974w wji wsknwhi8h wff4s8 okhs roi8 woh wd9oy8 9wchiuwhf9u i hwoih wcf49hg wc9ouhg 9w4gf 9wgh4 f9g 394gf 93g9dnbklj34e98yfd lkm3c;34rf...34 f083h 4f9n3 o94hf 3oef9 38y9fchpiegufrvarandom words wronduinoi  wrkuciu erube eouihwcr wrckibw owouiwn owowcnroinwrc,,, wriubnc n crlnr;wrf974w wji wsknwhi8h wff4s8 okhs roi8 woh wd9oy8 9wchiuwhf9u i hwoih wcf49hg wc9ouhg 9w4gf 9wgh4 f9g 394gf 93g9dnbklj34e98yfd lkm3c;34rf...34 f083h 4f9n3 o94hf 3oef9 38y9fchpiegufrvarandom words wronduinoi  wrkuciu erube eouihwcr wrckibw owouiwn owowcnroinwrc,,, wriubnc n crlnr;wrf974w wji wsknwhi8h wff4s8 okhs roi8 woh wd9oy8 9wchiuwhf9u i hwoih wcf49hg wc9ouhg 9w4gf 9wgh4 f9g 394gf 93g9dnbklj34e98yfd lkm3c;34rf...34 f083h 4f9n3 o94hf 3oef9 38y9fchpiegufrvarandom words wronduinoi  wrkuciu erube eouihwcr wrckibw owouiwn owowcnroinwrc,,, wriubnc n crlnr;wrf974w wji wsknwhi8h wff4s8 okhs roi8 woh wd9oy8 9wchiuwhf9u i hwoih wcf49hg wc9ouhg 9w4gf 9wgh4 f9g 394gf 93g9dnbklj34e98yfd lkm3c;34rf...34 f083h 4f9n3 o94hf 3oef9 38y9fchpiegufrvarandom words wronduinoi  wrkuciu erube eouihwcr wrckibw owouiwn owowcnroinwrc,,, wriubnc n crlnr;wrf974w wji wsknwhi8h wff4s8 okhs roi8 woh wd9oy8 9wchiuwhf9u i hwoih wcf49hg wc9ouhg 9w4gf 9wgh4 f9g 394gf 93g9dnbklj34e98yfd lkm3c;34rf...34 f083h 4f9n3 o94hf 3oef9 38y9fchpiegufrvwc9ouhg 9w4gf 9wgh4 f9g 394gf 93g9dnbklj34e98yfd lkm3c;34rf...34 f083h 4f9n3 o94hf 3oef9 38y9fchpiegufrv
 
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
 
 
 
 <br>
 
 ## Searching for strings with grep {#grep}
-
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-
-<br>
+arandom words wronduinoi  wrkuciu erube eouihwcr wrckibw owouiwn owowcnroinwrc,,, wriubnc n crlnr;wrf974w wji wsknwhi8h wff4s8 okhs roi8 woh wd9oy8 9wchiuwhf9u i hwoih wcf49hg wc9ouhg 9w4gf 9wgh4 f9g 394gf 93g9dnbklj34e98yfd lkm3c;34rf...34 f083h 4f9n3 o94hf 3oef9 38y9fchpiegufrvarandom words wronduinoi  wrkuciu erube eouihwcr wrckibw owouiwn owowcnroinwrc,,, wriubnc n crlnr;wrf974w wji wsknwhi8h wff4s8 okhs roi8 woh wd9oy8 9wchiuwhf9u i hwoih wcf49hg wc9ouhg 9w4gf 9wgh4 f9g 394gf 93g9dnbklj34e98yfd lkm3c;34rf...34 f083h 4f9n3 o94hf 3oef9 38y9fchpiegufrvarandom words wronduinoi  wrkuciu erube eouihwcr wrckibw owouiwn owowcnroinwrc,,, wriubnc n crlnr;wrf974w wji wsknwhi8h wff4s8 okhs roi8 woh wd9oy8 9wchiuwhf9u i hwoih wcf49hg wc9ouhg 9w4gf 9wgh4 f9g 394gf 93g9dnbklj34e98yfd lkm3c;34rf...34 f083h 4f9n3 o94hf 3oef9 38y9fchpiegufrvarandom words wronduinoi  wrkuciu erube eouihwcr wrckibw owouiwn owowcnroinwrc,,, wriubnc n crlnr;wrf974w wji wsknwhi8h wff4s8 okhs roi8 woh wd9oy8 9wchiuwhf9u i hwoih wcf49hg wc9ouhg 9w4gf 9wgh4 f9g 394gf 93g9dnbklj34e98yfd lkm3c;34rf...34 f083h 4f9n3 o94hf 3oef9 38y9fchpiegufrvarandom words wronduinoi  wrkuciu erube eouihwcr wrckibw owouiwn owowcnroinwrc,,, wriubnc n crlnr;wrf974w wji wsknwhi8h wff4s8 okhs roi8 woh wd9oy8 9wchiuwhf9u i hwoih wcf49hg wc9ouhg 9w4gf 9wgh4 f9g 394gf 93g9dnbklj34e98yfd lkm3c;34rf...34 f083h 4f9n3 o94hf 3oef9 38y9fchpiegufrvarandom words wronduinoi  wrkuciu erube eouihwcr wrckibw owouiwn owowcnroinwrc,,, wriubnc n crlnr;wrf974w wji wsknwhi8h wff4s8 okhs roi8 woh wd9oy8 9wchiuwhf9u i hwoih wcf49hg wc9ouhg 9w4gf 9wgh4 f9g 394gf 93g9dnbklj34e98yfd lkm3c;34rf...34 f083h 4f9n3 o94hf 3oef9 38y9fchpiegufrvarandom words wronduinoi  wrkuciu erube eouihwcr wrckibw owouiwn owowcnroinwrc,,, wriubnc n crlnr;wrf974w wji wsknwhi8h wff4s8 okhs roi8 woh wd9oy8 9wchiuwhf9u i hwoih wcf49hg wc9ouhg 9w4gf 9wgh4 f9g 394gf 93g9dnbklj34e98yfd lkm3c;34rf...34 f083h 4f9n3 o94hf 3oef9 38y9fchpiegufrvarandom words wronduinoi  wrkuciu erube eouihwcr wrckibw owouiwn owowcnroinwrc,,, wriubnc n crlnr;wrf974w wji wsknwhi8h wff4s8 okhs roi8 woh wd9oy8 9wchiuwhf9u i hwoih wcf49hg wc9ouhg 9w4gf 9wgh4 f9g 394gf 93g9dnbklj34e98yfd lkm3c;34rf...34 f083h 4f9n3 o94hf 3oef9 38y9fchpiegufrv
 
 ## Column manipulation with awk {#awk}
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
-a
+arandom words wronduinoi  wrkuciu erube eouihwcr wrckibw owouiwn owowcnroinwrc,,, wriubnc n crlnr;wrf974w wji wsknwhi8h wff4s8 okhs roi8 woh wd9oy8 9wchiuwhf9u i hwoih wcf49hg wc9ouhg 9w4gf 9wgh4 f9g 394gf 93g9dnbklj34e98yfd lkm3c;34rf...34 f083h 4f9n3 o94hf 3oef9 38y9fchpiegufrvarandom words wronduinoi  wrkuciu erube eouihwcr wrckibw owouiwn owowcnroinwrc,,, wriubnc n crlnr;wrf974w wji wsknwhi8h wff4s8 okhs roi8 woh wd9oy8 9wchiuwhf9u i hwoih wcf49hg wc9ouhg 9w4gf 9wgh4 f9g 394gf 93g9dnbklj34e98yfd lkm3c;34rf...34 f083h 4f9n3 o94hf 3oef9 38y9fchpiegufrvarandom words wronduinoi  wrkuciu erube eouihwcr wrckibw owouiwn owowcnroinwrc,,, wriubnc n crlnr;wrf974w wji wsknwhi8h wff4s8 okhs roi8 woh wd9oy8 9wchiuwhf9u i hwoih wcf49hg wc9ouhg 9w4gf 9wgh4 f9g 394gf 93g9dnbklj34e98yfd lkm3c;34rf...34 f083h 4f9n3 o94hf 3oef9 38y9fchpiegufrvarandom words wronduinoi  wrkuciu erube eouihwcr wrckibw owouiwn owowcnroinwrc,,, wriubnc n crlnr;wrf974w wji wsknwhi8h wff4s8 okhs roi8 woh wd9oy8 9wchiuwhf9u i hwoih wcf49hg wc9ouhg 9w4gf 9wgh4 f9g 394gf 93g9dnbklj34e98yfd lkm3c;34rf...34 f083h 4f9n3 o94hf 3oef9 38y9fchpiegufrvarandom words wronduinoi  wrkuciu erube eouihwcr wrckibw owouiwn owowcnroinwrc,,, wriubnc n crlnr;wrf974w wji wsknwhi8h wff4s8 okhs roi8 woh wd9oy8 9wchiuwhf9u i hwoih wcf49hg wc9ouhg 9w4gf 9wgh4 f9g 394gf 93g9dnbklj34e98yfd lkm3c;34rf...34 f083h 4f9n3 o94hf 3oef9 38y9fchpiegufrvarandom words wronduinoi  wrkuciu erube eouihwcr wrckibw owouiwn owowcnroinwrc,,, wriubnc n crlnr;wrf974w wji wsknwhi8h wff4s8 okhs roi8 woh wd9oy8 9wchiuwhf9u i hwoih wcf49hg wc9ouhg 9w4gf 9wgh4 f9g 394gf 93g9dnbklj34e98yfd lkm3c;34rf...34 f083h 4f9n3 o94hf 3oef9 38y9fchpiegufrvarandom words wronduinoi  wrkuciu erube eouihwcr wrckibw owouiwn owowcnroinwrc,,, wriubnc n crlnr;wrf974w wji wsknwhi8h wff4s8 okhs roi8 woh wd9oy8 9wchiuwhf9u i hwoih wcf49hg wc9ouhg 9w4gf 9wgh4 f9g 394gf 93g9dnbklj34e98yfd lkm3c;34rf...34 f083h 4f9n3 o94hf 3oef9 38y9fchpiegufrvarandom words wronduinoi  wrkuciu erube eouihwcr wrckibw owouiwn owowcnroinwrc,,, wriubnc n crlnr;wrf974w wji wsknwhi8h wff4s8 okhs roi8 woh wd9oy8 9wchiuwhf9u i hwoih wcf49hg wc9ouhg 9w4gf 9wgh4 f9g 394gf 93g9dnbklj34e98yfd lkm3c;34rf...34 f083h 4f9n3 o94hf 3oef9 38y9fchpiegufrv
 ***
