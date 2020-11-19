@@ -9,7 +9,7 @@ paginate_path: "page:num"
 permalink:           pretty
 
 # Setup
-title:               Genomic Data Analysis II (MA5112)
+title:               Genomic Data Analysis II 
 tagline:             ''
 description:         '<img src="https://github.com/BarryDigby/BarryDigby.github.io/blob/master/_images/logo_nuigalway.png?raw=true" height=60 </img>  Follow me on twitter <a href="https://twitter.com/BarryDigby">@BarryDigby</a>'
 url:                 https://barrydigby.github.io
