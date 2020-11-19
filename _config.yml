@@ -1,3 +1,7 @@
+
+# GIF
+markdown:             GFM
+
 # Dependencies
 gems:                [jekyll-paginate]
 paginate: 5
@@ -15,5 +19,3 @@ description:         '<img src="https://github.com/BarryDigby/BarryDigby.github.
 url:                 https://barrydigby.github.io
 baseurl:             ''
 
-# GIF
-markdown: GFM
