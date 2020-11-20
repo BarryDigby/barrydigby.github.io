@@ -1,10 +1,20 @@
 ---
-title: Bash Basics
+title: Basics
 layout: page
 permalink: /Bash/
 ---
 
-the following topics will be discussed heeeeere
+Before beginning the tutorials and being given the keys to the car (access to Lugh) you are assumed to have a basic handle on bash. You should be able to comfortably navigate the terminal and perform basic commands. Bash is a fundamental skill in bioinformatics - one you will find yourself using on a daily basis. Best to get comfortable with it early.
+
+## Navigating the file system
+Once you open a terminal, you will be brought to a directory that is predifined in your `.bashrc`. For most of you, this will probably be `~/` which is the same as `/home/username`. You can double check the directory you are in by typing `pwd`, short for `print working directory`. To list the directories available in your current directory listed by `pwd`, type `ls`. There are several useful variations of `ls` which I will point out to you in the example below. To change to a different directory, we can use the command `cd`, short for `change directory`. Once inside a directory, if you want to go back to the parent directory, type `cd ../`. This command can be expanded upon, in the example below we enter the directory `/home/bdigby/perl/man`. To return to `/home/bdigby`, we go back two directories by typing `cd ../../`.
+
+
+
+You might have noticed I used `ls -la` and `ls -ltr`. `ls -la` will print the user permissions of the file or directory, along with the time of creation and the file size in bytes. `ls -ltr` does the same thing, but it will order the results of `ls -la` so that the most recent files are at the bottom.
+
+
+
 
 - [sed](#sed)
 - [grep](#grep)
