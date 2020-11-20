@@ -1,24 +1,36 @@
 ---
-title: Basics
+title: Bash Basics
 layout: page
 permalink: /Bash/
 ---
 
 Before beginning the tutorials and being given the keys to the car (access to Lugh) you are assumed to have a basic handle on bash. You should be able to comfortably navigate the terminal and perform basic commands. Bash is a fundamental skill in bioinformatics - one you will find yourself using on a daily basis. Best to get comfortable with it early.
 
-## Navigating the file system
-Once you open a terminal, you will be brought to a directory that is predifined in your `.bashrc`. For most of you, this will probably be `~/` which is the same as `/home/username`. You can double check the directory you are in by typing `pwd`, short for `print working directory`.
+In this section I will cover:
+
+- [Navigating the file system](#navigating)
+- [Organising files](#organising)
+
+## Navigating the file system {#navigating}
+Once you open a terminal, you will be brought to a directory that is predifined in your `.bashrc`. For most of you, this will be `~/` which is the same as `/home/username`. You can double check the directory you are in by typing `pwd`, short for `print working directory`.
 
 To list the directories and files in your current directory listed by `pwd`, type `ls`. There are several useful variations of `ls` which I will point out to you in the example below.
 
-To change to a different directory, we can use the command `cd`, short for `change directory`. Once inside a directory, if you want to go back to the parent directory, type `cd ../`. This command can be expanded upon, in the example below we enter the directory `/home/bdigby/perl/man`. To return to `/home/bdigby`, we go back two directories by typing `cd ../../`.
+To change to a different directory, use the command `cd`, short for `change directory`. Once inside a directory, if you want to go back to the parent directory, type `cd ../`. This command can be expanded upon, in the example below we enter the directory `/home/bdigby/perl/man`. To return to `/home/bdigby`, we go back two directories by typing `cd ../../`.
 
 <center>
 <img src="https://raw.githubusercontent.com/BarryDigby/BarryDigby.github.io/master/_gifs/basics_1.gif" width="100%" height="100%"/>
 </center>
 
-You might have noticed I used `ls -la` and `ls -ltr`. `ls -la` will print the user permissions of the file or directory, along with the time of creation and the file size in bytes. `ls -ltr` does the same thing, but it will order the results of `ls -la` so that the most recent files are at the bottom.
+I used `ls -la` and `ls -ltr` in the terminal above. `ls -la` will print (from left to right) the user permissions of the file or directory, the owner of the file or directory, along with the size in bytes and time of creation. `ls -ltr` does the same thing, but it will order the results of `ls -la` so that the most recent files are at the bottom.
 
+Bash is full of useful shortcuts, one of which is the wilcard denoted by and asterisk `*`. For example, if we wanted to list all text files in a directory with the extension `.txt`, we would use the command `ls *.txt` (or a variation of `ls` of your choice). Wildcard patterns are also referred to as `glob patterns`.
+
+<center>
+<img src="https://raw.githubusercontent.com/BarryDigby/BarryDigby.github.io/master/_gifs/wildcard.gif" width="100%" height="100%"/>
+</center>
+
+In the clip above I used the wildcard pattern to return only `.txt` files in the directory of interest. Another useful command to see the structure of directories in the current directory is the command `tree` as shown in the clip. This will return the contents of every directory (and its subdirectories) in the current directory.
 
 
 
