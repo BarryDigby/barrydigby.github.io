@@ -52,7 +52,7 @@ To the right of these codes will be the username of the file owner. You can ask 
 In order to move or copy entire directories, add the `-r` flag to the `cp` or `mv` command. For example: `cp -r ~/Downloads/python3 ~/usr/bin`
 
 
-## Deleting files(#deleting)
+## Deleting files {#deleting}
 To delete files, use the command `rm`. To delete directories, append the recursive flag `rm -r`. Bash will sometimes produce a message asking you if you are sure you want to delete a read/write protected file, prompting `(y/n)`, requiring the user to input an answer into the terminal. To bypass this message, you can use `rm -rf`, where the `-f` flag stands for `force`. The `-f` flag has the added benefit of attempting to remove the file - even if it does not exist - without producing a non 0 exit status.
 
 A final note on `rm`. There is no 'Rubbish Bin'. Once it's gone, it's gone.
