@@ -44,7 +44,7 @@ mv "path_to_file/file" "move_to_destination"
 The `cp` and `mv` commands also support glob patterns. To move all text files from the directory `/home/user/Download/Large_text_Download` to your Desktop, simply type `mv /home/user/Download/Large_text_Download/*.txt ~/Desktop`. Note that in order to copy and move files, you must have permissions to do so. This can be checked with `ls -la`. The image below gives a description of user permissions:
 
 <center>
-<img src="https://raw.githubusercontent.com/BarryDigby/BarryDigby.github.io/master/_gifs/file_permissions.png" width="100%" height="100%"/>
+<img src="https://raw.githubusercontent.com/BarryDigby/BarryDigby.github.io/master/_images/file_permissions.png" width="100%" height="100%"/>
 </center>
 
 To the right of these codes will be the username of the file owner. You can ask the owner of the files to make them `rwx` for all users if it is appropriate to do so. Typically, large raw genomic data will be stored under private directories which require you to be added to a group in order to gain access (UKBB, TCGA, ICGC etc).
