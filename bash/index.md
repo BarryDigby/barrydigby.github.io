@@ -10,6 +10,7 @@ In this section I will cover:
 
 - [Navigating the file system](#navigating)
 - [Organising files](#organising)
+- [Deleting files](#deleting)
 
 ## Navigating the file system {#navigating}
 Once you open a terminal, you will be brought to a directory that is predifined in your `.bashrc`. For most of you, this will be `~/` which is the same as `/home/username`. You can double check the directory you are in by typing `pwd`, short for `print working directory`.
@@ -32,7 +33,29 @@ Bash is full of useful shortcuts, one of which is the wilcard denoted by and ast
 
 In the clip above I used the wildcard pattern to return only `.txt` files in the directory of interest. Another useful command to see the structure of directories in the current directory is the command `tree` as shown in the clip. This will return the contents of every directory (and its subdirectories) in the current directory.
 
+## Organising Files {#organising}
+Now that you can navigate and list the contents of directories, you need to be able to copy and move them. Bash accomplishes this with the `cp` and `mv` commands, which stand for `copy` and `move`, respectively. The commands follow this simple structure:
 
+```bash
+cp "path_to_file/file" "copy_to_destination"
+mv "path_to_file/file" "move_to_destination"
+```
+
+The `cp` and `mv` commands also support glob patterns. To move all text files from the directory `/home/user/Download/Large_text_Download` to your Desktop, simply type `mv /home/user/Download/Large_text_Download/*.txt ~/Desktop`. Note that in order to copy and move files, you must have permissions to do so. This can be checked with `ls -la`. The image below gives a description of user permissions:
+
+<center>
+<img src="https://raw.githubusercontent.com/BarryDigby/BarryDigby.github.io/master/_gifs/file_permissions.png" width="100%" height="100%"/>
+</center>
+
+To the right of these codes will be the username of the file owner. You can ask the owner of the files to make them `rwx` for all users if it is appropriate to do so. Typically, large raw genomic data will be stored under private directories which require you to be added to a group in order to gain access (UKBB, TCGA, ICGC etc).
+
+In order to move or copy entire directories, add the `-r` flag to the `cp` or `mv` command. For example: `cp -r ~/Downloads/python3 ~/usr/bin`
+
+
+## Deleting files(#deleting)
+To delete files, use the command `rm`. To delete directories, append the recursive flag `rm -r`. Bash will sometimes produce a message asking you if you are sure you want to delete a read/write protected file, prompting `(y/n)`, requiring the user to input an answer into the terminal. To bypass this message, you can use `rm -rf`, where the `-f` flag stands for `force`. The `-f` flag has the added benefit of attempting to remove the file - even if it does not exist - without producing a non 0 exit status.
+
+A final note on `rm`. There is no 'Rubbish Bin'. Once it's gone, it's gone.
 
 - [sed](#sed)
 - [grep](#grep)
