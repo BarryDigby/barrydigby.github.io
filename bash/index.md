@@ -25,13 +25,15 @@ To change to a different directory, use the command `cd`, short for `change dire
 
 I used `ls -la` and `ls -ltr` in the terminal above. `ls -la` will print (from left to right) the user permissions of the file or directory, the owner of the file or directory, along with the size in bytes and time of creation. `ls -ltr` does the same thing, but it will order the results of `ls -la` so that the most recent files are at the bottom.
 
-Bash is full of useful shortcuts, one of which is the wilcard denoted by and asterisk `*`. For example, if we wanted to list all text files in a directory with the extension `.txt`, we would use the command `ls *.txt` (or a variation of `ls` of your choice). Wildcard patterns are also referred to as `glob patterns`.
+***
+
+To list files in a directory with a particular extension, we can use the wilcard `*` to specify the `glob pattern`. For example if we want to list all of the text files in the directory `bin/`, we type `ls bin/*.txt`. In addition to listing files, we can also search for files using the command `find`. The `find` command is extremely flexible: it can search for files or directories, performing a recursive search through every subdirectory in the directory passed to the command. The following clip demonstrates wilcard glob pattern searches in both `ls` and `find`:
 
 <center>
-<img src="https://raw.githubusercontent.com/BarryDigby/BarryDigby.github.io/master/_gifs/wildcard.gif" width="100%" height="100%"/>
+<img src="https://raw.githubusercontent.com/BarryDigby/BarryDigby.github.io/master/_gifs/find.gif" width="100%" height="100%"/>
 </center>
 
-In the clip above I used the wildcard pattern to return only `.txt` files in the directory of interest. Another useful command to see the structure of directories in the current directory is the command `tree` as shown in the clip. This will return the contents of every directory (and its subdirectories) in the current directory.
+In the clip above I used the wildcard pattern to return only `.txt` files in the directory of interest. The same search is repeated with `find`, and in the second `find` command the directory to search is the current directory (`find .`), listing all occurences of `.txt` files in the current directory and its subdirectories. 
 
 ## Organising Files {#organising}
 Now that you can navigate and list the contents of directories, you need to be able to copy and move them. Bash accomplishes this with the `cp` and `mv` commands, which stand for `copy` and `move`, respectively. The commands follow this simple structure:
