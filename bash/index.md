@@ -30,10 +30,10 @@ I used `ls -la` and `ls -ltr` in the terminal above. `ls -la` will print (from l
 To list files in a directory with a particular extension, we can use the wilcard `*` to specify the `glob pattern`. For example if we want to list all of the text files in the directory `bin/`, we type `ls bin/*.txt`. In addition to listing files, we can also search for files using the command `find`. The `find` command is extremely flexible: it can search for files or directories, performing a recursive search through every subdirectory in the directory passed to the command. The following clip demonstrates wilcard glob pattern searches in both `ls` and `find`:
 
 <center>
-<img src="https://raw.githubusercontent.com/BarryDigby/BarryDigby.github.io/master/_gifs/find.gif" width="100%" height="100%"/>
+<img src="https://raw.githubusercontent.com/BarryDigby/BarryDigby.github.io/master/_gifs/lsfind.gif" width="100%" height="100%"/>
 </center>
 
-In the clip above I used the wildcard pattern to return only `.txt` files in the directory of interest. The same search is repeated with `find`, and in the second `find` command the directory to search is the current directory (`find .`), listing all occurences of `.txt` files in the current directory and its subdirectories. 
+In the clip above I used the wildcard pattern to return only `.txt` files in the directory of interest. The same search is repeated with `find`, and in the second `find` command the directory to search is the current directory (`find .`), listing all occurences of `.txt` files in the current directory and its subdirectories.
 
 ## Organising Files {#organising}
 Now that you can navigate and list the contents of directories, you need to be able to copy and move them. Bash accomplishes this with the `cp` and `mv` commands, which stand for `copy` and `move`, respectively. The commands follow this simple structure:
