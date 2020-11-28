@@ -51,7 +51,9 @@ The `cp` and `mv` commands also support glob patterns. To move all text files fr
 
 To the right of these codes will be the username of the file owner. You can ask the owner of the files to make them `rwx` for all users if it is appropriate to do so. Typically, large raw genomic data will be stored under private directories which require you to be added to a group in order to gain access (UKBB, TCGA, ICGC etc).
 
-In order to move or copy entire directories, add the `-r` flag to the `cp` or `mv` command. For example: `cp -r ~/Downloads/python3 ~/usr/bin`
+In order to move or copy entire directories, add the `-r` flag to the `cp` or `mv` command. For example: `cp -r ~/Downloads/python3 ~/usr/bin`.
+
+To make a directory, use the `mkdir` command. Append the parents flag `-p` to run the command without an error if the directory already exists. This is useful when running scripts containing the `mkdir` command more than once. 
 
 
 ## Deleting files {#deleting}
