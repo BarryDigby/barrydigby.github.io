@@ -11,7 +11,7 @@ Jump to:
 
 Anaconda is an open source distribution of packages for Linux, Mac OS and Windows. Tools are installed using `conda` package and environment manager, creating a clean slate environment in which it attempts to install packages without conflicts. Conda offers a one stop shop for genomic tools and packages, which can be installed using a simple `conda install` command.
 
-## Conda Install {#install}
+# Conda Install {#install}
 
 ***
 
@@ -49,7 +49,7 @@ conda install -c bioconda fastqc
 
 ***
 
-## Conda yml file {#yaml}
+# Conda yml file {#yaml}
 
 We have seen how simple it is to install tools in `conda` by using the `conda install` command. However in reality we will want to install multiple tools at once for an analysis and create a clean environment for the tools. This can be simplified using a `.yml` file.
 

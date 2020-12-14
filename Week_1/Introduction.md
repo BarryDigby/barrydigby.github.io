@@ -10,7 +10,7 @@ Topics covered this week:
 
 - [1. Conda](http://barrydigby.github.io/Week_1/Conda)
 - [2. Docker](http://barrydigby.github.io/Week_1/Docker)
-
+- [3. Singularity](http://barrydigby.github.io/Week_1/Singularity)
 
 
 ## Container Creation

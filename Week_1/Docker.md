@@ -21,8 +21,7 @@ We are going to take advantage of the conda `.yml` file created in the previous 
 
 ***
 
-#Dockerfile {#dockerfile}
-======
+# Dockerfile {#dockerfile}
 To create a Docker container, we need to write a `Dockerfile` containing the instructions on which layer and packages to use. Below is an example of a `Dockerfile` using the conda `.yml` file created in the the Conda section of this weeks tutorial:
 
 ```bash
@@ -44,7 +43,7 @@ The commands used in the `Dockerfile`:
 - `RUN`: Execute a command.
 - `ENV`: Edit the containers `$PATH` environment variable in its `~/.bashrc`.
 
-## Create Container {#create}
+# Create Container {#create}
 *Personal Dockerhub required* -- **Please do not push to my dockerhub account**.
 
 ***
@@ -58,7 +57,7 @@ docker build -t barryd237/week1:test .
 ```
 
 
-## Push to Dockerhub {#push}
+# Push to Dockerhub {#push}
 The container has been created locally, now let's push it to dockerhub:
 
 ```bash
@@ -70,7 +69,7 @@ The container is now pushed to my dockerhub account at [https://hub.docker.com/r
 
 ***
 
-## Try it yourself
+# Try it yourself
 
 Try publishing the container to your own dockerhub profile, following the structure of `docker build -t DOCKERUSERNAME/REPO:TAG`.
 
