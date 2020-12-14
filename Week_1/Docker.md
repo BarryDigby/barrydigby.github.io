@@ -21,7 +21,8 @@ We are going to take advantage of the conda `.yml` file created in the previous 
 
 ***
 
-# Dockerfile {#dockerfile}
+#Dockerfile {#dockerfile}
+======
 To create a Docker container, we need to write a `Dockerfile` containing the instructions on which layer and packages to use. Below is an example of a `Dockerfile` using the conda `.yml` file created in the the Conda section of this weeks tutorial:
 
 ```bash
@@ -36,7 +37,7 @@ ENV PATH /opt/conda/envs/week1/bin:$PATH
 ```
 
 The commands used in the `Dockerfile`:
-- `FROM`: Creates a layer for the image. We are using `nextflow` `nfcore` base as it comes pre-installed with conda.
+- `FROM`: Creates a layer for the image. We are using `nextflow` `nfcore` base as it is a ubuntu layer that comes pre-installed with conda.
 - `LABEL`: Description of the image.
 - `WORKDIR`: Change the work directory of the container. We are pointing to the current directory `./` containing the `week1.yml` file.
 - `COPY`: Copy contents from the `WORKDIR` to the container. We want to use the `week1.yml` file for conda, so we copy it to the container.
