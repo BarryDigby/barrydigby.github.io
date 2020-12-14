@@ -5,8 +5,11 @@ permalink: /Week_1/Docker
 ---
 
 ***
+
 *Please create an account on Dockerhub before continuing!*
+
 (https://hub.docker.com/)[https://hub.docker.com/]
+
 ***
 
 Jump to:
@@ -39,8 +42,10 @@ The commands used in the `Dockerfile`:
 - `ENV`: Edit the containers `$PATH` environment variable in its `~/.bashrc`.
 
 ## Create Container {#create}
-*Personal Dockerhub account required* **Please do not push to my dockerhub account**.
+*Personal Dockerhub account required* -- **Please do not push to my dockerhub account**.
+
 ***
+
 Make sure the `Dockerfile` and `.yml` file are in your current working directory.
 
 Go to dockerhub, login and create a new repository "week1". We will tag the container using your username and repository:
@@ -63,4 +68,4 @@ docker run DOCKER_USERNAME/REPO:tag
 docker push DOCKER_USERNAME/REPO:tag
 ```
 
-Now visit you dockerhub profile. You should see the container has been pushed to the repository `week 1`. 
+Now visit you dockerhub profile. You should see the container has been pushed to the repository `week 1`.
