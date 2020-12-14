@@ -19,7 +19,9 @@ Jump to:
 
 We are going to take advantage of the conda `.yml` file created in the previous step to create a Docker container with the environment `QC` appended to it's `$PATH`.
 
-## Dockerfile {#dockerfile}
+***
+
+# Dockerfile {#dockerfile}
 To create a Docker container, we need to write a `Dockerfile` containing the instructions on which layer and packages to use. Below is an example of a `Dockerfile` using the conda `.yml` file created in the the Conda section of this weeks tutorial:
 
 ```bash
@@ -71,4 +73,4 @@ The container is now pushed to my dockerhub account at [https://hub.docker.com/r
 
 Try publishing the container to your own dockerhub profile, following the structure of `docker build -t DOCKERUSERNAME/REPO:TAG`.
 
-The `tag` can be anything, however in a situation where you are working on developing a pipeline use tags such as `:dev` to delineate between development versions and published versions. 
+The `tag` can be anything, however in a situation where you are working on developing a pipeline use tags such as `:dev` to delineate between development versions and published versions.
