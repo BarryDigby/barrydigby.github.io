@@ -4,7 +4,9 @@ layout: page
 permalink: /Week_1/Introduction
 ---
 
-This tutorial covers creating a container for quality control of reads and using the container in a nextflow script to perform QC of downloaded reads.
+The week 1 tutorial will show you how to use `Anaconda` to construct a `Docker` container in a reproducible manner, create an image of the container using `Singularity` and use the container in a `nextflow` script to perform qualtiy control on sequencing reads.
+
+Please create a Docker hub account before starting this tutorial https://hub.docker.com/.
 
 ## Container Creation
 Before constructing a container, you need to know exactly which tools are going to be used for the analysis. For the quality control of sequencing reads, we will need `FastQC` and `MultiQC` to generate `.html` summary statistics of the sequencing reads. We will also use `bbtools` to perform adapter trimming and low quality read removal.
@@ -75,3 +77,35 @@ The Docker commands used in the `Dockerfile`:
 - `COPY`: Copy contents from the `WORKDIR` to the container. We want to use the `week1.yml` file for conda, so we copy it locally to the container.
 - `RUN`: Execute a command.
 - `ENV`: Edit the containers `$PATH` environment variable in its `~/.bashrc`.
+
+
+## Docker Hub
+Please create you own Docker hub account before proceeding with the tutorial. We will publish our created containers to dockerhub which will enable automatic linting and allows us to pull the image from the containers docker page.
+
+## Creating the container
+Now that we have a docker account, `Dockerfile` and `.yml` file we can begin to create the container.
+
+```bash
+docker build -t barryd237/week1:test
+```
+
+The above command creates the docker container, tagging (`-t`) it under the account barryd237, in the week1 repository with the label test.
+
+## Publishing to Docker
+Now that the container has been creted, lets push it to docker hub.
+
+```bash
+docker run barryd237/week1:test
+docker push barryd237/week1:test
+```
+ Check the container has been pushed to your dockerhub profile. My container is available at: https://hub.docker.com/r/barryd237/week1.
+
+## Create an image
+The docker container has been created and pushed to dockerhub. Next we will use singularity to pull the docker container and write it to an image file.
+
+```bash
+singularity pull --name week1.img docker://barryd237/week1:test
+```
+
+You will have an image in your directory called `week1.img`. We can shell into the container using `singularity shell -B $(pwd) week1.img`
+.
