@@ -28,7 +28,7 @@ It is available at the path `/data/MA5112/Practicals/RNA-Seq/Kallisto_Practical/
 
 ## Dataset {#data}
 <center>
-<img src="https://raw.githubusercontent.com/BarryDigby/BarryDigby.github.io/master/_images/rna-seq/rna-seq-dataset.png" width="100%" height="100%"/>
+<img src="https://raw.githubusercontent.com/BarryDigby/BarryDigby.github.io/master/_images/rna-seq/rnaseq-data.png" width="100%" height="100%"/>
 </center>
 
 The researcher has captured exosomes from human malignant melanoma cell line (A375) and the human lung cancer cell line (A549) and added them to primary human epidermal melanocytes, (NHEM-c cells). There are triplicates of each cell line:
