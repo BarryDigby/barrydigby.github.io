@@ -8,6 +8,10 @@ The week 1 tutorial will show you how to use `Anaconda` to construct a `Docker` 
 
 Please create a Docker hub account before starting this tutorial https://hub.docker.com/.
 
+- 1. [Conda](http://barrydigby.github.io/Week_1/Conda)
+
+
+
 ## Container Creation
 Before constructing a container, you need to know exactly which tools are going to be used for the analysis. For the quality control of sequencing reads, we will need `FastQC` and `MultiQC` to generate `.html` summary statistics of the sequencing reads. We will also use `bbtools` to perform adapter trimming and low quality read removal.
 
