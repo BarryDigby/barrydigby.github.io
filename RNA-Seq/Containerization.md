@@ -1,7 +1,7 @@
 ---
 title: Containerization
 layout: page
-permalink: /RNA-Seq/
+permalink: /RNA-Seq/Containerization
 ---
 
 

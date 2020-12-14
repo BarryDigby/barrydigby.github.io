@@ -1,5 +1,6 @@
 ---
 title: Nextflow
 layout: page
-permalink: /RNA-Seq/
+permalink: /RNA-Seq/Nextflow
 ---
+ hey nextflow! 
