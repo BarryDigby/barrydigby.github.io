@@ -4,11 +4,12 @@ layout: page
 permalink: /Week_1/Introduction
 ---
 
-The week 1 tutorial will show you how to use `Anaconda` to construct a `Docker` container in a reproducible manner, create an image of the container using `Singularity` and use the container in a `nextflow` script to perform qualtiy control on sequencing reads.
+The week 1 tutorial will show you how to use `Anaconda` to construct a `Docker` container in a reproducible manner, create an image of the container using `Singularity` and use the image in a `nextflow` script to perform qualtiy control on sequencing reads.
 
-Please create a Docker hub account before starting this tutorial https://hub.docker.com/.
+Topics covered this week:
 
-- 1. [Conda](http://barrydigby.github.io/Week_1/Conda)
+- [1. Conda](http://barrydigby.github.io/Week_1/Conda)
+- [2. Docker](http://barrydigby.github.io/Week_1/Docker)
 
 
 

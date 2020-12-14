@@ -4,7 +4,7 @@ layout: page
 permalink: /Week_1/Conda
 ---
 
-Topics covered:
+Jump to:
 - [Conda Install](#install)
 - [Conda yml file](#yaml)
 
