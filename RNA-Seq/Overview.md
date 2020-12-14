@@ -9,7 +9,8 @@ Before constructing a container and nextflow script for the analysis I will walk
 - [Required Files](#required)
 - [Dataset](#data)
 - [Quality Control](#quality)
-- [Deleting files](#deleting)
+- [Indexing](#indexing)
+- [Alignment](#alignment)
 
 ## Required Files {#required}
 RNA-Seq comes in two flavors - gene quantification and transcriptome assembly. Gene expression quantification is the more common of the two - we are interested in the levels of gene expression by way of counts. Transcript assembly can be either reference free (for species that are not well annotated) or reference guided to provide insights into novel transcripts that are a by product of gene fusions or non-canonical splicing.
@@ -27,10 +28,6 @@ It is available at the path `/data/MA5112/Practicals/RNA-Seq/Kallisto_Practical/
 ***
 
 ## Dataset {#data}
-<center>
-<img src="https://raw.githubusercontent.com/BarryDigby/BarryDigby.github.io/master/_images/rna-seq/rnaseq-data.png" width="100%" height="100%"/>
-</center>
-
 The researcher has captured exosomes from human malignant melanoma cell line (A375) and the human lung cancer cell line (A549) and added them to primary human epidermal melanocytes, (NHEM-c cells). There are triplicates of each cell line:
 
 - NHEM-c (Control)
@@ -39,5 +36,20 @@ The researcher has captured exosomes from human malignant melanoma cell line (A3
 
 The researcher is interested in characterising the transcriptional profile of each transfected cell line, in an effort to elucidate the tumor pathways mediated by A375 & A549 tumor exosomes.
 
+<center>
+<img src="https://raw.githubusercontent.com/BarryDigby/BarryDigby.github.io/master/_images/rna-seq/rnaseq-data.png" width="100%" height="100%"/>
+</center>
+
 ## Quality Control {#quality}
-As with all NGS assays, the quality of the reads must be assessed and checked for adapter contamination.
+Running Fast-QC and MultiQC has already been covered in week 1 thus no more time will be spent on performing it.
+
+## Indexing {#indexing}
+Before attempting to align reads to the reference transcriptome, it must be indexed to allow for fast access during alignment. `Kallisto` performs transcriptome indexing using the following commands:
+
+```bash
+kallisto index -i GRCh38.cDNA.idx GRCh38.cDNA.fa
+```
+
+Here the `-i` flag specifies the output file. `Kallisto` is somewhat unique as it produces a single indexed transcriptome file. STAR, Hisat2, Bowtie, Bowtie2, BWA aligners all produce multiple indexed files for a reference genome. The fact `kallisto` only prodcues one indexed file makes integrating the file into `nextflow` simpler.
+
+## Alignment {#alignment}
