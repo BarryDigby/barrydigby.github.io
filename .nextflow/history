@@ -1,0 +1,6 @@
+2020-12-14 14:52:42	3.8s	special_wright	ERR	970f6d86212126e931745c62b1755dc7	93778032-304f-4879-8d99-caf7c46e14db	nextflow run dlsra.nf
+2020-12-14 14:53:42	2.3s	chaotic_cajal	ERR	783835fc8a5df8fe8950c8438a198b0e	2f0be34f-581e-477d-9c83-3ea72b713021	nextflow run dlsra.nf
+2020-12-14 14:54:11	4s	elegant_euler	ERR	e4c33223cea8448fbee9b93a06b7be4d	c9a0b7db-7762-4796-bb84-67c36f60975b	nextflow run dlsra.nf
+2020-12-14 14:55:02	3.2s	nice_joliot	ERR	ab461bfa93ee54ab133ca523a2b81ec9	66c82e41-c887-40e5-96ff-47a1948c4899	nextflow run dlsra.nf
+2020-12-14 14:57:28	11s	curious_wiles	ERR	ab461bfa93ee54ab133ca523a2b81ec9	85c31781-3a5d-4892-bfdd-0d6b73a5a6cd	nextflow run dlsra.nf
+2020-12-14 14:57:59	9.6s	festering_hodgkin	OK	574a34f53e2fb7a6c56f3ead59bc7f76	97a061a2-d9c0-4858-a5cd-4d488a18a002	nextflow run dlsra.nf

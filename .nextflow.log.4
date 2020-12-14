@@ -1,0 +1,121 @@
+Dec-14 14:53:41.400 [main] DEBUG nextflow.cli.Launcher - $> nextflow run dlsra.nf
+Dec-14 14:53:41.528 [main] INFO  nextflow.cli.CmdRun - N E X T F L O W  ~  version 19.10.0
+Dec-14 14:53:41.542 [main] INFO  nextflow.cli.CmdRun - Launching `dlsra.nf` [chaotic_cajal] - revision: 783835fc8a
+Dec-14 14:53:41.572 [main] DEBUG nextflow.config.ConfigBuilder - Found config home: /home/barry/.nextflow/config
+Dec-14 14:53:41.574 [main] DEBUG nextflow.config.ConfigBuilder - Parsing config file: /home/barry/.nextflow/config
+Dec-14 14:53:41.613 [main] DEBUG nextflow.config.ConfigBuilder - Applying config profile: `standard`
+Dec-14 14:53:42.001 [main] DEBUG nextflow.extension.OperatorEx - Dataflow extension methods: branch,buffer,chain,choice,collate,collect,collectFile,combine,concat,count,countBy,countFasta,countFastq,countLines,countText,cross,distinct,filter,first,flatMap,flatten,fork,groupBy,groupTuple,ifEmpty,into,join,last,map,max,mean,merge,min,mix,phase,print,println,randomSample,reduce,separate,set,splitCsv,splitFasta,splitFastq,splitText,spread,subscribe,sum,take,tap,toDouble,toFloat,toInteger,toList,toLong,toSortedList,transpose,unique,until,view
+Dec-14 14:53:42.013 [main] DEBUG nextflow.Session - Session uuid: 2f0be34f-581e-477d-9c83-3ea72b713021
+Dec-14 14:53:42.013 [main] DEBUG nextflow.Session - Run name: chaotic_cajal
+Dec-14 14:53:42.014 [main] DEBUG nextflow.Session - Executor pool size: 8
+Dec-14 14:53:42.066 [main] DEBUG nextflow.cli.CmdRun - 
+  Version: 19.10.0 build 5170
+  Created: 21-10-2019 15:07 UTC (16:07 BST)
+  System: Linux 5.4.0-56-generic
+  Runtime: Groovy 2.5.8 on OpenJDK 64-Bit Server VM 11.0.9.1+1-Ubuntu-0ubuntu1.18.04
+  Encoding: UTF-8 (UTF-8)
+  Process: 17451@NUIG [127.0.1.1]
+  CPUs: 8 - Mem: 31.2 GB (20.8 GB) - Swap: 2 GB (2 GB)
+Dec-14 14:53:42.093 [main] DEBUG nextflow.Session - Work-dir: /home/barry/website/BarryDigby.github.io/work [ext2/ext3]
+Dec-14 14:53:42.094 [main] DEBUG nextflow.Session - Script base path does not exist or is not a directory: /home/barry/website/BarryDigby.github.io/bin
+Dec-14 14:53:42.111 [main] DEBUG nextflow.Session - Observer factory: TowerFactory
+Dec-14 14:53:42.114 [main] DEBUG nextflow.Session - Observer factory: DefaultObserverFactory
+Dec-14 14:53:42.299 [main] DEBUG nextflow.Session - Session start invoked
+Dec-14 14:53:42.424 [main] DEBUG nextflow.script.ScriptRunner - > Launching execution
+Dec-14 14:53:42.501 [ForkJoinPool.commonPool-worker-3] WARN  nextflow.datasource.SraExplorer - Define the NCBI_API_KEY env variable to use NCBI search service -- Read more https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/
+Dec-14 14:53:42.512 [ForkJoinPool.commonPool-worker-3] DEBUG nextflow.datasource.SraExplorer - SRA search url=https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=sra&usehistory=y&retmode=json&term=PRJNA330826
+Dec-14 14:53:42.597 [main] DEBUG nextflow.script.BaseScript - No entry workflow defined
+Dec-14 14:53:42.598 [main] DEBUG nextflow.script.ScriptRunner - > Await termination 
+Dec-14 14:53:42.598 [main] DEBUG nextflow.Session - Session await
+Dec-14 14:53:42.598 [main] DEBUG nextflow.Session - Session await > all process finished
+Dec-14 14:53:42.598 [main] DEBUG nextflow.Session - Session await > all barriers passed
+Dec-14 14:53:43.436 [ForkJoinPool.commonPool-worker-3] DEBUG nextflow.datasource.SraExplorer - SRA data request url=https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=sra&retmode=json&query_key=1&WebEnv=MCID_5fd77c77ad5c1d5fb96a5236&retstart=0&retmax=1000
+Dec-14 14:53:44.085 [ForkJoinPool.commonPool-worker-3] ERROR nextflow.Channel - Illegal character in authority at index 6: ftp://srr3939075	ftp.sra.ebi.ac.uk
+java.net.URISyntaxException: Illegal character in authority at index 6: ftp://srr3939075	ftp.sra.ebi.ac.uk
+	at java.base/java.net.URI$Parser.fail(URI.java:2913)
+	at java.base/java.net.URI$Parser.parseAuthority(URI.java:3247)
+	at java.base/java.net.URI$Parser.parseHierarchical(URI.java:3158)
+	at java.base/java.net.URI$Parser.parse(URI.java:3114)
+	at java.base/java.net.URI.<init>(URI.java:600)
+	at nextflow.file.http.XFileSystemProvider.key(XFileSystemProvider.groovy:61)
+	at nextflow.file.http.XFileSystemProvider.key(XFileSystemProvider.groovy:65)
+	at nextflow.file.http.XFileSystemProvider.getFileSystem(XFileSystemProvider.groovy:122)
+	at nextflow.file.http.XFileSystemProvider.getPath(XFileSystemProvider.groovy:137)
+	at java.base/java.nio.file.Path.of(Path.java:208)
+	at java.base/java.nio.file.Paths.get(Paths.java:97)
+	at nextflow.file.FileHelper.asPath(FileHelper.groovy:273)
+	at nextflow.file.FileHelper.asPath(FileHelper.groovy:256)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.codehaus.groovy.reflection.CachedMethod.invoke(CachedMethod.java:101)
+	at groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:323)
+	at org.codehaus.groovy.runtime.callsite.StaticMetaMethodSite$StaticMetaMethodSiteNoUnwrap.invoke(StaticMetaMethodSite.java:131)
+	at org.codehaus.groovy.runtime.callsite.StaticMetaMethodSite.call(StaticMetaMethodSite.java:89)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:47)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:115)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:127)
+	at nextflow.datasource.SraExplorer.getFastqUrl(SraExplorer.groovy:280)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:190)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:58)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallCurrent(CallSiteArray.java:51)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:156)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:168)
+	at nextflow.datasource.SraExplorer.parseDataResponse(SraExplorer.groovy:199)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:190)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:58)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallCurrent(CallSiteArray.java:51)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:156)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:168)
+	at nextflow.datasource.SraExplorer.query1(SraExplorer.groovy:156)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:190)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:58)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallCurrent(CallSiteArray.java:51)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:156)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:168)
+	at nextflow.datasource.SraExplorer.query0(SraExplorer.groovy:140)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:190)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:58)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallCurrent(CallSiteArray.java:51)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:156)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:168)
+	at nextflow.datasource.SraExplorer.apply(SraExplorer.groovy:102)
+	at nextflow.Channel$_fetchSraFiles0_closure16.doCall(Channel.groovy:607)
+	at nextflow.Channel$_fetchSraFiles0_closure16.call(Channel.groovy)
+	at groovy.lang.Closure.run(Closure.java:486)
+	at java.base/java.util.concurrent.CompletableFuture$AsyncRun.run(CompletableFuture.java:1736)
+	at java.base/java.util.concurrent.CompletableFuture$AsyncRun.exec(CompletableFuture.java:1728)
+	at java.base/java.util.concurrent.ForkJoinTask.doExec(ForkJoinTask.java:290)
+	at java.base/java.util.concurrent.ForkJoinPool$WorkQueue.topLevelExec(ForkJoinPool.java:1020)
+	at java.base/java.util.concurrent.ForkJoinPool.scan(ForkJoinPool.java:1656)
+	at java.base/java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:1594)
+	at java.base/java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:183)
+Dec-14 14:53:44.095 [ForkJoinPool.commonPool-worker-3] DEBUG nextflow.Session - Session aborted -- Cause: Illegal character in authority at index 6: ftp://srr3939075	ftp.sra.ebi.ac.uk
+Dec-14 14:53:44.125 [ForkJoinPool.commonPool-worker-3] DEBUG nextflow.Session - The following nodes are still active:
+  [operator] view
+
+Dec-14 14:53:44.132 [main] DEBUG nextflow.trace.StatsObserver - Workflow completed > WorkflowStats[succeedCount=0; failedCount=0; ignoredCount=0; cachedCount=0; succeedDuration=0ms; failedDuration=0ms; cachedDuration=0ms]
+Dec-14 14:53:44.317 [main] DEBUG nextflow.CacheDB - Closing CacheDB done
+Dec-14 14:53:44.320 [main] DEBUG nextflow.Session - AWS S3 uploader shutdown
+Dec-14 14:53:44.332 [main] DEBUG nextflow.script.ScriptRunner - > Execution complete -- Goodbye

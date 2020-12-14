@@ -1,0 +1,10 @@
+name: week1
+channels:
+  - agbiome
+  - bioconda
+  - conda-forge
+dependencies:
+  - bbtools
+  - fastqc
+  - multiqc
+
