@@ -8,7 +8,7 @@ permalink: /Week_1/Docker
 
 *Please create an account on Dockerhub before continuing!*
 
-(https://hub.docker.com/)[https://hub.docker.com/]
+[https://hub.docker.com/](https://hub.docker.com/)
 
 ***
 
@@ -42,7 +42,7 @@ The commands used in the `Dockerfile`:
 - `ENV`: Edit the containers `$PATH` environment variable in its `~/.bashrc`.
 
 ## Create Container {#create}
-*Personal Dockerhub account required* -- **Please do not push to my dockerhub account**.
+*Personal Dockerhub required* -- **Please do not push to my dockerhub account**.
 
 ***
 
@@ -51,21 +51,20 @@ Make sure the `Dockerfile` and `.yml` file are in your current working directory
 Go to dockerhub, login and create a new repository "week1". We will tag the container using your username and repository:
 
 ```bash
-docker build -t DOCKER_USERNAME/REPO:tag .
+docker build -t barryd237/week1:test .
 ```
 
-My example:
-
-```bash
-docker build -t barryd237/week1:test
-```
 
 ## Push to Dockerhub {#push}
 The container has been created locally, now let's push it to dockerhub:
 
 ```bash
-docker run DOCKER_USERNAME/REPO:tag
-docker push DOCKER_USERNAME/REPO:tag
+docker run barryd237/week1:test
+docker push barryd237/week1:test
 ```
 
-Now visit you dockerhub profile. You should see the container has been pushed to the repository `week 1`.
+The container is now pushed to my dockerhub account at [https://hub.docker.com/repository/docker/barryd237/week1](https://hub.docker.com/repository/docker/barryd237/week1).
+
+***
+
+Try publishing the container to your own dockerhub profile, following the structure of `docker build -t DOCKERUSERNAME/REPO:TAG`. The `tag` can be anything, typically in a situation where you are working on developing a pipeline we will use tags such as `:dev` to delineate between development versions and published versions. 
