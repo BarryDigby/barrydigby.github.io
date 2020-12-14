@@ -67,4 +67,8 @@ The container is now pushed to my dockerhub account at [https://hub.docker.com/r
 
 ***
 
-Try publishing the container to your own dockerhub profile, following the structure of `docker build -t DOCKERUSERNAME/REPO:TAG`. The `tag` can be anything, typically in a situation where you are working on developing a pipeline we will use tags such as `:dev` to delineate between development versions and published versions. 
+## Try it yourself
+
+Try publishing the container to your own dockerhub profile, following the structure of `docker build -t DOCKERUSERNAME/REPO:TAG`.
+
+The `tag` can be anything, however in a situation where you are working on developing a pipeline use tags such as `:dev` to delineate between development versions and published versions. 
