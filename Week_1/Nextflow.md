@@ -60,7 +60,7 @@ Launching `quality_control.nf` [berserk_gutenberg] - revision: eace5429d7
 # Channels {#channel}
 In nextflow files are passed to each process via channels.
 
-In the previous example we created the channel `reads_ch` by specifying `Channel.fromPath()`. The channel now contains each file matching the glob pattern `*.fastq.gz` in the directory given by `params.reads`.
+In the previous example we created the channel `reads_ch` by specifying `Channel.fromFilePairs()`. The channel now contains each file matching the glob pattern `*.fastq.gz` in the directory given by `params.reads`.
 
 We will use the `read_ch` to provide the `FastQC` process the raw data, collect the files prodcued from FastQC and pass them to MultiQC.
 
@@ -221,4 +221,4 @@ process MultiQC {
 
 Congratulations on making it through the week 1 tutorial.
 
-If you have any questions please do not hesitate to contact Pilib ;) 
+If you have any questions please do not hesitate to contact Pilib ;)
