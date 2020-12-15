@@ -14,16 +14,15 @@ Jump to:
 - [Conda yml file](#yaml)
 
 
-Anaconda is an open source distribution of packages for POSIX compute environments. Conda quickly installs, runs and updates packages and their dependencies. Conda easily creates, saves, loads and switches between environments on your local computer, resolving dependency conflicts that might arise due to different python versions.
+Anaconda is an open source distribution of packages for POSIX compute environments. Conda quickly installs, runs and updates packages and their dependencies. Conda easily creates, saves, loads and switches between environments on your computer, resolving dependency conflicts that might arise due to package requirements.
 
 # Install Packages {#install}
 ***
 
-
-Let's first activate the (base) environment for conda:
+Let's first activate the base environment for conda:
 
 ```bash
-conda activate base
+$ conda activate base
 ```
 
 You should notice the `(base)` prefix before your username on the terminal. Now install the package `fastqc`.
