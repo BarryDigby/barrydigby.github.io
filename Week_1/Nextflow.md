@@ -219,6 +219,6 @@ process MultiQC {
 
 ***
 
-Congratulations on making it through the week 1 tutorial.
+Congratulations on making it through the week 1 tutorial. Please do not hesistate to contact me if you have any questions!
 
-If you have any questions please do not hesitate to contact Pilib ;)
+> Barry 
