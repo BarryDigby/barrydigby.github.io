@@ -8,7 +8,7 @@ permalink: /Week_1/Conda
 <img src="https://raw.githubusercontent.com/BarryDigby/BarryDigby.github.io/master/_images/week1/anaconda_horizontal.png" width="100%" height="100%"/>
 </center>
 
-Anaconda is an open source distribution of packages for POSIX compute environments. Conda quickly installs, runs and updates packages and their dependencies. Conda easily creates, saves, loads and switches between environments on your computer, resolving dependency conflicts that might arise due to package requirements.
+Conda quickly installs, runs and updates packages and their dependencies. Conda easily creates, saves, loads and switches between environments on your computer, resolving dependency conflicts that might arise due to package requirements.
 
 Jump to:
 - [Install Packages](#install)
@@ -47,8 +47,6 @@ conda install bioconda::fastqc=0.11.9
 1. Check that `fastqc` has been installed correctly by prompting the help message.
 2. Check where `fastqc` was installed (hint: use `whereis`).
 
-***
-
 # YAML file {#yaml}
 ***
 We have seen how simple it is to install tools using the `conda install` command.
@@ -59,16 +57,14 @@ In reality, we will want to install multiple packages at once for an analysis an
 2. Channels: Specifiy which channels conda should search when attempting to install packages.
 3. Dependencies: Which packages you want to install (supports pinned version numbers).
 
-***
-
 In this weeks tutorial we want to create an environment for the quality control of sequencing reads. We will need `fastqc` and `multiqc` to generate HTML reports of sequencing statistics and a tool to perform adapter trimming and read filtering.
 
 Choosing a trimming tool is highly subjective however, I like the flexibility of `bbduk`, part of the `bbtools` suite.
 
 ### To Do:
 Below I have provided an incomplete `.yml` file, where the name and channels have been specified for you.
-1. Complete the `.yml` file by specifing the three tools referenced above.
-2. Save it as `week1.yml`.
+1. Complete the `.yml` file by specifing the 3 dependencies referenced above.
+2. Save as `week1.yml`.
 
 ```
 name: QC
@@ -83,15 +79,13 @@ dependencies:
   -
 ```
 
-***
-
 To create a conda environment using the `.yml` file, run the following command in the terminal:
 
 ```bash
 conda env create -f week1.yml && conda clean -a
 ```
 
-Conda should install the three tools under the environment `QC`.
+Conda should install the three packages under the environment `QC`.
 
 ***
 
