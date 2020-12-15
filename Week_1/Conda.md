@@ -1,5 +1,5 @@
 ---
-title: 
+title:
 layout: page
 permalink: /Week_1/Conda
 ---
@@ -10,19 +10,15 @@ permalink: /Week_1/Conda
 
 
 Jump to:
-- [Conda Install](#install)
+- [Install Packages](#install)
 - [Conda yml file](#yaml)
 
 
-Anaconda is an open source distribution of packages for Linux, Mac OS and Windows. Tools are installed using `conda` package and environment manager, creating a clean slate environment in which it attempts to install packages without conflicts. Conda offers a one stop shop for genomic tools and packages, which can be installed using a simple `conda install` command.
+Anaconda is an open source distribution of packages for POSIX compute environments. Conda quickly installs, runs and updates packages and their dependencies. Conda easily creates, saves, loads and switches between environments on your local computer, resolving dependency conflicts that might arise due to different python versions.
 
-# Conda Install {#install}
-
+# Install Packages {#install}
 ***
 
-*Please run this locally on your own laptop!*
-
-***
 
 Let's first activate the (base) environment for conda:
 
