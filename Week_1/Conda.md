@@ -1,5 +1,5 @@
 ---
-title: Anaconda
+title: 
 layout: page
 permalink: /Week_1/Conda
 ---
