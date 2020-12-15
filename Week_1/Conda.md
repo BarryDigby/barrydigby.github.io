@@ -16,7 +16,6 @@ Jump to:
 
 # Install Packages {#install}
 ***
-
 Let's first activate the base environment for conda:
 
 ```bash
@@ -51,10 +50,21 @@ conda install bioconda::fastqc=0.11.9
 ***
 
 # YAML file {#yaml}
+***
+We have seen how simple it is to install tools using the `conda install` command.
 
-We have seen how simple it is to install tools in `conda` by using the `conda install` command. However in reality we will want to install multiple tools at once for an analysis and create a clean environment for the tools. This can be simplified using a `.yml` file.
+In reality, we will want to install multiple packages at once for an analysis and create a clean environment for the packages. This can be simplified using a `.yml` file. The strucutre of a `.yml` file is:
 
-As this tutorial covers quality control in sequencing reads, we will need a tool to trim and remove adapters in addition to fastqc tools. Below is an example of a `.yml` file to use for creating a quality control environment:
+1. Name: The name of the environment to be created.
+2. Channels: Specifiy which channels conda should search when attempting to install packages.
+3. Dependencies: Which packages you want to install (supports pinned version numbers).
+
+***
+
+In this weeks tutorial we want to create an environment for the quality control of sequencing reads. We will need `fastqc` and `multiqc` to generate HTML reports of sequencing statistics and a tool to perform adapter trimming and read filtering. Choosing a trimming tool is highly subjective, however I like the flexibility of `bbduk`, part of the `bbtools` suite.
+
+
+Below I have provided an incomplete `.yml` file, where the name and channels have been specified for you. Please complete the `.yml` file by specifing the three tools referenced above.
 
 ```
 name: QC
@@ -64,22 +74,24 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - fastqc
-  - multiqc
-  - bbtools
+  -
+  -
+  -
 ```
 
-To create a conda environment using the above `.yml` file, run the following command in the terminal:
+***
+
+Once you have filled out the `.yml` file, save it as `week1.yml`.
+
+To create a conda environment using the `.yml` file, run the following command in the terminal:
 
 ```bash
 conda env create -f week1.yml && conda clean -a
 ```
 
-Conda should install the three tools under the environment `QC`. Activate the environment and test the tools were installed correctly:
+Conda should install the three tools under the environment `QC`.
 
-```bash
-conda activate QC
-fastqc -h
-multiqc -h
-bbduk.sh -h
-```
+1. Activate the environment.
+2. Check all 3 tools have been installed correctly.
+3. Print the path of the environments bin.
+4. Export the environment using `conda env export > QC.yml`.
