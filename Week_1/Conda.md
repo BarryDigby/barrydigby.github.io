@@ -10,13 +10,9 @@ permalink: /Week_1/Conda
 
 Anaconda is an open source distribution of packages for POSIX compute environments. Conda quickly installs, runs and updates packages and their dependencies. Conda easily creates, saves, loads and switches between environments on your computer, resolving dependency conflicts that might arise due to package requirements.
 
-***
-
 Jump to:
 - [Install Packages](#install)
-- [Conda yml file](#yaml)
-
-***
+- [YAML file](#yaml)
 
 # Install Packages {#install}
 ***
@@ -24,34 +20,37 @@ Jump to:
 Let's first activate the base environment for conda:
 
 ```bash
-$ conda activate base
+conda activate base
 ```
 
-You should notice the `(base)` prefix before your username on the terminal. Now install the package `fastqc`.
+You should see the `(base)` prefix before your username on the terminal.
 
-Append the channel in which to search for the package - looking at the Anaconda repository, we can see that it belongs to `bioconda` [https://anaconda.org/bioconda/fastqc](https://anaconda.org/bioconda/fastqc).
-
-If we want to pin the tool version number, we can install it using the command `conda install bioconda::fastqc=0.11.9`
-
-```bash
-conda install bioconda::fastqc
-```
-
-*or*
+Now let's install the package `fastqc`. First, look up the package in the Anaconda repository: [https://anaconda.org/bioconda/fastqc](https://anaconda.org/bioconda/fastqc).
 
 ```bash
 conda install -c bioconda fastqc
 ```
 
- Test the package works by prompting the help documentation with the `-h` flag:
+*or*
 
- ```bash
- fastqc -h
- ```
+```bash
+conda install bioconda::fastqc
+```
+
+If we wanted to specify the version of the tool, we can 'pin' the version in the install command:
+
+```bash
+conda install bioconda::fastqc=0.11.9
+```
 
 ***
 
-# Conda yml file {#yaml}
+1. Check that `fastqc` has been installed correctly by prompting the help message.
+2. Check where `fastqc` was installed (hint: use `whereis`).
+
+***
+
+# YAML file {#yaml}
 
 We have seen how simple it is to install tools in `conda` by using the `conda install` command. However in reality we will want to install multiple tools at once for an analysis and create a clean environment for the tools. This can be simplified using a `.yml` file.
 
