@@ -8,7 +8,7 @@ permalink: /Week_1/Conda
 <img src="https://raw.githubusercontent.com/BarryDigby/BarryDigby.github.io/master/_images/week1/anaconda_horizontal.png" width="100%" height="100%"/>
 </center>
 
-Conda quickly installs, runs and updates packages and their dependencies. Conda easily creates, saves, loads and switches between environments on your computer, resolving dependency conflicts that might arise due to package requirements.
+Conda quickly installs, runs and updates packages and their dependencies. Conda can create and switch between environments on your computer, resolving dependency conflicts that might arise due to package requirements.
 
 Jump to:
 - [Install Packages](#install)
@@ -42,7 +42,6 @@ If we wanted to specify the version of the tool, we can 'pin' the version in the
 conda install bioconda::fastqc=0.11.9
 ```
 
-***
 ### To Do:
 1. Check that `fastqc` has been installed correctly by prompting the help message.
 2. Check where `fastqc` was installed (hint: use `whereis`).
@@ -86,8 +85,6 @@ conda env create -f week1.yml && conda clean -a
 ```
 
 Conda should install the three packages under the environment `QC`.
-
-***
 
 ### To Do:
 1. Activate the environment.
