@@ -15,7 +15,7 @@ The tutorial will be conducted both locally and on Lugh. Please make sure you ha
 
 ***
 
-Jump to section:
+Jump to:
 
 - [Conda](http://barrydigby.github.io/Week_1/Conda): Install packages & create environments using `yaml` files.
 - [Docker](http://barrydigby.github.io/Week_1/Docker): Create Docker image using `Dockerfile` & Conda layer. Store image on Dockerhub.
