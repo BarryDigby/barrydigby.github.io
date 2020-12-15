@@ -4,6 +4,11 @@ layout: page
 permalink: /Week_1/Conda
 ---
 
+<center>
+<img src="https://raw.githubusercontent.com/BarryDigby/BarryDigby.github.io/master/_images/week1/anaconda_horizontal.png" width="100%" height="100%"/>
+</center>
+
+
 Jump to:
 - [Conda Install](#install)
 - [Conda yml file](#yaml)
