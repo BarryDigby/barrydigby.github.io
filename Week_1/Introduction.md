@@ -18,5 +18,6 @@ The tutorial will be conducted both locally and on Lugh. Please make sure you ha
 Jump to section:
 
 - [Conda](http://barrydigby.github.io/Week_1/Conda): Install packages & create environments using `yaml` files.
-- [Docker](http://barrydigby.github.io/Week_1/Docker): Create Docker containers using `Dockerfile` & Conda layer. Store containers on Dockerhub.
-- [Singularity](http://barrydigby.github.io/Week_1/Singularity): Pull containers from Dockerhub and convert to images. 
+- [Docker](http://barrydigby.github.io/Week_1/Docker): Create Docker image using `Dockerfile` & Conda layer. Store image on Dockerhub.
+- [Singularity](http://barrydigby.github.io/Week_1/Singularity): Pull image from Dockerhub and convert to container.
+- [Nextflow](http://barrydigby.github.io/Week_1/Nextflow): Create workflow pipeline performing QC on sequencing reads.
