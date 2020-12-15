@@ -221,4 +221,6 @@ process MultiQC {
 
 Congratulations on making it through the week 1 tutorial. Please do not hesistate to contact me if you have any questions!
 
+If you are struggling with the exercise, the full scripts used in this tutorial can be viewed at the following [link](https://github.com/BarryDigby/barrydigby.github.io/tree/master/Week_1)
+
 > Barry 
