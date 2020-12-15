@@ -91,8 +91,8 @@ conda env create -f week1.yml && conda clean -a
 
 Conda should install the three tools under the environment `QC`.
 
-#### To Do:
-1. Activate the environment.
-2. Check all 3 tools have been installed correctly.
-3. Print the path of the environments bin.
-4. Export the environment using `conda env export > QC.yml`.
+### To Do:
+> 1. Activate the environment.
+> 2. Check all 3 tools have been installed correctly.
+> 3. Print the path of the environments bin.
+> 4. Export the environment using `conda env export > QC.yml`.
