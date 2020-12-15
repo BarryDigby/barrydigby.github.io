@@ -8,17 +8,18 @@ permalink: /Week_1/Docker
 <img src="https://raw.githubusercontent.com/BarryDigby/BarryDigby.github.io/master/_images/week1/docker.png" width="100%" height="100%"/>
 </center>
 
+> "A container is a standardized unit of software. It helps to distribute the software regardless of the setup. It packages up code and all its dependencies so the application runs quickly and reliably from one computing environment to another."
+
+
 Jump to:
  - [Dockerfile](#dockerfile)
- - [Create Container](#create)
+ - [Create Image](#create)
  - [Push to Dockerhub](#push)
 
-We are going to take advantage of the conda `.yml` file created in the previous step to create a Docker container with the environment `QC` appended to it's `$PATH`.
-
-***
-
 # Dockerfile {#dockerfile}
-To create a Docker container, we need to write a `Dockerfile` containing the instructions on which layer and packages to use. Below is an example of a `Dockerfile` using the conda `.yml` file created in the the Conda section of this weeks tutorial:
+To create a Docker image, we need to write a `Dockerfile` containing the instructions on which layer and packages to use.
+
+Below is an example of a Dockerfile using the `week1.yml` file created in the the Anaconda section of this weeks tutorial:
 
 ```bash
 FROM nfcore/base:1.10.2
@@ -32,41 +33,36 @@ ENV PATH /opt/conda/envs/week1/bin:$PATH
 ```
 
 The commands used in the `Dockerfile`:
-- `FROM`: Creates a layer for the image. We are using `nextflow` `nfcore` base as it is a ubuntu layer that comes pre-installed with conda.
+- `FROM`: Creates a layer for the image. We are using `nfcore` base, a Ubuntu distro with conda pre-installed.
 - `LABEL`: Description of the image.
-- `WORKDIR`: Change the work directory of the container. We are pointing to the current directory `./` containing the `week1.yml` file.
-- `COPY`: Copy contents from the `WORKDIR` to the container. We want to use the `week1.yml` file for conda, so we copy it to the container.
+- `WORKDIR`: Specify the local working directory for the image.
+- `COPY`: Copy contents from the `WORKDIR` to the image. We want to use the `week1.yml` file for conda, so we copy it to the container.
 - `RUN`: Execute a command.
 - `ENV`: Edit the containers `$PATH` environment variable in its `~/.bashrc`.
 
-# Create Container {#create}
-*Personal Dockerhub required* -- **Please do not push to my dockerhub account**.
+# Create Image {#create}
+> "A Docker image is an immutable file that contains the source code, libraries, dependencies, tools, and other files needed for an application to run."
 
-***
+We will build an image and tag it using your dockerhub details.
 
-Make sure the `Dockerfile` and `.yml` file are in your current working directory.
-
-Go to dockerhub, login and create a new repository "week1". We will tag the container using your username and repository:
+### To Do:
+1. Create Dockerhub repository 'week1'
+2. Make sure `Dockerfile` & `week1.yml` are in current directory.
+3. Build Docker image
+4. List image using `docker images`.
 
 ```bash
-docker build -t barryd237/week1:test .
+docker build -t USERNAME/REPO:TAG .
 ```
-
 
 # Push to Dockerhub {#push}
-The container has been created locally, now let's push it to dockerhub:
+The image has been created locally, now let's push it to dockerhub:
 
 ```bash
-docker run barryd237/week1:test
-docker push barryd237/week1:test
+docker run USERNAME/REPO:TAG
+docker push USERNAME/REPO:TAG
 ```
 
-The container is now pushed to my dockerhub account at [https://hub.docker.com/repository/docker/barryd237/week1](https://hub.docker.com/repository/docker/barryd237/week1).
+Go to your Dockerhub account and check the image has been stored under the repository week1.
 
-***
-
-# Try it yourself
-
-Try publishing the container to your own dockerhub profile, following the structure of `docker build -t DOCKERUSERNAME/REPO:TAG`.
-
-The `tag` can be anything, however in a situation where you are working on developing a pipeline use tags such as `:dev` to delineate between development versions and published versions.
+*N.B: The `TAG` can be anything, however in a situation where you are developing a pipeline it is standard practice to use a :dev tag to test new features before rolling them out as a new version.*
