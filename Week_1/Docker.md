@@ -36,9 +36,9 @@ The commands used in the `Dockerfile`:
 - `FROM`: Creates a layer for the image. We are using `nfcore` base, a Ubuntu distro with conda pre-installed.
 - `LABEL`: Description of the image.
 - `WORKDIR`: Specify the local working directory for the image.
-- `COPY`: Copy contents from the `WORKDIR` to the image. We want to use the `week1.yml` file for conda, so we copy it to the container.
+- `COPY`: Copy contents from the `WORKDIR` to the image. We want to use the `week1.yml` file for conda, so we copy it to the image.
 - `RUN`: Execute a command.
-- `ENV`: Edit the containers `$PATH` environment variable in its `~/.bashrc`.
+- `ENV`: Append `$PATH` environment variables in images `~/.bashrc`.
 
 # Create Image {#create}
 > "A Docker image is an immutable file that contains the source code, libraries, dependencies, tools, and other files needed for an application to run."
@@ -65,4 +65,4 @@ docker push USERNAME/REPO:TAG
 
 Go to your Dockerhub account and check the image has been stored under the repository week1.
 
-*N.B: The `TAG` can be anything, however in a situation where you are developing a pipeline it is standard practice to use a :dev tag to test new features before rolling them out as a new version.*
+*N.B: The `TAG` can be anything, however in a situation where you are developing a pipeline it is standard practice to use the dev tag to test new features before rolling them out as a new version.*
