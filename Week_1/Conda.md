@@ -8,13 +8,15 @@ permalink: /Week_1/Conda
 <img src="https://raw.githubusercontent.com/BarryDigby/BarryDigby.github.io/master/_images/week1/anaconda_horizontal.png" width="100%" height="100%"/>
 </center>
 
+Anaconda is an open source distribution of packages for POSIX compute environments. Conda quickly installs, runs and updates packages and their dependencies. Conda easily creates, saves, loads and switches between environments on your computer, resolving dependency conflicts that might arise due to package requirements.
+
+***
 
 Jump to:
 - [Install Packages](#install)
 - [Conda yml file](#yaml)
 
-
-Anaconda is an open source distribution of packages for POSIX compute environments. Conda quickly installs, runs and updates packages and their dependencies. Conda easily creates, saves, loads and switches between environments on your computer, resolving dependency conflicts that might arise due to package requirements.
+***
 
 # Install Packages {#install}
 ***
