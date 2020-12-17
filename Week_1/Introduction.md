@@ -4,7 +4,7 @@ layout: page
 permalink: /Week_1/Introduction
 ---
 
-## Prerequisties
+### Prerequisties
 ***
 The tutorial will be conducted both locally and on Lugh. Please make sure you have the following prerequisites for the tutorial:
  - [Anaconda](https://www.anaconda.com/products/individual): Local Anaconda installation.
@@ -15,9 +15,7 @@ The tutorial will be conducted both locally and on Lugh. Please make sure you ha
 
 *Note: the above hyperlinks are for ubuntu installation where applicable*.
 
-***
-
-## Jump to
+### Jump to
 ***
 - [Conda](http://barrydigby.github.io/Week_1/Conda): Install packages & create environments using `yaml` files.
 - [Docker](http://barrydigby.github.io/Week_1/Docker): Create Docker image using `Dockerfile` & Conda layer. Store image on Dockerhub.
