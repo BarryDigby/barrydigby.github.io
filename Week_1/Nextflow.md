@@ -214,7 +214,7 @@ process MultiQC {
 
 ### To Do:
 1. Fill in the inputs and outputs for the process FastQC.
-2. Fill in the inputs and outputs for the process MultiQC. Use the html reports **and** statistics text file from bbduk as inputs for this process. (*Hint use .collect() on both inputs*).
+2. Fill in the inputs and outputs for the process MultiQC. Use the FastQC html reports **and** bbduk statistics text file as inputs for this process. (*Hint use .collect() on both inputs*).
 3. Save the script and run using `nextflow -bg -q trim_qc.nf -with-singularity container/week1.img`.
 
 ***
