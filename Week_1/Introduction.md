@@ -4,8 +4,6 @@ layout: page
 permalink: /Week_1/Introduction
 ---
 
-### Prerequisties
-***
 The tutorial will be conducted both locally and on Lugh. Please make sure you have the following prerequisites for the tutorial:
  - [Anaconda](https://www.anaconda.com/products/individual): Local Anaconda installation.
  - [Docker](https://docs.docker.com/engine/install/ubuntu/): Local Docker installation
