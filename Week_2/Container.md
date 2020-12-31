@@ -13,6 +13,7 @@ Below are the resources required to construct a variant calling container. I hav
 - [Singularity](#Singularity)
 
 # yml {#yml}
+***
 ```
 name: Germline_VC
 channels:
@@ -58,6 +59,7 @@ dependencies:
   ```
 
 # Dockerfile {#Dockerfile}
+***
 ```
 FROM nfcore/base:1.9
 LABEL authors="Barry Digby" \
@@ -75,6 +77,7 @@ RUN conda env export --name Germline_VC > Germline_VC.yml
 ```
 
 # Singularity {#Singularity}
+***
 You can create the image yourself and push to your own dockerhub account or you can download it from my dockerhub account.
 
 ```
