@@ -8,11 +8,11 @@ Below are the resources required to construct a variant calling container. I hav
 
 ### Jump to
 ***
-- [.yml](#.yml)
+- [yml](#yml)
 - [Dockerfile](#Dockerfile)
 - [Singularity](#Singularity)
 
-# .yml {#.yml}
+# yml {#yml}
 ```
 name: Germline_VC
 channels:
