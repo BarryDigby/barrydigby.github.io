@@ -8,4 +8,5 @@ Due to time constraints, all tutorials prior to week 1 will focus on the analysi
 
 ***
 
+# Tutorial Overview
 Before using nextflow to construct a workflow, it is imperative to understand what files are required for each step and what files are produced by each step. We will run the analysis in BASH before you will attempt to complete the analysis using a nextflow script.
