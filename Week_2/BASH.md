@@ -30,7 +30,7 @@ A detailed workflow has been provided for you to run a germline variant calling 
 ***
 
 ## Compute Resources
-**Do not run this analysis on the head node**. Request computing resources on LUGH:
+<span style="color:red">**Do not run this analysis on the head node**</span>. Request computing resources on LUGH:
 
 ```bash
 salloc -p MSC -c 1 -n 1
@@ -49,9 +49,7 @@ singularity shell -B /data /path/to/container
 ```
 
 ## 1. Genome Index {#index}
-
-**Due to time constraints all indexing has been performed for you. Skip to step 2.**
-
+<span style="color:red">**Due to time constraints all indexing has been performed for you. Skip to step 2.**</span>.
 ### **BWA Index** {#bwaidx}
 BWA requires building an index for your reference genome to allow computationally efficient searches of the genome during sequence alignment.
 ```bash
