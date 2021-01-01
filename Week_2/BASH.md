@@ -54,9 +54,12 @@ Ask for help if you are uncertain if you have completed this step correctly.
 
 # 1. Genome Index {#index}
 **Due to time constraints all indexing has been performed for you. Skip to step 2.**  
+
 ***
+
 ## **BWA Index** {#bwaidx}
 BWA requires building an index for your reference genome to allow computationally efficient searches of the genome during sequence alignment.
+
 ```bash
 bwa index -a bwtsw GRCh38.fasta
 ```
@@ -69,7 +72,7 @@ Indexing using `bwa` produces 5 files: `*.amb`, `*.ann`, `*btw`, `*.pac` & `*.sa
 
 ***
 
-### **Samtools Index** {#faidx}
+## **Samtools Index** {#faidx}
 Indexes (or queries) the reference sequence.
 ```bash
 samtools faidx GRCh37.fasta
@@ -79,8 +82,9 @@ Samtools generates a `*.fai` file (<strong>fa</strong>sta <strong>i</strong>ndex
 
 ***
 
-### Picard CreateSequenceDictionary {#seqdict}
+## **Picard CreateSequenceDictionary** {#seqdict}
 Creates a sequence dictionary of the reference fasta file specifying the chromosomes and chromosome sizes. Required for downstream analysis tools by GATK.
+
 ```bash
 picard CreateSequenceDictionary \
        R=GRCh37.fasta \
@@ -89,8 +93,16 @@ picard CreateSequenceDictionary \
 
 ***
 
-## 2. **Align Reads** {#align}
-Map the reads to the reference genome using `bwa mem`, and pipe the output to `samtools sort`.
+# 2. **Align Reads** {#align}
+Map the reads to the reference genome using `bwa mem`. The SAM files produced have reads in the order that the sequences occurred in the input FASTQ files i.e in randomn order. `samtools sort` orders the reads by their leftmost coordinate i.e in 'genome order'. This is a requirement for downstream tools.
+
+We will also convert the SAM file to to its binary counterpart - a BAM file.
+
+##### *Inputs*
+* Reference Genome
+* FASTQ Reads
+
+***
 
 ```bash
 bwa mem \
@@ -112,11 +124,12 @@ bwa mem \
 
 The script passes the output of `bwa mem` (`subsample.sam`) directly to `samtools sort` by using the pipe command (`|`). A dash `-` is used to indicate the incoming file from the previous process for samtools. When working with full sized samples, allocate more threads to samtools like so `samtools sort --threads 8 - > subsample.bam`.
 
-*N.B*: `bwa mem` requires all genome index (both `bwa index`, `samtools index`) files to be present in the working directory for the tool to run. This will be important when designing the nextflow script.
+*N.B*: `bwa mem` requires all `bwa idx` output files & the reference genome to be present in the working directory for the tool to run.
 
 ***
 
-## 3. Mark Duplicates {#markdup}
+# 3. Mark Duplicates {#markdup}
+*"Almost all statistical models for variant calling assume some sort of independence between measurements. The duplicates (if one assumes that they arise from PCR artifact) are not independent. This lack of independence will usually lead to a breakdown of the statistical model and measures of statistical significance that are incorrect"* -- Sean Davis.
 
 ```bash
 gatk --java-options -Xmx2g \
