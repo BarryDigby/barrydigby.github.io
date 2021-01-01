@@ -70,7 +70,7 @@ bwa index -a bwtsw GRCh38.fasta
 ##### *Flags*
 * `-a`: Construction algorithm (bwtsw, is or rb2). For large genomes, specify `-a bwtsw`. If you are unsure, omit this flag and `bwa` will determine the correct algorithm to use.
 
-##### *Output Files*
+##### *Outputs*
 BWA indexing produces 5 files with the file extensions `*.amb`, `*.ann`, `*btw`, `*.pac` & `*.sa`.
 
 ***
@@ -84,7 +84,7 @@ Indexes (or queries) the reference sequence.
 ```bash
 samtools faidx GRCh37.fasta
 ```
-##### *Output Files*
+##### *Outputs*
 Samtools fasta indexing generates a `*.fai` file.
 
 ***
@@ -101,7 +101,7 @@ picard CreateSequenceDictionary \
        O=GRCh37.dict
 ```
 
-##### *Output Files*
+##### *Outputs*
 A dictionary file. You may name this whatever you want, however common convention dictates `*.dict`.
 ***
 
@@ -130,8 +130,7 @@ bwa mem \
 * `-R`: Read Group identifier. This information is key for downstream GATK functionality, GATK will not work without a read group tag.
 * `-t`: Number of threads
 
-***
-
+##### *Outputs*
 The script passes the output of `bwa mem` (`subsample.sam`) directly to `samtools sort` by using the pipe command (`|`). A dash `-` is used to indicate the incoming file from the previous process for samtools. When working with full sized samples, allocate more threads to samtools like so `samtools sort --threads 8 - > subsample.bam`.
 
 *N.B*: `bwa mem` requires all `bwa idx` output files & the reference genome to be present in the working directory for the tool to run.
@@ -156,7 +155,7 @@ gatk --java-options -Xmx2g \
      --OUTPUT subsample.markdup.bam
 ```
 
-##### *Output Files*
+##### *Outputs*
 - `--METRICS_FILE`: Statistics of duplication events in sequencing reads.
 - `--OUTPUT`: A BAM file with collapsed duplicates.
 
@@ -193,7 +192,7 @@ gatk --java-options -Xmx2g \
      --known-sites ../assets/dbsnp_138.b37.vcf.gz
 ```
 
-##### *Output Files*
+##### *Outputs*
 - `-O`: Recalibration table file. Required for next step.
 
 ## ApplyBQSR {#applybqsr}
@@ -221,7 +220,7 @@ gatk --java-options -Xmx2g \
      --bqsr-recal-file subsample.recal.table
 ```
 
-##### *Output Files*
+##### *Outputs*
 - `-O`: Recalibrated, Marked Duplicate BAM file.
 
 ***
