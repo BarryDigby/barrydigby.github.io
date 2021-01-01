@@ -1,11 +1,18 @@
 ---
-title:
+title: Exome Sequencing Analysis
 layout: page
 permalink: /Week_2/BASH
 ---
 
-# Exome Sequencing Analysis
 We are going to analyse a subset of a patients whole exome sequencing data to identify variants in protein coding genes, attempting to elucidate possible genetic diseases.
+
+A detailed workflow has been provided for you to run on LUGH before attempting to create a nextflow script of the same analysis:
+
+- [Genome Indexing](#index)
+  - [BWA Index](#bwaidx)
+  - [Samtools Index](#faidx)
+- [Align Reads](#align)
+
 
 # Workflow
 Request resources on the MSC queue. **Do not run this analysis on the head node** - unless you want an email from Declan :] !
@@ -14,18 +21,22 @@ Request resources on the MSC queue. **Do not run this analysis on the head node*
 salloc -p MSC -c 1 -n 1
 ```
 
+SSH to the node `compute01`, `compute02`, or `compute03`.
+
+Need to check with Shane that this will work for ~15 people on the same account.
+
 Next, start an interactive shell with the container provided for the analysis.
 
 ```
 singularity shell -B /data /path/to/container
 ```
 
-### 1. Genome Index
+### 1. Genome Index {#index}
 As with any analysis, the reference genome must be indexed to quickly extract alignments overlapping particular genomic regions.
 
 **Due to time constraints indexing has been performed for you. Skip to step 2.**
 
-### BWA Index
+### BWA Index {#bwaidx}
 ```bash
 bwa index -a bwtsw GRCh38.fasta
 ```
@@ -37,7 +48,7 @@ Indexing using `bwa` produces 5 files: `*.amb`, `*.ann`, `*btw`, `*.pac` & `*.sa
 
 ***
 
-### Samtools Index
+### Samtools Index {#faidx}
 ```bash
 samtools faidx GRCh37.fasta
 ```
@@ -53,7 +64,7 @@ picard CreateSequenceDictionary R=GRCh37.fasta O=GRCh37.dict
 
 ***
 
-### 2. Map Reads
+### 2. Align Reads {#align}
 Map the reads to the reference genome using `bwa mem`, and pipe the output to `samtools sort`.
 
 ```bash
