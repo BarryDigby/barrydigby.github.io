@@ -71,22 +71,29 @@ bwa index -a bwtsw GRCh38.fasta
 * `-a`: Construction algorithm (bwtsw, is or rb2). For large genomes, specify `-a bwtsw`. If you are unsure, omit this flag and `bwa` will determine the correct algorithm to use.
 
 ##### *Output Files*
-Indexing using `bwa` produces 5 files: `*.amb`, `*.ann`, `*btw`, `*.pac` & `*.sa`.
+BWA indexing produces 5 files with the file extensions `*.amb`, `*.ann`, `*btw`, `*.pac` & `*.sa`.
 
 ***
 
 ## **Samtools Index** {#faidx}
 Indexes (or queries) the reference sequence.
+
+##### *Inputs*
+- Reference Genome
+
 ```bash
 samtools faidx GRCh37.fasta
 ```
 ##### *Output Files*
-Samtools generates a `*.fai` file (<strong>fa</strong>sta <strong>i</strong>ndexed).
+Samtools fasta indexing generates a `*.fai` file.
 
 ***
 
 ## **Picard CreateSequenceDictionary** {#seqdict}
 Creates a sequence dictionary of the reference fasta file specifying the chromosomes and chromosome sizes. Required for downstream analysis tools by GATK.
+
+##### *Inputs*
+- Reference Genome
 
 ```bash
 picard CreateSequenceDictionary \
@@ -94,6 +101,8 @@ picard CreateSequenceDictionary \
        O=GRCh37.dict
 ```
 
+##### *Output Files*
+A dictionary file. You may name this whatever you want, however common convention dictates `*.dict`.
 ***
 
 # 2. **Align Reads** {#align}
@@ -104,8 +113,6 @@ We will also convert the SAM file to to its binary counterpart: a BAM file.
 ##### *Inputs*
 * Reference Genome
 * FASTQ Reads
-
-***
 
 ```bash
 bwa mem \
@@ -134,6 +141,9 @@ The script passes the output of `bwa mem` (`subsample.sam`) directly to `samtool
 # 3. Mark Duplicates {#markdup}
 *"Almost all statistical models for variant calling assume some sort of independence between measurements. The duplicates (if one assumes that they arise from PCR artifact) are not independent. This lack of independence will usually lead to a breakdown of the statistical model and measures of statistical significance that are incorrect"* -- Sean Davis.
 
+##### *Inputs*
+- Sorted BAM file containing reads.
+
 ```bash
 gatk --java-options -Xmx2g \
      MarkDuplicates \
@@ -146,9 +156,31 @@ gatk --java-options -Xmx2g \
      --OUTPUT subsample.markdup.bam
 ```
 
-## 4. BQSR {#bqsr}
+##### *Output Files*
+- `--METRICS_FILE`: Statistics of duplication events in sequencing reads.
+- `--OUTPUT`: A BAM file with collapsed duplicates.
 
-### BaseRecalibrator {#baserecal}
+# 4. BQSR {#bqsr}
+Base Quality Score Recalibration. A data pre-processing step that detects systematic errors made by the sequencing machine when it estimates the accuracy of each base call.
+
+## BaseRecalibrator {#baserecal}
+To build the recalibration model, `BaseRecalibrator` goes through all of the reads in the input BAM file and tabulates data about the following features of the bases:
+
+- read group the read belongs to
+- quality score reported by the machine
+- machine cycle producing this base (Nth cycle = Nth base from the start of the read)
+- current base + previous base (dinucleotide)
+
+For each bin, the tool counts the number of bases within the bin and how often such bases mismatch the reference base, excluding loci known to vary in the population, according to the known variants resource (typically dbSNP, Mills_KG_gold). This information is output to a recalibration file in GATKReport format.
+
+***
+
+##### *Inputs*
+- Marked Duplicates BAM file
+- Exome Interval list
+- Reference Genome
+- Known variants (SNPs + INDELs)
+
 ```bash
 gatk --java-options -Xmx2g \
      BaseRecalibrator \
@@ -161,8 +193,24 @@ gatk --java-options -Xmx2g \
      --known-sites ../assets/dbsnp_138.b37.vcf.gz
 ```
 
+##### *Output Files*
+- `-O`: Recalibration table file. Required for next step.
 
-### ApplyBQSR {#applybqsr}
+## ApplyBQSR {#applybqsr}
+`ApplyBQSR` goes through all the reads again, using the recalibration table file to adjust each base's score based on which bins it falls in. So effectively the new quality score is:
+
+- The sum of the global difference between reported quality scores and the empirical quality
+- Plus the quality bin specific shift
+- Plus the cycle x qual and dinucleotide x qual effect
+
+Following recalibration, the read quality scores are much closer to their empirical scores than before. This means they can be used in a statistically robust manner for downstream processing, such as variant calling. In addition, by accounting for quality changes by cycle and sequence context, we can identify truly high quality bases in the reads, often finding a subset of bases that are Q30 even when no bases were originally labeled as such.
+
+##### *Input*
+- Marked Duplicates BAM file
+- Exome Interval list
+- Reference Genome
+- Recalibration table file (previous step).
+
 ```bash
 gatk --java-options -Xmx2g \
      ApplyBQSR \
@@ -173,6 +221,13 @@ gatk --java-options -Xmx2g \
      --bqsr-recal-file subsample.recal.table
 ```
 
+##### *Output Files*
+- `-O`: Recalibrated, Marked Duplicate BAM file.
+
+***
+
+Tidy up the indexed BAM file & retrieve the statistics of the recalibrated BAM file.
+
 ```bash
 mv subsample.recal.bai subsample.recal.bam.bai
 ```
@@ -181,7 +236,7 @@ mv subsample.recal.bai subsample.recal.bam.bai
 samtools stats subsample.recal.bam > subsample.recal.stats
 ```
 
-## 5. Germline Variant Calling {#germline_vc}
+# 5. Germline Variant Calling {#germline_vc}
 
 ### Haplotype Caller {#haplotype}
 ```bash
