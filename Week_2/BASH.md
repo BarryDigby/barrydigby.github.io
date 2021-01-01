@@ -11,7 +11,7 @@ A detailed workflow has been provided for you to run on LUGH before attempting t
 1. [Genome Indexing](#index)
     - [BWA Index](#bwaidx)
     - [Samtools Index](#faidx)
-    - [Picard CreateSequenceDictionary](#seqdict)
+    - [Picard CreateSequenceDictionary](#seqdict)  
 2. [Align Reads](#align)
 3. [Mark Duplicates](#markdup)
 4. [BQSR](#bqsr)
