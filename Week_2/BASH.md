@@ -8,10 +8,26 @@ We are going to analyse a subset of a patients whole exome sequencing data to id
 
 A detailed workflow has been provided for you to run on LUGH before attempting to create a nextflow script of the same analysis:
 
-- [Genome Indexing](#index)
+- [1. Genome Indexing](#index)
   - [BWA Index](#bwaidx)
   - [Samtools Index](#faidx)
-- [Align Reads](#align)
+  - [Picard CreateSequenceDictionary](#seqdict)
+- [2. Align Reads](#align)
+- [3. Mark Duplicates](#markdup)
+- [4. BQSR](#bqsr)
+  - [Base Recalibration](#baserecal)
+  - [Apply BQSR](#applybqsr)
+- [5. Germline Variant Calling](#germline_vc)
+  - [Haplotype Caller](#haplotype)
+  - [Genotype VCFs](#genotype)
+- [6. Subset Variants](#subset)
+  - [SNPs](#subsetsnp)
+  - [INDELs](#subsetindel)
+- [7. Filter Variants](#filter)
+  - [SNPs](#filtersnp)
+  - [INDELs](#filterindel)
+- [8. Merge VCFs](#mergevcf)
+- [9. Annotate Variants](#annotate)
 
 
 # Workflow
@@ -31,7 +47,7 @@ Next, start an interactive shell with the container provided for the analysis.
 singularity shell -B /data /path/to/container
 ```
 
-### 1. Genome Index {#index}
+## 1. Genome Index {#index}
 As with any analysis, the reference genome must be indexed to quickly extract alignments overlapping particular genomic regions.
 
 **Due to time constraints indexing has been performed for you. Skip to step 2.**
@@ -57,14 +73,14 @@ Samtools generates a `*.fai` file (<strong>fa</strong>sta <strong>i</strong>ndex
 
 ***
 
-### Picard CreateSequenceDictionary
+### Picard CreateSequenceDictionary {#seqdict}
 ```bash
 picard CreateSequenceDictionary R=GRCh37.fasta O=GRCh37.dict
 ```
 
 ***
 
-### 2. Align Reads {#align}
+## 2. Align Reads {#align}
 Map the reads to the reference genome using `bwa mem`, and pipe the output to `samtools sort`.
 
 ```bash
@@ -87,7 +103,7 @@ The script above passes the output of `bwa mem` (`subsample.sam`) directly to `s
 **NOTE** `bwa mem` requires all genome index (both `bwa index`, `samtools index`) files to be present in the working directory for the tool to run. This will be important when designing the nextflow script.
 
 
-### 3. Mark Duplicates
+## 3. Mark Duplicates {#markdup}
 
 ```bash
 gatk --java-options -Xmx2g \
@@ -101,9 +117,9 @@ gatk --java-options -Xmx2g \
      --OUTPUT subsample.markdup.bam
 ```
 
-### 4. BQSR
+## 4. BQSR {#bqsr}
 
-### BaseRecalibrator
+### BaseRecalibrator {#baserecal}
 ```bash
 gatk --java-options -Xmx2g \
      BaseRecalibrator \
@@ -117,7 +133,7 @@ gatk --java-options -Xmx2g \
 ```
 
 
-### ApplyBQSR
+### ApplyBQSR {#applybqsr}
 ```bash
 gatk --java-options -Xmx2g \
      ApplyBQSR \
@@ -136,9 +152,9 @@ mv subsample.recal.bai subsample.recal.bam.bai
 samtools stats subsample.recal.bam > subsample.recal.stats
 ```
 
-### 5. Germline Variant Calling
+## 5. Germline Variant Calling {#germline_vc}
 
-### Haplotype Caller
+### Haplotype Caller {#haplotype}
 ```bash
 gatk --java-options -Xmx2g \
      HaplotypeCaller \
@@ -150,7 +166,7 @@ gatk --java-options -Xmx2g \
      -ERC GVCF
 ```
 
-### GenotypeVCFs
+### GenotypeVCFs {#genotype}
 ```bash
 gatk --java-options -Xmx2g \
      GenotypeGVCFs \
@@ -161,7 +177,9 @@ gatk --java-options -Xmx2g \
      -O subsample.vcf
 ```
 
-### 6. Select SNPS/INDELS
+## 6. Subset Variants {#subset}
+
+### SNPs {#subsetsnp}
 ```bash
 gatk SelectVariants \
      -R GRCh37.fasta \
@@ -170,6 +188,7 @@ gatk SelectVariants \
      -select-type SNP
 ```
 
+### INDELs {#subsetindel}
 ```bash
 gatk SelectVariants \
      -R GRCh37.fasta \
@@ -178,7 +197,9 @@ gatk SelectVariants \
      -select-type INDEL
 ```
 
-### 7. Filter SNPS
+## 7. Filter Variants {#filter}
+
+### SNPs {#filtersnp}
 ```bash
 gatk VariantFiltration \
      -R GRCh37.fasta \
@@ -196,7 +217,7 @@ gatk VariantFiltration \
      --filter-name "filterReadPosRankSum_lt-8.0"
 ```
 
-### 8. Filter INDELS
+### Filter INDELs {#filterindel}
 ```bash
 gatk VariantFiltration \
      -R GRCh37.fasta \
@@ -210,7 +231,7 @@ gatk VariantFiltration \
      --filter-name "filterReadPosRankSum"
 ```
 
-### 9. Merge Filtered VCFs
+## 8. Merge VCFs {#mergevcf}
 ```bash
 gatk MergeVcfs \
      -I subsample.filt_indels.vcf \
@@ -218,7 +239,7 @@ gatk MergeVcfs \
      -O filtered_sample.vcf
 ```
 
-### 10. Annotate Variants
+## 9. Annotate Variants {#annotate}
 Run in your own time, this step takes a long time. Usually we submit this job to SLURM with much more resources than we have initially requested.
 
 ```bash
