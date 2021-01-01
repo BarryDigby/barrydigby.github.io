@@ -9,7 +9,7 @@ We are going to analyse a subset of a patients whole exome sequencing data to id
 
 # Workflow
 
-### 1.Genome Index
+### 1. Genome Index
 As with any analysis, the reference genome must be indexed to quickly extract alignments overlapping particular genomic regions.
 
 ### BWA Index
@@ -52,3 +52,5 @@ bwa mem \
 * `-t`: Number of threads
 
 The script above passes the output of `bwa mem` (`subsample.sam`) directly to `samtools sort` by using the pipe command (`|`). Samtools uses a dash `-` to indicate the incoming file from the previous process. When working with full sized samples, allocate more threads to samtools like so `samtools sort --threads 8 - > subsample.bam`.
+
+**NOTE** `bwa mem` requires all genome index (both `bwa index`, `samtools index`) files to be present in the working directory for the tool to run. This will be important when designing the nextflow script. 
