@@ -8,7 +8,13 @@ permalink: /Week_2/BASH
 We are going to analyse a subset of a patients whole exome sequencing data to identify variants in protein coding genes, attempting to elucidate possible genetic diseases.
 
 # Workflow
-Start an interactive shell with the container provided for the analysis.
+Request resources on the MSC queue. **Do not run this analysis on the head node** - unless you want an email from Declan :] !
+
+```bash
+salloc -p MSC -c 1 -n 1
+```
+
+Next, start an interactive shell with the container provided for the analysis.
 
 ```
 singularity shell -B /data /path/to/container
@@ -202,7 +208,7 @@ gatk MergeVcfs \
 ```
 
 ### 10. Annotate Variants
-Run in your own time, this step takes a long time.
+Run in your own time, this step takes a long time. Usually we submit this job to SLURM with much more resources than we have initially requested.
 
 ```bash
 snpEff GRCh37.75 \
