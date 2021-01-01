@@ -30,7 +30,7 @@ A detailed workflow has been provided for you to run a germline variant calling 
 ***
 
 ## Compute Resources
-:warning:**Do not run this analysis on the head node**.
+**Do not run this analysis on the head node**.
 
 Request computing resources on LUGH:
 
@@ -52,9 +52,10 @@ singularity shell -B /data /path/to/container
 
 Ask for help if you are uncertain if you have completed this step correctly.
 
-## 1. Genome Index {#index}
-:exclamation:**Due to time constraints all indexing has been performed for you. Skip to step 2.**
-### **BWA Index** {#bwaidx}
+# 1. Genome Index {#index}
+**Due to time constraints all indexing has been performed for you. Skip to step 2.**
+***
+## **BWA Index** {#bwaidx}
 BWA requires building an index for your reference genome to allow computationally efficient searches of the genome during sequence alignment.
 ```bash
 bwa index -a bwtsw GRCh38.fasta
@@ -111,7 +112,7 @@ bwa mem \
 
 The script passes the output of `bwa mem` (`subsample.sam`) directly to `samtools sort` by using the pipe command (`|`). A dash `-` is used to indicate the incoming file from the previous process for samtools. When working with full sized samples, allocate more threads to samtools like so `samtools sort --threads 8 - > subsample.bam`.
 
-:warning: `bwa mem` requires all genome index (both `bwa index`, `samtools index`) files to be present in the working directory for the tool to run. This will be important when designing the nextflow script.
+*N.B*: `bwa mem` requires all genome index (both `bwa index`, `samtools index`) files to be present in the working directory for the tool to run. This will be important when designing the nextflow script.
 
 ***
 
