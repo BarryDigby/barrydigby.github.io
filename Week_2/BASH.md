@@ -60,6 +60,9 @@ Ask for help if you are uncertain if you have completed this step correctly.
 ## **BWA Index** {#bwaidx}
 BWA requires building an index for your reference genome to allow computationally efficient searches of the genome during sequence alignment.
 
+##### *Inputs*
+- Reference Genome
+
 ```bash
 bwa index -a bwtsw GRCh38.fasta
 ```
@@ -96,7 +99,7 @@ picard CreateSequenceDictionary \
 # 2. **Align Reads** {#align}
 Map the reads to the reference genome using `bwa mem`. The SAM files produced have reads in the order that the sequences occurred in the input FASTQ files i.e in randomn order. `samtools sort` orders the reads by their leftmost coordinate i.e in 'genome order'. This is a requirement for downstream tools.
 
-We will also convert the SAM file to to its binary counterpart - a BAM file.
+We will also convert the SAM file to to its binary counterpart: a BAM file.
 
 ##### *Inputs*
 * Reference Genome
