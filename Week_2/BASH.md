@@ -9,10 +9,10 @@ We are going to analyse a subset of a patients whole exome sequencing data to id
 
 # Workflow
 
-### Genome Index
+### 1.Genome Index
 As with any analysis, the reference genome must be indexed to quickly extract alignments overlapping particular genomic regions.
 
-#### BWA Index
+### BWA Index
 ```bash
 bwa index -a bwtsw GRCh38.fa
 ```
@@ -22,7 +22,9 @@ bwa index -a bwtsw GRCh38.fa
 ##### Output
 Indexing using `bwa` produces 5 files: `*.amb`, `*.ann`, `*btw`, `*.pac` & `*.sa`.
 
-#### Samtools Index
+***
+
+### Samtools Index
 ```bash
 samtools faidx GRCh38.fa
 ```
