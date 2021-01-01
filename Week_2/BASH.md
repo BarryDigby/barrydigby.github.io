@@ -52,16 +52,16 @@ singularity shell -B /data /path/to/container
 
 **Due to time constraints all indexing has been performed for you. Skip to step 2.**
 
-### BWA Index {#bwaidx}
+### **BWA Index** {#bwaidx}
 BWA requires building an index for your reference genome to allow computationally efficient searches of the genome during sequence alignment.
 ```bash
 bwa index -a bwtsw GRCh38.fasta
 ```
 
-##### Flags
+##### *Flags*
 * `-a`: Construction algorithm (bwtsw, is or rb2). For large genomes, specify `-a bwtsw`. If you are unsure, omit this flag and `bwa` will determine the correct algorithm to use.
 
-##### Output Files
+##### *Output Files*
 Indexing using `bwa` produces 5 files: `*.amb`, `*.ann`, `*btw`, `*.pac` & `*.sa`.
 
 ***
