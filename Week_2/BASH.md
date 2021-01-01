@@ -30,7 +30,9 @@ A detailed workflow has been provided for you to run a germline variant calling 
 ***
 
 ## Compute Resources
-<span style="color:red">**Do not run this analysis on the head node**</span>. Request computing resources on LUGH:
+:warning:**Do not run this analysis on the head node**.
+
+Request computing resources on LUGH:
 
 ```bash
 salloc -p MSC -c 1 -n 1
@@ -48,8 +50,10 @@ Tools required for the analysis are available in a pre-prepared container for th
 singularity shell -B /data /path/to/container
 ```
 
+Ask for help if you are uncertain if you have completed this step correctly.
+
 ## 1. Genome Index {#index}
-<span style="color:red">**Due to time constraints all indexing has been performed for you. Skip to step 2.**</span>.
+:exclamation:**Due to time constraints all indexing has been performed for you. Skip to step 2.**
 ### **BWA Index** {#bwaidx}
 BWA requires building an index for your reference genome to allow computationally efficient searches of the genome during sequence alignment.
 ```bash
@@ -64,18 +68,18 @@ Indexing using `bwa` produces 5 files: `*.amb`, `*.ann`, `*btw`, `*.pac` & `*.sa
 
 ***
 
-### Samtools Index {#faidx}
+### **Samtools Index** {#faidx}
 Indexes (or queries) the reference sequence.
 ```bash
 samtools faidx GRCh37.fasta
 ```
-##### Output Files
+##### *Output Files*
 Samtools generates a `*.fai` file (<strong>fa</strong>sta <strong>i</strong>ndexed).
 
 ***
 
 ### Picard CreateSequenceDictionary {#seqdict}
-Creates a sequence dictionary of the reference fasta file specifying the chromosomes and chromosome size. Required for downstream analysis tools by GATK.
+Creates a sequence dictionary of the reference fasta file specifying the chromosomes and chromosome sizes. Required for downstream analysis tools by GATK.
 ```bash
 picard CreateSequenceDictionary \
        R=GRCh37.fasta \
@@ -84,7 +88,7 @@ picard CreateSequenceDictionary \
 
 ***
 
-## 2. Align Reads {#align}
+## 2. **Align Reads** {#align}
 Map the reads to the reference genome using `bwa mem`, and pipe the output to `samtools sort`.
 
 ```bash
@@ -98,14 +102,18 @@ bwa mem \
     | samtools sort - > subsample.bam
 ```
 
+##### *Flags*
 * `-K`: process INT input bases in each batch regardless of nThreads (for reproducibility)
 * `-R`: Read Group identifier. This information is key for downstream GATK functionality, GATK will not work without a read group tag.
 * `-t`: Number of threads
 
-The script above passes the output of `bwa mem` (`subsample.sam`) directly to `samtools sort` by using the pipe command (`|`). Samtools uses a dash `-` to indicate the incoming file from the previous process. When working with full sized samples, allocate more threads to samtools like so `samtools sort --threads 8 - > subsample.bam`.
+***
 
-**NOTE** `bwa mem` requires all genome index (both `bwa index`, `samtools index`) files to be present in the working directory for the tool to run. This will be important when designing the nextflow script.
+The script passes the output of `bwa mem` (`subsample.sam`) directly to `samtools sort` by using the pipe command (`|`). A dash `-` is used to indicate the incoming file from the previous process for samtools. When working with full sized samples, allocate more threads to samtools like so `samtools sort --threads 8 - > subsample.bam`.
 
+:warning: `bwa mem` requires all genome index (both `bwa index`, `samtools index`) files to be present in the working directory for the tool to run. This will be important when designing the nextflow script.
+
+***
 
 ## 3. Mark Duplicates {#markdup}
 
