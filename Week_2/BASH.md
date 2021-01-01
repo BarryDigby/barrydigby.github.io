@@ -6,26 +6,26 @@ permalink: /Week_2/BASH
 
 We are going to analyse a subset of a patients whole exome sequencing data to identify variants in protein coding genes, attempting to elucidate possible genetic diseases.
 
-A detailed workflow has been provided for you to run on LUGH before attempting to create a nextflow script of the same analysis:
+A detailed workflow has been provided for you to run on LUGH before attempting to create a nextflow script of the analysis:
 
 1. [Genome Indexing](#index)
-  - [BWA Index](#bwaidx)
-  - [Samtools Index](#faidx)
-  - [Picard CreateSequenceDictionary](#seqdict)
+    - [BWA Index](#bwaidx)
+    - [Samtools Index](#faidx)
+    - [Picard CreateSequenceDictionary](#seqdict)
 2. [Align Reads](#align)
 3. [Mark Duplicates](#markdup)
 4. [BQSR](#bqsr)
-  - [Base Recalibration](#baserecal)
-  - [Apply BQSR](#applybqsr)
+    - [Base Recalibration](#baserecal)
+    - [Apply BQSR](#applybqsr)
 5. [Germline Variant Calling](#germline_vc)
-  - [Haplotype Caller](#haplotype)
-  - [Genotype VCFs](#genotype)
+    - [Haplotype Caller](#haplotype)
+    - [Genotype VCFs](#genotype)
 6. [Subset Variants](#subset)
-  - [SNPs](#subsetsnp)
-  - [INDELs](#subsetindel)
+    - [SNPs](#subsetsnp)
+    - [INDELs](#subsetindel)
 7. [Filter Variants](#filter)
-  - [SNPs](#filtersnp)
-  - [INDELs](#filterindel)
+    - [SNPs](#filtersnp)
+    - [INDELs](#filterindel)
 8. [Merge VCFs](#mergevcf)
 9. [Annotate Variants](#annotate)
 
