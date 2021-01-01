@@ -103,7 +103,6 @@ picard CreateSequenceDictionary \
 
 ##### *Outputs*
 A dictionary file. You may name this whatever you want, however common convention dictates `*.dict`.
-***
 
 # 2. **Align Reads** {#align}
 Map the reads to the reference genome using `bwa mem`. The SAM files produced have reads in the order that the sequences occurred in the input FASTQ files i.e in randomn order. `samtools sort` orders the reads by their leftmost coordinate i.e in 'genome order'. This is a requirement for downstream tools.
@@ -141,7 +140,7 @@ The script passes the output of `bwa mem` (`subsample.sam`) directly to `samtool
 *"Almost all statistical models for variant calling assume some sort of independence between measurements. The duplicates (if one assumes that they arise from PCR artifact) are not independent. This lack of independence will usually lead to a breakdown of the statistical model and measures of statistical significance that are incorrect"* -- Sean Davis.
 
 ##### *Inputs*
-- Sorted BAM file containing reads.
+- Sorted BAM file.
 
 ```bash
 gatk --java-options -Xmx2g \
@@ -194,6 +193,8 @@ gatk --java-options -Xmx2g \
 
 ##### *Outputs*
 - `-O`: Recalibration table file. Required for next step.
+
+***
 
 ## ApplyBQSR {#applybqsr}
 `ApplyBQSR` goes through all the reads again, using the recalibration table file to adjust each base's score based on which bins it falls in. So effectively the new quality score is:
