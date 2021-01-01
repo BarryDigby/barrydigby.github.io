@@ -4,9 +4,7 @@ layout: page
 permalink: /Week_2/BASH
 ---
 
-We are going to analyse a subset of a patients whole exome sequencing data to identify variants in protein coding genes, attempting to elucidate possible genetic diseases.
-
-A detailed workflow has been provided for you to run on LUGH before attempting to create a nextflow script of the analysis:
+A detailed workflow has been provided for you to run a germline variant calling analysis on LUGH before attempting to create a nextflow script.
 
 1. [Genome Indexing](#index)
     - [BWA Index](#bwaidx)
@@ -29,53 +27,61 @@ A detailed workflow has been provided for you to run on LUGH before attempting t
 8. [Merge VCFs](#mergevcf)
 9. [Annotate Variants](#annotate)
 
+***
 
-# Workflow
-Request resources on the MSC queue. **Do not run this analysis on the head node** - unless you want an email from Declan :] !
+## Compute Resources
+**Do not run this analysis on the head node**. Request computing resources on LUGH:
 
 ```bash
 salloc -p MSC -c 1 -n 1
 ```
 
-SSH to the node `compute01`, `compute02`, or `compute03`.
+```bash
+ssh compute0{1..3}
+```
 
-Need to check with Shane that this will work for ~15 people on the same account.
+***
 
-Next, start an interactive shell with the container provided for the analysis.
+Tools required for the analysis are available in a pre-prepared container for the tutorial. Invoke an interactive shell session within the container.
 
 ```
 singularity shell -B /data /path/to/container
 ```
 
 ## 1. Genome Index {#index}
-As with any analysis, the reference genome must be indexed to quickly extract alignments overlapping particular genomic regions.
 
-**Due to time constraints indexing has been performed for you. Skip to step 2.**
+**Due to time constraints all indexing has been performed for you. Skip to step 2.**
 
 ### BWA Index {#bwaidx}
+BWA requires building an index for your reference genome to allow computationally efficient searches of the genome during sequence alignment.
 ```bash
 bwa index -a bwtsw GRCh38.fasta
 ```
 
+##### Flags
 * `-a`: Construction algorithm (bwtsw, is or rb2). For large genomes, specify `-a bwtsw`. If you are unsure, omit this flag and `bwa` will determine the correct algorithm to use.
 
-##### Output
+##### Output Files
 Indexing using `bwa` produces 5 files: `*.amb`, `*.ann`, `*btw`, `*.pac` & `*.sa`.
 
 ***
 
 ### Samtools Index {#faidx}
+Indexes (or queries) the reference sequence.
 ```bash
 samtools faidx GRCh37.fasta
 ```
-##### Output
+##### Output Files
 Samtools generates a `*.fai` file (<strong>fa</strong>sta <strong>i</strong>ndexed).
 
 ***
 
 ### Picard CreateSequenceDictionary {#seqdict}
+Creates a sequence dictionary of the reference fasta file specifying the chromosomes and chromosome size. Required for downstream analysis tools by GATK.
 ```bash
-picard CreateSequenceDictionary R=GRCh37.fasta O=GRCh37.dict
+picard CreateSequenceDictionary \
+       R=GRCh37.fasta \
+       O=GRCh37.dict
 ```
 
 ***
