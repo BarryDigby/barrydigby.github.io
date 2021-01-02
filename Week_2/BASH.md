@@ -418,7 +418,7 @@ gatk MergeVcfs \
 ```
 
 ##### *Outputs*
-- `-O`: The same VCF file output by `GenotypeVCFs`, with added annotations denoting `PASS` or specifying filtering thresholds failed.
+- `-O`: The same VCF file output by `GenotypeVCFs`, with added annotations denoting filtering thresholds failed or `PASS` if the variant passed all thresholds. 
 
 # 9. Annotate Variants {#annotate}
 Run in your own time, this step takes a long time. Usually we submit this job to SLURM with much more resources than we have initially requested.
