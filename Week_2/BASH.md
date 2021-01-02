@@ -236,6 +236,10 @@ mv subsample.recal.bai subsample.recal.bam.bai
 samtools stats subsample.recal.bam > subsample.recal.stats
 ```
 
+***
+
+*N.B* Both BQSR steps require the samtools reference index file `*.fai` and picards dictionary `*.dict` file to be present in the working directory.
+
 # 5. Germline Variant Calling {#germline_vc}
 Identify germline short variants (SNPs and INDELs) in an individual, or in a cohort. This tutorial is focused on a single sample germline variant calling analysis. Not to be confused with somatic variant calling which uses matched tumour - normal samples, requiring a different workflow.
 
@@ -304,6 +308,8 @@ gatk --java-options -Xmx2g \
 
 ***
 
+*N.B* Both Variant Calling steps require the samtools reference index file `*.fai` and picards dictionary `*.dict` file to be present in the working directory.
+
 # 6. Subset Variants {#subset}
 Before applying filtering thresholds to the called variants, subset the VCF file for both SNPs and INDELs using `SelectVariants`.
 
@@ -340,6 +346,10 @@ gatk SelectVariants \
 
 ##### *Outputs*
 - `-O`: VCF file containing INDELs
+
+***
+
+*N.B* Both subsetting steps require the samtools reference index file `*.fai` and picards dictionary `*.dict` file to be present in the working directory.
 
 # 7. Filter Variants {#filter}
 Apply filtering to selected variants generated in the previous step.
@@ -402,6 +412,10 @@ gatk VariantFiltration \
 
 ##### *Outputs*
 - `-O`: VCF file with annotated INDELs failing the selected filtering thresholds. INDELs that pass all thresholds will be marked with `PASS`.
+
+***
+
+*N.B* Both filtering steps require the samtools reference index file `*.fai` and picards dictionary `*.dict` file to be present in the working directory. 
 
 # 8. Merge VCFs {#mergevcf}
 `MergeVCFs` combines multiple variant files into a single variant file.
