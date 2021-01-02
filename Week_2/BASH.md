@@ -10,6 +10,7 @@ A detailed workflow has been provided for you to run a germline variant calling 
     - [BWA Index](#bwaidx)
     - [Samtools Index](#faidx)
     - [Picard CreateSequenceDictionary](#seqdict)
+
 2. [Align Reads](#align)
 3. [Mark Duplicates](#markdup)
 4. [BQSR](#bqsr)
@@ -29,8 +30,8 @@ A detailed workflow has been provided for you to run a germline variant calling 
 
 ***
 
-## Compute Resources
-**Do not run this analysis on the head node**.
+# Compute Resources
+**Do not run this analysis on the head node!**.
 
 Request computing resources on LUGH:
 
@@ -50,7 +51,7 @@ Tools required for the analysis are available in a pre-prepared container for th
 singularity shell -B /data /path/to/container
 ```
 
-Ask for help if you are uncertain if you have completed this step correctly.
+Please ask for help if you are uncertain that you have completed this step correctly.
 
 # 1. Genome Index {#index}
 **Due to time constraints all indexing has been performed for you. Skip to step 2.**  
