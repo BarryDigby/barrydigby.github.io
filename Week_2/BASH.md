@@ -6,16 +6,11 @@ permalink: /Week_2/BASH
 
 A detailed workflow has been provided for you to run a germline variant calling analysis on LUGH before attempting to create a nextflow script.
 
-1. [Genome Indexing](#index)
-
-    - [BWA Index](#bwaidx)
-
+1. [Genome Indexing](#index)  
+    - [BWA Index](#bwaidx)  
     - [Samtools Index](#faidx)
-
-    - [Picard CreateSequenceDictionary](#seqdict)
-
+    - [Picard CreateSequenceDictionary](#seqdict)  
 2. [Align Reads](#align)
-
 3. [Mark Duplicates](#markdup)
 4. [BQSR](#bqsr)
     - [Base Recalibration](#baserecal)
