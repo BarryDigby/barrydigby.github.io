@@ -1,5 +1,5 @@
 ---
-title:
+title: Variant Calling Container
 layout: page
 permalink: /Week_2/Container
 ---
