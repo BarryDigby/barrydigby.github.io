@@ -242,7 +242,7 @@ Identify germline short variants (SNPs and INDELs) in an individual, or in a coh
 Performing a single sample analysis and a joint cohort analysis follow the same steps covered below.
 
 ## Haplotype Caller {#haplotype}
-Call germline SNPs and indels via local re-assembly of haplotypes via:
+Call germline SNPs and indels via local re-assembly of haplotypes by:
 
 1. *Defining active regions*
     - The program determines which regions of the genome it needs to operate on (active regions), based on the presence of evidence for variation.
@@ -373,7 +373,7 @@ gatk VariantFiltration \
 - `--filter-name`: Annotation of SNPs failing filtering threshold written to VCF file.
 
 ##### *Outputs*
-- `-O`: VCF file with annotated SNPs failing the selected filtering thresholds. SNPs that pass all thrtesholds will be marked with `PASS`.
+- `-O`: VCF file with annotated SNPs failing the selected filtering thresholds. SNPs that pass all thresholds will be marked with `PASS`.
 
 ***
 
@@ -401,7 +401,7 @@ gatk VariantFiltration \
 - `--filter-name`: Annotation of INDELs failing filtering threshold written to VCF file.
 
 ##### *Outputs*
-- `-O`: VCF file with annotated INDELs failing the selected filtering thresholds. INDELs that pass all thrtesholds will be marked with `PASS`.
+- `-O`: VCF file with annotated INDELs failing the selected filtering thresholds. INDELs that pass all thresholds will be marked with `PASS`.
 
 # 8. Merge VCFs {#mergevcf}
 `MergeVCFs` combines multiple variant files into a single variant file.
