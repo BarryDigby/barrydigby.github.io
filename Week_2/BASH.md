@@ -237,8 +237,30 @@ samtools stats subsample.recal.bam > subsample.recal.stats
 ```
 
 # 5. Germline Variant Calling {#germline_vc}
+Identify germline short variants (SNPs and Indels) in an individual, or in a cohort. This tutorial is focused on a single sample germline variant calling analysis. Not to be confused with somatic variant calling which uses matched tumour - normal samples, requiring a different workflow.
 
-### Haplotype Caller {#haplotype}
+Performing a single sample analysis and a joint cohort analysis follow the same steps covered below.
+
+## Haplotype Caller {#haplotype}
+Call germline SNPs and indels via local re-assembly of haplotypes via:
+
+1. *Defining active regions*
+    - The program determines which regions of the genome it needs to operate on (active regions), based on the presence of evidence for variation.
+2. *Determine haplotypes by assembly of the active region*
+    - For each active region, the program builds a De Bruijn-like graph to reassemble the active region and identifies what are the possible haplotypes present in the data. The program then realigns each haplotype against the reference haplotype using the Smith-Waterman algorithm in order to identify potentially variant sites.
+3. *Determine likelihoods of the haplotypes given the read data*
+    - For each active region, the program performs a pairwise alignment of each read against each haplotype using the PairHMM algorithm. This produces a matrix of likelihoods of haplotypes given the read data. These likelihoods are then marginalized to obtain the likelihoods of alleles for each potentially variant site given the read data.
+4. *Assign sample genotypes*
+    - For each potential variant site, the program applies Bayes' rule, using the likelihoods of alleles given the read data to calculate the likelihoods of each genotype per sample given the read data observed for that sample. The most likely genotype is then assigned to the sample.
+
+***
+
+##### *Inputs*
+- Reference Genome
+- Recalibrated BAM
+- Exome Interval list
+- Known SNPs (dbSNP)
+
 ```bash
 gatk --java-options -Xmx2g \
      HaplotypeCaller \
@@ -250,7 +272,23 @@ gatk --java-options -Xmx2g \
      -ERC GVCF
 ```
 
-### GenotypeVCFs {#genotype}
+##### *Flags*
+- `ERC`: Mode for emitting reference confidence scores. The key difference between a regular VCF and a GVCF is that the GVCF has records for all sites, whether there is a variant call there or not. The goal is to have every site represented in the file in order to do joint analysis of a cohort in subsequent steps.
+
+##### *Outputs*
+- `-O`: GVCF as described above.
+
+***
+
+## GenotypeVCFs {#genotype}
+`GenotypeVCFs` is designed to perform joint genotyping on a single input, which may contain one or many samples. In any case, the input samples must possess genotype likelihoods produced by HaplotypeCaller with `-ERC GVCF` or `-ERC BP_RESOLUTION`.
+
+##### *Inputs*
+- Reference Genome
+- Exome Interval list
+- GVCF
+- Known SNPs (dbSNP)
+
 ```bash
 gatk --java-options -Xmx2g \
      GenotypeGVCFs \
@@ -261,9 +299,20 @@ gatk --java-options -Xmx2g \
      -O subsample.vcf
 ```
 
-## 6. Subset Variants {#subset}
+##### *Outputs*
+- `-O`: VCF file containing variants.
 
-### SNPs {#subsetsnp}
+***
+
+# 6. Subset Variants {#subset}
+Before applying filtering thresholds to the called variants, subset the VCF file for both SNPs and INDELs using `SelectVariants`.
+
+## SNPs {#subsetsnp}
+
+##### *Inputs*
+- Reference Genome
+- VCF file produced by `GenotypeVCFs`
+
 ```bash
 gatk SelectVariants \
      -R GRCh37.fasta \
@@ -272,7 +321,15 @@ gatk SelectVariants \
      -select-type SNP
 ```
 
-### INDELs {#subsetindel}
+##### *Outputs*
+- `-O`: VCF file containing SNPs
+
+## INDELs {#subsetindel}
+
+##### *Inputs*
+- Reference Genome
+- VCF file produced by `GenotypeVCFs`
+
 ```bash
 gatk SelectVariants \
      -R GRCh37.fasta \
@@ -281,9 +338,19 @@ gatk SelectVariants \
      -select-type INDEL
 ```
 
-## 7. Filter Variants {#filter}
+##### *Outputs*
+- `-O`: VCF file containing INDELs
 
-### SNPs {#filtersnp}
+# 7. Filter Variants {#filter}
+Apply filtering to selected variants generated in the previous step.
+
+## SNPs {#filtersnp}
+Please refer to the following [blog post](https://gatk.broadinstitute.org/hc/en-us/articles/360035890471-Hard-filtering-germline-short-variants) by GATK regarding hard-filtering SNPs.
+
+##### *Inputs*
+- Reference Genome
+- VCF file containing SNPs
+
 ```bash
 gatk VariantFiltration \
      -R GRCh37.fasta \
@@ -301,7 +368,22 @@ gatk VariantFiltration \
      --filter-name "filterReadPosRankSum_lt-8.0"
 ```
 
-### Filter INDELs {#filterindel}
+##### *Flags*
+- `--filter-expression`: Filtering to be applied to SNPs.
+- `--filter-name`: Annotation of SNPs failing filtering threshold written to VCF file.
+
+##### *Outputs*
+- `-O`: VCF file with annotated SNPs failing the selected filtering thresholds. SNPs that pass all thrtesholds will be marked with `PASS`.
+
+***
+
+## INDELs {#filterindel}
+Please refer to the following [blog post](https://gatk.broadinstitute.org/hc/en-us/articles/360035890471-Hard-filtering-germline-short-variants) by GATK regarding hard-filtering INDELs.
+
+##### *Inputs*
+- Reference Genome
+- VCF file containing INDELs
+
 ```bash
 gatk VariantFiltration \
      -R GRCh37.fasta \
@@ -314,8 +396,20 @@ gatk VariantFiltration \
      --filter-expression "ReadPosRankSum < -20.0" \
      --filter-name "filterReadPosRankSum"
 ```
+##### *Flags*
+- `--filter-expression`: Filtering to be applied to INDELs.
+- `--filter-name`: Annotation of INDELs failing filtering threshold written to VCF file.
 
-## 8. Merge VCFs {#mergevcf}
+##### *Outputs*
+- `-O`: VCF file with annotated INDELs failing the selected filtering thresholds. INDELs that pass all thrtesholds will be marked with `PASS`.
+
+# 8. Merge VCFs {#mergevcf}
+`MergeVCFs` combines multiple variant files into a single variant file.
+
+##### *Inputs*
+- Filtered SNPs VCF file
+- Filtered INDELs VCF file
+
 ```bash
 gatk MergeVcfs \
      -I subsample.filt_indels.vcf \
@@ -323,7 +417,10 @@ gatk MergeVcfs \
      -O filtered_sample.vcf
 ```
 
-## 9. Annotate Variants {#annotate}
+##### *Outputs*
+- `-O`: The same VCF file output by `GenotypeVCFs`, with added annotations denoting `PASS` or specifying filtering thresholds failed.
+
+# 9. Annotate Variants {#annotate}
 Run in your own time, this step takes a long time. Usually we submit this job to SLURM with much more resources than we have initially requested.
 
 ```bash
