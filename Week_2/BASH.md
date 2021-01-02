@@ -237,7 +237,7 @@ samtools stats subsample.recal.bam > subsample.recal.stats
 ```
 
 # 5. Germline Variant Calling {#germline_vc}
-Identify germline short variants (SNPs and Indels) in an individual, or in a cohort. This tutorial is focused on a single sample germline variant calling analysis. Not to be confused with somatic variant calling which uses matched tumour - normal samples, requiring a different workflow.
+Identify germline short variants (SNPs and INDELs) in an individual, or in a cohort. This tutorial is focused on a single sample germline variant calling analysis. Not to be confused with somatic variant calling which uses matched tumour - normal samples, requiring a different workflow.
 
 Performing a single sample analysis and a joint cohort analysis follow the same steps covered below.
 
@@ -418,7 +418,7 @@ gatk MergeVcfs \
 ```
 
 ##### *Outputs*
-- `-O`: The same VCF file output by `GenotypeVCFs`, with added annotations denoting filtering thresholds failed or `PASS` if the variant passed all thresholds. 
+- `-O`: The same VCF file output by `GenotypeVCFs`, with added annotations denoting filtering thresholds failed or `PASS` if the variant passed all thresholds.
 
 # 9. Annotate Variants {#annotate}
 Run in your own time, this step takes a long time. Usually we submit this job to SLURM with much more resources than we have initially requested.
