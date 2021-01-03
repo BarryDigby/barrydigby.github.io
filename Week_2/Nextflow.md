@@ -4,7 +4,7 @@ layout: page
 permalink: /Week_2/Nextflow
 ---
 
-Due to time constraints, you are tasked with writing a nextflow script for only the following processes:
+Due to time constraints, you are tasked with writing a nextflow script for the following processes:
 - Read Alignment
 - Mark Duplicates
 - BQSR
