@@ -75,6 +75,8 @@ I have initialised all of the parameters required to run the first 2 processes. 
 
 `nextflow run germline_vc.nf --analysisDir /data/MSc/2020/MA5112/Variant_Calling --outDir /data/MSc/2020/username -with-singularity /data/MSc/2020/MA5112/Variant_Calling/container/germline_vc.img`
 
+You must fill in all inputs / outputs for both processes or the script will not run. When you think you have completed the script, let me know and I will check it before you run it.
+
 ```nextflow
 #!/usr/bin/env nextflow
 
