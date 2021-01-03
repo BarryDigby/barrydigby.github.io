@@ -4,13 +4,68 @@ layout: page
 permalink: /Week_2/Nextflow
 ---
 
-I have provided an incomplete nextflow script of the entire germline variant calling analysis for you to attempt to complete during the tutorial.
+Due to time constraints, you are tasked with writing a nextflow script for only the following processes:
+- Read Alignment
+- Mark Duplicates
+- BQSR
 
-This is a very large script however I hope that you will be able to recognise the patterns used in the script in conjunction with your knowledge from running the BASH workflow to finish the script. If you can develop these skills you can extend them to any workflow available at `nf-core`, adapting them to your needs.
+***
 
-maybe just leave the first one or two processes empty for them to fill out? no way they can do the whole thing given the time.
+## getVal()
+In the BASH workflow, you may have noticed nearly every step required the reference genome. In `nextflow` we typically intialise files with a channel, however, as channels can only be used once we would have to create multiple channels for the reference genome file (something like `fasta_a`, `fasta_b`. `fasta_c` etc.) for each step in the workflow.
 
-have them do align reads and mark duplicates ... need to discuss with pilib 
+Instead we are going to use `getVal()` when specifying the parameter file path. When using the parameter in a process we have two choices:
+1. Call the file on its own: `file(var_name) from params.var`.
+2. Combine files in a tuple: `tuple file(var1), file(var2) from Channel.value([params.var1, params.var2])`.
+
+Run the below nextflow script to gain some intuition: `nextflow run test.nf`
+
+```nextflow
+#!/usr/bin/env nextflow
+
+// Reference Genome
+params.fasta = Channel.fromPath("/data/MSc/2020/MA5112/Variant_Calling/reference/*fasta").getVal()
+params.fai = Channel.fromPath("/data/MSc/2020/MA5112/Variant_Calling/reference/*fai").getVal()
+
+// Process foo uses the reference genome only
+
+process foo{
+    echo true
+
+    input:
+    file(fasta) from params.fasta
+
+    output:
+    stdout to foo_out
+
+    script:
+    """
+    echo "process foo output"
+    echo "Reference Genome file:  $fasta"
+    """
+}
+
+
+// process bar uses both the reference genome and the samtools index file
+// Call them both in the same line using Channel.value() placing them in a tuple.  
+
+process bar{
+    echo true
+
+    input:
+    tuple file(fasta), file(fai) from Channel.value([params.fasta, params.fai])
+
+    output:
+    stdout to bar_out
+
+    script:
+    """
+    echo "process bar output"
+    echo "Reference genome file: $fasta"
+    echo "Samtools index file: $fai"
+    """
+}
+```
 
 ***
 
