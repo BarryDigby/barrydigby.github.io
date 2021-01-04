@@ -29,41 +29,105 @@ params.fai = Channel.fromPath("/data/MSc/2020/MA5112/Variant_Calling/reference/*
 // Process foo uses the reference genome only
 
 process foo{
-    echo true
+    	echo true
 
-    input:
-    file(fasta) from params.fasta
+    	input:
+    	file(fasta) from params.fasta
 
-    output:
-    stdout to foo_out
+    	output:
+   	stdout to foo_out
 
-    script:
-    """
-    echo "process foo output"
-    echo "Reference Genome file:  $fasta"
-    """
+    	script:
+    	"""
+   	echo "process foo output"
+    	echo "Reference Genome file:  $fasta"
+    	"""
 }
 
 
 // process bar uses both the reference genome and the samtools index file
-// Call them both in the same line using Channel.value() placing them in a tuple.  
+// Call them both in the same line using Channel.value() placing them in a tuple
 
 process bar{
-    echo true
+    	echo true
 
-    input:
-    tuple file(fasta), file(fai) from Channel.value([params.fasta, params.fai])
+    	input:
+    	tuple file(fasta), file(fai) from Channel.value([params.fasta, params.fai])
 
-    output:
-    stdout to bar_out
+    	output:
+    	stdout to bar_out
 
-    script:
-    """
-    echo "process bar output"
-    echo "Reference genome file: $fasta"
-    echo "Samtools index file: $fai"
-    """
+    	script:
+    	"""
+    	echo "process bar output"
+    	echo "Reference genome file: $fasta"
+    	echo "Samtools index file: $fai"
+    	"""
 }
+
+// process baz modifies the index file (trivial example)
+// to demonstrate examples of basic outputs
+
+process baz{
+
+	input:
+	file(fai) from params.fai
+
+	output:
+	file("*.fai") into baz_output
+
+	script:
+	"""
+	mv $fai new_index.fai
+	"""
+}
+
+// In a nextflow process, you can only capture what the process
+// created to an output channel (unless you use special flags)
+// this is why GRCh37.fai is not captured by *.fai
+
+// lets view the contents of the channel to confirm this:
+baz_output.view()
+
+/*
+  FASTQ Example
+*/
+
+params.reads = "/data/MSc/2020/MA5112/Variant_Calling/reads/*_r{1,2}.fastq.gz"
+Channel
+ .fromFilePairs(params.reads)
+ .into{reads_ch; reads_ch_print}
+
+// set{a} for one channel
+// into{a;b;c;...} for multiple channels
+// view the tuple in channel
+reads_ch_print.view()
+
+process qux{
+	echo true
+
+	input:
+	tuple val(base), file(reads) from reads_ch
+
+	output:
+	tuple val(base), file("*.fq.gz") into qux_out
+
+	script:
+	"""
+	echo "tuple val(base) uses the common string in the fastq read pair name, dictated by the glob pattern in params.reads"
+	echo "in out case, the variable base is: $base"
+	echo ""
+	echo 'The variable (dollar)reads stores r1 & r2 in the order they appear in the tuple'
+	echo "$reads"
+
+	# to access individual read pairs, use 0 based indexing
+	# use ${base} to name outputs, appending the correct extension
+	mv ${reads[0]} ${base}_r1.fq.gz
+	mv ${reads[1]} ${base}_r2.fq.gz
+	"""
+}
+
+qux_out.view()
 ```
 
 ***
