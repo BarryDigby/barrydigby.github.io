@@ -115,7 +115,7 @@ process qux{
 	script:
 	"""
 	echo "tuple val(base) uses the common string in the fastq read pair name, dictated by the glob pattern in params.reads"
-	echo "in out case, the variable base is: $base"
+	echo "in our case, the variable base is: $base"
 	echo ""
 	echo 'The variable (dollar)reads stores r1 & r2 in the order they appear in the tuple'
 	echo "$reads"
