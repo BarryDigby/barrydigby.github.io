@@ -1,7 +1,7 @@
 ---
 title: Variant Calling
 layout: page
-permalink: /Week_2/Overview
+permalink: /Variant_Calling/Overview
 ---
 
 # Tutorial Overview
