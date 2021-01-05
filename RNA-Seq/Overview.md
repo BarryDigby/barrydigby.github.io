@@ -12,9 +12,24 @@ Running a RNA-Seq quantification analysis on LUGH is extremely straight forward 
 
 Please install the following packages in R Studio:
 
-- foo
-- bar
-- baz
+```
+library(dplyr)
+library(biomaRt)
+library(tximport)
+library(rhdf5)
+library(gplots)
+library(DESeq2)
+library(apeglm)
+library(RColorBrewer)
+library(IHW)
+library(PCAtools)
+library(EnhancedVolcano)
+library(ComplexHeatmap)
+library(circlize)
+library(fgsea)
+library(tidyverse)
+library(ggpubr)
+```
 
 Unfortunately we cannot mount a conda environment in R Studio (to my knowledge) thus each package must be installed manually.
 

@@ -49,10 +49,10 @@ samples$condition <- as.factor(samples$condition)
 dds <- DESeqDataSetFromTximport(txi, colData = samples, design = ~ replicate + condition )
 
 # make control the reference level to compare against
-dds$condition <- relevel(dds$condition, ref = "control") 
+dds$condition <- relevel(dds$condition, ref = "control")
 
 # create object
-dds <- DESeq(dds) 
+dds <- DESeq(dds)
 ```
 
 # Save normalized counts + log2 counts for data viz
@@ -77,16 +77,16 @@ cond_colors <- pal[as.integer(annotation_col$Cell_Type)]
 heatmap.2(cor(log2),
           scale="column",
           dendrogram = "column",
-          labRow="", 
+          labRow="",
           ColSideColors=cond_colors,
           trace='none',
           margins=c(7,8),
           main='Correlation Distance',
           distfun=function(x) as.dist(1-cor(t(x))), hclustfun = function(x) hclust(x, method = "complete"))
-          
-          legend("left", 
+
+          legend("left",
                  legend = unique(annotation_col$Cell_Type),
-                 col = pal, 
+                 col = pal,
                  lty= 1,             
                  lwd = 5,           
                  cex=.7)
@@ -97,19 +97,19 @@ heatmap.2(cor(log2),
 p <- pca(log2, metadata = samples)
 
 biplot(p,
-       colby = 'condition', 
+       colby = 'condition',
        colkey = c('melanoma'='royalblue', 'control'='red1', 'lung'='forestgreen'),
-       hline = 0, 
+       hline = 0,
        vline = 0,
-       legendPosition = 'right', 
-       legendLabSize = 12, 
+       legendPosition = 'right',
+       legendLabSize = 12,
        legendIconSize = 8.0,
        drawConnectors = TRUE,
        title = 'PCA bi-plot',
        subtitle = 'PC1 versus PC2')
 ```
 
-# Most important step! 
+# Most important step!
 # Set up contrasts of interest, use APEGLM to perform shrinkage
 ```{R}
 # check dds contrasts available
@@ -120,7 +120,7 @@ lung_v_ctrl <- results(dds, filterFun=ihw, alpha=0.05, c("condition", "lung", "c
 res1 <- lfcShrink(dds=dds, res=lung_v_ctrl, coef=4, type="apeglm")
 summary(res1)
 
-# make melanoma vs control object 
+# make melanoma vs control object
 melanoma_v_ctrl <- results(dds, filterFun=ihw, alpha=0.05, c("condition", "melanoma", "control"))
 res2 <- lfcShrink(dds=dds, res=melanoma_v_ctrl, coef=5, type="apeglm")
 summary(res2)
@@ -132,20 +132,20 @@ dds <- DESeq(dds)
 # double chekck it worked
 resultsNames(dds)
 
-# make lung vs melanoma 
+# make lung vs melanoma
 lung_v_melanoma <- results(dds, filterFun=ihw, alpha=0.05, c("condition", "lung", "melanoma"))
 res3 <- lfcShrink(dds=dds, res=lung_v_melanoma, coef=5, type="apeglm")
 summary(res3)
 ```
 
-# We are going to look at lung vs control for this tutorial. 
+# We are going to look at lung vs control for this tutorial.
 
 # Set up functions for selecting upregulated and downregulated genes from results object
 ```{R}
 get_upregulated <- function(df){
 
 	key <- intersect(rownames(df)[which(df$log2FoldChange>=1)], rownames(df)[which(df$pvalue<=0.05)])
-  
+
   	results <- as.data.frame((df)[which(rownames(df) %in% key),])
 	return(results)
 }
@@ -153,7 +153,7 @@ get_upregulated <- function(df){
 get_downregulated <- function(df){
 
   	key <- intersect(rownames(df)[which(df$log2FoldChange<=-1)], rownames(df)[which(df$pvalue<=0.05)])
-  
+
   	results <- as.data.frame((df)[which(rownames(df) %in% key),])
   	return(results)
 }
@@ -162,11 +162,11 @@ get_downregulated <- function(df){
 # set up annotation function
 ```{R}
 annotate_de_genes <- function(df){
-  	
+
 	df$hgnc_symbol <- rownames(df)
- 
+
 	mart <- useMart(biomart = "ensembl", dataset = "hsapiens_gene_ensembl")
- 
+
 	info <- getBM(attributes=c("hgnc_symbol",
                              "chromosome_name",
                              "start_position",
@@ -177,8 +177,8 @@ annotate_de_genes <- function(df){
                 values = df$hgnc_symbol,
                 mart = mart,
 	              useCache = FALSE)
-	
-	 
+
+
 	tmp <- merge(df, info, by="hgnc_symbol")
 	tmp$strand <- gsub("-1", "-", tmp$strand)
 	tmp$strand <- gsub("1", "+", tmp$strand)
@@ -186,7 +186,7 @@ annotate_de_genes <- function(df){
 
 	output_col <- c("Gene", "Chromosome", "Start", "Stop", "Strand", "Description", "Log2FC", "P-value", "Adj P-value")
 	index <- c(1,7,8,9,10,11,3,5,6)
-  
+
 	tmp <- tmp[,index]
 	colnames(tmp) <- output_col
 
@@ -195,7 +195,7 @@ annotate_de_genes <- function(df){
 	}else{
 		tmp <- tmp[order(tmp$Log2FC),]
 	}
-  
+
 	return(tmp)
 }
 ```
@@ -212,15 +212,15 @@ downregulated_genes <- annotate_de_genes(de_down)
 
 # save to file
 ```{R}
-write.table(upregulated_genes, "~/RNA-Seq/upregulated.txt", sep="\t", row.names=F, quote=F)	
-write.table(downregulated_genes, "~/RNA-Seq/downregulated.txt", sep="\t", row.names=F, quote=F)	
+write.table(upregulated_genes, "~/RNA-Seq/upregulated.txt", sep="\t", row.names=F, quote=F)
+write.table(downregulated_genes, "~/RNA-Seq/downregulated.txt", sep="\t", row.names=F, quote=F)
 ```
 
 # Volcano plot
-Show the effect of apeglm (uncomment min/max, rename res1 to lung_v_ctrl in EnhancedVolcano function) after running. 
+Show the effect of apeglm (uncomment min/max, rename res1 to lung_v_ctrl in EnhancedVolcano function) after running.
 ```{R}
 res1 <- na.omit(res1)
-	
+
 min_width <- min(res1$log2FoldChange)
 max_width <- max(res1$log2FoldChange)
 max_height <- -log10(min(res1[res1$pvalue>0, 5]))
@@ -274,11 +274,11 @@ mat <- na.omit(mat)
 ann <- data.frame(Cell_Type = c(rep("control", 3), c(rep("lung", 3))))
 
 # set up heatmap column annotation
-ha_col = HeatmapAnnotation(df = ann, 
-                           col = list(Cell_Type = c("control" =  "gold", 
-                                                    "lung" = "forestgreen")), 
-                           annotation_legend_param = list(title_gp = gpar(fontsize = 12, fontface = "bold"), 
-                                                                          labels_gp = gpar(fontsize = 12)), 
+ha_col = HeatmapAnnotation(df = ann,
+                           col = list(Cell_Type = c("control" =  "gold",
+                                                    "lung" = "forestgreen")),
+                           annotation_legend_param = list(title_gp = gpar(fontsize = 12, fontface = "bold"),
+                                                                          labels_gp = gpar(fontsize = 12)),
                           annotation_name_side = "left")
 
 
@@ -288,13 +288,13 @@ min(mat)
 
 
 # set up heatmap object
-hm1 <- Heatmap(mat, 
+hm1 <- Heatmap(mat,
               col= colorRamp2(c(-2.6,-1,0,1,2.6),c("blue","skyblue","white","lightcoral","red")),
-              heatmap_legend_param=list(at=c(-2.6,-1,0,1,2.6),color_bar="continuous", 
+              heatmap_legend_param=list(at=c(-2.6,-1,0,1,2.6),color_bar="continuous",
                                         legend_direction="vertical", legend_width=unit(5,"cm"),
-                                        title_position="topcenter", title_gp=gpar(fontsize=10, fontface="bold")), 
+                                        title_position="topcenter", title_gp=gpar(fontsize=10, fontface="bold")),
               name = "Z-score",
-              
+
               #Row annotation configurations
               cluster_rows=T,
               show_row_dend=T,
@@ -302,7 +302,7 @@ hm1 <- Heatmap(mat,
               row_title_gp=gpar(fontsize=8),
               show_row_names=FALSE,
               row_names_side="left",
-              
+
               #Column annotation configuratiions
               cluster_columns=T,
               show_column_dend=T,
@@ -311,7 +311,7 @@ hm1 <- Heatmap(mat,
               column_title_gp=gpar(fontsize=15, fontface="bold"),
               show_column_names = T,
               column_names_gp = gpar(fontsize = 12, fontface="bold"),
-              
+
               #Dendrogram configurations: columns
               clustering_distance_columns="euclidean",
               clustering_method_columns="complete",
@@ -328,12 +328,12 @@ hm1 <- Heatmap(mat,
               border=T,
               row_km = 1,
               column_km = 1,
-              
+
               #plot params
-              width = unit(5, "inch"), 
+              width = unit(5, "inch"),
               height = unit(4, "inch"),
               #height = unit(0.4, "cm")*nrow(mat),
-              
+
               #Annotations
               top_annotation = ha_col)
 
@@ -357,13 +357,13 @@ plot_top_20 <- c(up_list, down_list)
 # subset the counts matrix from last step
 top_genes <- mat[which(rownames(mat) %in% plot_top_20),]
 
-hm1 <- Heatmap(top_genes, 
+hm1 <- Heatmap(top_genes,
               col= colorRamp2(c(-2.6,-1,0,1,2.6),c("blue","skyblue","white","lightcoral","red")),
-              heatmap_legend_param=list(at=c(-2.6,-1,0,1,2.6),color_bar="continuous", 
+              heatmap_legend_param=list(at=c(-2.6,-1,0,1,2.6),color_bar="continuous",
                                         legend_direction="vertical", legend_width=unit(5,"cm"),
-                                        title_position="topcenter", title_gp=gpar(fontsize=10, fontface="bold")), 
+                                        title_position="topcenter", title_gp=gpar(fontsize=10, fontface="bold")),
               name = "Z-score",
-              
+
               #Row annotation configurations
               cluster_rows=T,
               show_row_dend=T,
@@ -371,7 +371,7 @@ hm1 <- Heatmap(top_genes,
               row_title_gp=gpar(fontsize=8),
               show_row_names=TRUE,
               row_names_side="right",
-              
+
               #Column annotation configuratiions
               cluster_columns=T,
               show_column_dend=T,
@@ -380,7 +380,7 @@ hm1 <- Heatmap(top_genes,
               column_title_gp=gpar(fontsize=15, fontface="bold"),
               show_column_names = T,
               column_names_gp = gpar(fontsize = 12, fontface="bold"),
-              
+
               #Dendrogram configurations: columns
               clustering_distance_columns="euclidean",
               clustering_method_columns="complete",
@@ -397,12 +397,12 @@ hm1 <- Heatmap(top_genes,
               border=T,
               row_km = 1,
               column_km = 1,
-              
+
               #plot params
-              width = unit(5, "inch"), 
+              width = unit(5, "inch"),
               height = unit(4, "inch"),
               #height = unit(0.4, "cm")*nrow(mat),
-              
+
               #Annotations
               top_annotation = ha_col)
 
@@ -410,17 +410,17 @@ hm1 <- Heatmap(top_genes,
 draw(hm1, annotation_legend_side = "right", heatmap_legend_side="right")
 ```
 
-# A more realistic situation might be where the investigator wants to see what pathways are enriched in the lung cancer cell lines. 
+# A more realistic situation might be where the investigator wants to see what pathways are enriched in the lung cancer cell lines.
 
-# !! you should use GSEA software for this, not fgsea but time constraints etc etc. 
+# !! you should use GSEA software for this, not fgsea but time constraints etc etc.
 ```{R, message=F, warning=F}
-## we will use GO biological processes 
+## we will use GO biological processes
 
 ## convert result object to dataframe
 res <- as.data.frame(res1)
 res$hgnc_symbol <- rownames(res)
 
-## use absolute value for LFC 
+## use absolute value for LFC
 res$log2FoldChange <- abs(res$log2FoldChange)
 
 # compute summary stat
@@ -492,13 +492,13 @@ EnhancedVolcano(subs,
 
 top_genes <- mat[which(rownames(mat) %in% plot),]
 
-hm1 <- Heatmap(top_genes, 
+hm1 <- Heatmap(top_genes,
               col= colorRamp2(c(-2.6,-1,0,1,2.6),c("blue","skyblue","white","lightcoral","red")),
-              heatmap_legend_param=list(at=c(-2.6,-1,0,1,2.6),color_bar="continuous", 
+              heatmap_legend_param=list(at=c(-2.6,-1,0,1,2.6),color_bar="continuous",
                                         legend_direction="vertical", legend_width=unit(5,"cm"),
-                                        title_position="topcenter", title_gp=gpar(fontsize=10, fontface="bold")), 
+                                        title_position="topcenter", title_gp=gpar(fontsize=10, fontface="bold")),
               name = "Z-score",
-              
+
               #Row annotation configurations
               cluster_rows=T,
               show_row_dend=T,
@@ -506,7 +506,7 @@ hm1 <- Heatmap(top_genes,
               row_title_gp=gpar(fontsize=8),
               show_row_names=TRUE,
               row_names_side="right",
-              
+
               #Column annotation configuratiions
               cluster_columns=T,
               show_column_dend=T,
@@ -515,7 +515,7 @@ hm1 <- Heatmap(top_genes,
               column_title_gp=gpar(fontsize=15, fontface="bold"),
               show_column_names = T,
               column_names_gp = gpar(fontsize = 12, fontface="bold"),
-              
+
               #Dendrogram configurations: columns
               clustering_distance_columns="euclidean",
               clustering_method_columns="complete",
@@ -532,12 +532,12 @@ hm1 <- Heatmap(top_genes,
               border=T,
               row_km = 1,
               column_km = 1,
-              
+
               #plot params
-              width = unit(5, "inch"), 
+              width = unit(5, "inch"),
               height = unit(4, "inch"),
               #height = unit(0.4, "cm")*nrow(mat),
-              
+
               #Annotations
               top_annotation = ha_col)
 
@@ -549,39 +549,39 @@ draw(hm1, annotation_legend_side = "right", heatmap_legend_side="right")
 ```{R}
 # use normalised counts for this
 
+# subset the norm counts mat
+
+mat <- counts[which(rownames(counts) %in% rownames(top_genes)),]
+
+# lung, ctrl
+mat <- mat[,1:6]
+
+
 for(i in plot){
-  
+
   # handy deseq2 function plotCounts to get data into ggplot2 format
   d <- plotCounts(dds, gene=paste0(i), intgroup = "condition", returnData = T)
-  
+
   # need to remove melanoma
   d <- subset(d, d$condition != "melanoma")
-  
-  # set up comparisons
-  comps <- list(c("lung", "control"))
-  
+
+  # set up comps
+  compare_means(count ~ condition, data = d, paired = FALSE, method = "t.test")
+  my_comparisons <- list(c("lung", "control"))
+
   # ggpubr, for loops must assign plot to variable and use plot(var)
   pdf(paste0("~/RNA-Seq/", i, "_boxplot.pdf", sep=""))
-  p <- ggboxplot(d, x = "condition", y = "count", color = "black", 
-                 ylab ="Normalized Counts", title = paste0(i, "Expression", sep=" "), 
-                 xlab="", add = c("dotplot"), 
-                 add.params = list(size=0.25, jitter=0.01), 
+  p <- ggboxplot(d, x = "condition", y = "count", color = "black",
+                 ylab ="Normalized Counts", title = paste0(i, "Expression", sep=" "),
+                 xlab="", add = c("dotplot"),
+                 add.params = list(size=0.25, jitter=0.01),
                  legend = "none", bxp.errorbar = T,
-                 bxp.errorbar.width = 0.2, width=0.3, ggtheme = theme_classic()) + 
+                 bxp.errorbar.width = 0.2, width=0.3, ggtheme = theme_classic()) +
                  theme(axis.text.x = element_text( colour = "black", size=14)) +
-                 theme(axis.title.y = element_text( colour = "black", size=14)) + 
+                 theme(axis.title.y = element_text( colour = "black", size=14)) +
+                 stat_compare_means(comparisons=my_comparisons) +
                  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
-  
-  # add significance rules
-  z <- p + stat_compare_means(comparisons=comps, 
-                              method="t.test", 
-                              aes(label = ifelse(
-                                  p < 1.e-2,
-                                  sprintf("p = %2.1e", as.numeric(..p.format..)),
-                                  sprintf("p = %5.4f", as.numeric(..p.format..)))))
-  # plot the object
-  plot(z)
+  plot(p)
   dev.off()
 }
-
 ```
