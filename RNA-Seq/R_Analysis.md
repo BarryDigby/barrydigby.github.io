@@ -90,4 +90,4 @@ A375_3,melanoma,3
 ***
 
 # Rmd Document
-The R markdown document is available at the following link.
+The R markdown document + resources are available at the following [repository](https://github.com/BarryDigby/barrydigby.github.io/tree/master/RNA-Seq) 
