@@ -1,7 +1,7 @@
 ---
 title:
 layout: page
-permalink: /Week_1/Singularity
+permalink: /Introduction/Singularity
 ---
 
 <center>
@@ -42,4 +42,4 @@ The `-B` prefix specifies the *bind path*. Once inside the container, the contai
 1. Enter the container
 2. Check that `fastqc`, `multiqc` and `bbduk.sh` all work.
 3. Use `whereis` to print the path of each tool within the container. Can you see where conda installed the environment?
-4. Exit the container. 
+4. Exit the container.

@@ -1,7 +1,7 @@
 ---
-title: Week 2 Exercise
+title: Walkthrough + Exercise
 layout: page
-permalink: /Week_2/Nextflow
+permalink: /Variant_Calling/Nextflow
 ---
 
 Due to time constraints, you are tasked with writing a nextflow script for the following processes:

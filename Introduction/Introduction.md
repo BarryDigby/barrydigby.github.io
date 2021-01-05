@@ -1,7 +1,7 @@
 ---
 title:
 layout: page
-permalink: /Week_1/Introduction
+permalink: /Introduction/Overview
 ---
 
 The tutorial will be conducted both locally and on Lugh. Please make sure you have the following prerequisites for the tutorial:
@@ -11,7 +11,7 @@ The tutorial will be conducted both locally and on Lugh. Please make sure you ha
  - [Singularity](https://singularity.lbl.gov/install-linux): Local Singularity installation.
  - [Nextflow](https://www.nextflow.io/docs/latest/getstarted.html#installation): Local nextflow installation.
 
-*Note: the above hyperlinks are for ubuntu installation where applicable*. 
+*Note: the above hyperlinks are for ubuntu installation where applicable*.
 
 ### Jump to
 ***

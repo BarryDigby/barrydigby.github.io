@@ -1,7 +1,7 @@
 ---
 title: Variant Calling Container
 layout: page
-permalink: /Week_2/Container
+permalink: /Variant_Calling/Container
 ---
 
 Below are the resources required to construct a variant calling container. I have included several extra variant calling tools in the container (`Strelka`, `Mantra`, `Google DeepVariant`, `GATK`, `FreeBayes`) as some of you might want to try different variant calling tools for your thesis project.

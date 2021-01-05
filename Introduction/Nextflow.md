@@ -1,7 +1,7 @@
 ---
 title:
 layout: page
-permalink: /Week_1/Nextflow
+permalink: /Introduction/Nextflow
 ---
 
 <center>

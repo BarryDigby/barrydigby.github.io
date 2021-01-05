@@ -1,7 +1,7 @@
 ---
 title:
 layout: page
-permalink: /Week_1/Docker
+permalink: /Introduction/Docker
 ---
 
 <center>

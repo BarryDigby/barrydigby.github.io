@@ -1,7 +1,7 @@
 ---
 title:
 layout: page
-permalink: /Week_1/Conda
+permalink: /Introduction/Conda
 ---
 
 <center>

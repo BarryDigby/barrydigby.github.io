@@ -1,7 +1,7 @@
 ---
 title: Exome Sequencing Analysis
 layout: page
-permalink: /Week_2/BASH
+permalink: /Variant_Calling/BASH
 ---
 
 A detailed workflow has been provided for you to run a germline variant calling analysis on LUGH before attempting to create a nextflow script.
@@ -415,7 +415,7 @@ gatk VariantFiltration \
 
 ***
 
-*N.B* Both filtering steps require the samtools reference index file `*.fai` and picards dictionary `*.dict` file to be present in the working directory. 
+*N.B* Both filtering steps require the samtools reference index file `*.fai` and picards dictionary `*.dict` file to be present in the working directory.
 
 # 8. Merge VCFs {#mergevcf}
 `MergeVCFs` combines multiple variant files into a single variant file.
