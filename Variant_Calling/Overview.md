@@ -10,6 +10,6 @@ Before using nextflow to construct a workflow, it is imperative to understand wh
 The tutorial will be composed of:
 
 1. Running the workflow in bash (1 hour)
-2. Description of nextflow `getVal()` (20 min)
-3. Alignment, Mark Duplicates exercise (30 min)
-4. Execute full nextflow script (15 min)
+2. Description of nextflow `getVal()` (10 min)
+3. Alignment, Mark Duplicates exercise (40 min)
+4. Execute full nextflow script (10 min)
