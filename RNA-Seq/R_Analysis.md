@@ -86,3 +86,15 @@ A375_1,melanoma,1
 A375_2,melanoma,2
 A375_3,melanoma,3
 ```
+
+***
+
+# Rmd Document
+
+```R
+
+```{R}
+save <- read.table("filepath", header=T, row.names="sample")
+```
+
+```
