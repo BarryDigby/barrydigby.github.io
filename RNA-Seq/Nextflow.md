@@ -136,13 +136,13 @@ The first process in `kallisto` is to index the reference transcriptome file. Th
 
 The second process will use the indexed transcriptome channel created from the first process. Using the `combine` operator, combine the indexed transcriptome with the fastq reads channel to perform quantification.
 
-*N.B* Kallisto quantification produces output directories. To caputre these, use `file("${base}/") into quant_complete` in the process.
+*N.B* Kallisto quantification produces output directories. To caputre these, use `file("${base}/") into quant_complete` in the processes output.
 
 *N.B* add `--single`, `-l 200` and `-s 30` flags to the kallisto quantification script.
 
 ***
 
-Below is the skeleton script. Complete the script and ask us to check it before running.
+Below is the skeleton script. Complete the script and ask us to check it before running it in your own directory.
 
 ```
 nextflow -bg -q run kallisto.nf \
