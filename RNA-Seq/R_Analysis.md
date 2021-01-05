@@ -90,11 +90,4 @@ A375_3,melanoma,3
 ***
 
 # Rmd Document
-
-```R
-
-```{R}
-save <- read.table("filepath", header=T, row.names="sample")
-```
-
-```
+The R markdown document is available at the following link.

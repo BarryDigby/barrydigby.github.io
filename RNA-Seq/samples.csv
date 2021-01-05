@@ -1,0 +1,10 @@
+sample,condition,replicate
+ctrl_1,control,1
+ctrl_2,control,2
+ctrl_3,control,3
+A549_1,lung,1
+A549_2,lung,2
+A549_3,lung,3
+A375_1,melanoma,1
+A375_2,melanoma,2
+A375_3,melanoma,3

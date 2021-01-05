@@ -1,0 +1,604 @@
+# Load libraries
+```{R, message=F, warning=F}
+library(dplyr)
+library(biomaRt)
+library(tximport)
+library(rhdf5)
+library(gplots)
+library(DESeq2)
+library(apeglm)
+library(RColorBrewer)
+library(IHW)
+library(PCAtools)
+library(EnhancedVolcano)
+library(ComplexHeatmap)
+library(circlize)
+library(fgsea)
+library(tidyverse)
+library(ggpubr)
+```
+
+# Set path to kallisto quant files
+```{R}
+dir <- ("~/RNA-Seq/quant")
+samples <- read.csv("~/RNA-Seq/samples.csv", header=T, row.names = "sample")
+files <- file.path(dir, rownames(samples), "abundance.h5")
+names(files) <- paste0(rownames(samples))
+files
+```
+
+# biomaRt to map transcript IDs to gene symbols
+```{R}
+mart <- useMart(biomart = "ensembl", dataset = "hsapiens_gene_ensembl")
+tx2gene <- getBM(attributes = c("ensembl_transcript_id_version", "hgnc_symbol"), mart = mart, useCache = FALSE)
+```
+
+# TXimport to convert transcript abundances to gene level counts
+```{R}
+txi <- tximport(files, type = "kallisto", tx2gene = tx2gene)
+```
+
+# Create DDS object for analysis
+```{R}
+# make sure sample groups + replicates are factors
+samples$replicate <- as.factor(samples$replicate)
+samples$condition <- as.factor(samples$condition)
+
+# ~ replicate + condition
+## control for replicate variation while contrasting conditions of interest
+dds <- DESeqDataSetFromTximport(txi, colData = samples, design = ~ replicate + condition )
+
+# make control the reference level to compare against
+dds$condition <- relevel(dds$condition, ref = "control") 
+
+# create object
+dds <- DESeq(dds) 
+```
+
+# Save normalized counts + log2 counts for data viz
+```{R}
+counts <- counts(dds, normalized=TRUE)
+
+log2 <- log2(counts + 1)
+```
+
+# Sample to Sample heatmap
+```{R}
+# set up annotation data frame
+annotation_col = data.frame(Cell_Type = samples$condition)
+rownames(annotation_col)=colnames(log2)
+
+# set up color palette
+num_conditions <- nlevels(annotation_col$Cell_Type)
+pal <- colorRampPalette(brewer.pal(num_conditions, "Set1"))(num_conditions)
+cond_colors <- pal[as.integer(annotation_col$Cell_Type)]
+
+# plot heatmap
+heatmap.2(cor(log2),
+          scale="column",
+          dendrogram = "column",
+          labRow="", 
+          ColSideColors=cond_colors,
+          trace='none',
+          margins=c(7,8),
+          main='Correlation Distance',
+          distfun=function(x) as.dist(1-cor(t(x))), hclustfun = function(x) hclust(x, method = "complete"))
+          
+          legend("left", 
+                 legend = unique(annotation_col$Cell_Type),
+                 col = pal, 
+                 lty= 1,             
+                 lwd = 5,           
+                 cex=.7)
+```
+
+# Principal component analysis
+```{R, warning=F, message=F}
+p <- pca(log2, metadata = samples)
+
+biplot(p,
+       colby = 'condition', 
+       colkey = c('melanoma'='royalblue', 'control'='red1', 'lung'='forestgreen'),
+       hline = 0, 
+       vline = 0,
+       legendPosition = 'right', 
+       legendLabSize = 12, 
+       legendIconSize = 8.0,
+       drawConnectors = TRUE,
+       title = 'PCA bi-plot',
+       subtitle = 'PC1 versus PC2')
+```
+
+# Most important step! 
+# Set up contrasts of interest, use APEGLM to perform shrinkage
+```{R}
+# check dds contrasts available
+resultsNames(dds)
+
+# make lung vs control object
+lung_v_ctrl <- results(dds, filterFun=ihw, alpha=0.05, c("condition", "lung", "control"))
+res1 <- lfcShrink(dds=dds, res=lung_v_ctrl, coef=4, type="apeglm")
+summary(res1)
+
+# make melanoma vs control object 
+melanoma_v_ctrl <- results(dds, filterFun=ihw, alpha=0.05, c("condition", "melanoma", "control"))
+res2 <- lfcShrink(dds=dds, res=melanoma_v_ctrl, coef=5, type="apeglm")
+summary(res2)
+
+# to make lung vs melanoma, relevel the dds object reference level
+dds$condition <- relevel(dds$condition, ref = "melanoma")
+dds <- DESeq(dds)
+
+# double chekck it worked
+resultsNames(dds)
+
+# make lung vs melanoma 
+lung_v_melanoma <- results(dds, filterFun=ihw, alpha=0.05, c("condition", "lung", "melanoma"))
+res3 <- lfcShrink(dds=dds, res=lung_v_melanoma, coef=5, type="apeglm")
+summary(res3)
+```
+
+# We are going to look at lung vs control for this tutorial. 
+
+# Set up functions for selecting upregulated and downregulated genes from results object
+```{R}
+get_upregulated <- function(df){
+
+	key <- intersect(rownames(df)[which(df$log2FoldChange>=1)], rownames(df)[which(df$pvalue<=0.05)])
+  
+  	results <- as.data.frame((df)[which(rownames(df) %in% key),])
+	return(results)
+}
+
+get_downregulated <- function(df){
+
+  	key <- intersect(rownames(df)[which(df$log2FoldChange<=-1)], rownames(df)[which(df$pvalue<=0.05)])
+  
+  	results <- as.data.frame((df)[which(rownames(df) %in% key),])
+  	return(results)
+}
+```
+
+# set up annotation function
+```{R}
+annotate_de_genes <- function(df){
+  	
+	df$hgnc_symbol <- rownames(df)
+ 
+	mart <- useMart(biomart = "ensembl", dataset = "hsapiens_gene_ensembl")
+ 
+	info <- getBM(attributes=c("hgnc_symbol",
+                             "chromosome_name",
+                             "start_position",
+                             "end_position",
+                             "strand",
+                             "entrezgene_description"),
+                filters = c("hgnc_symbol"),
+                values = df$hgnc_symbol,
+                mart = mart,
+	              useCache = FALSE)
+	
+	 
+	tmp <- merge(df, info, by="hgnc_symbol")
+	tmp$strand <- gsub("-1", "-", tmp$strand)
+	tmp$strand <- gsub("1", "+", tmp$strand)
+	tmp$hgnc_symbol <- make.names(tmp$hgnc_symbol, unique = T)
+
+	output_col <- c("Gene", "Chromosome", "Start", "Stop", "Strand", "Description", "Log2FC", "P-value", "Adj P-value")
+	index <- c(1,7,8,9,10,11,3,5,6)
+  
+	tmp <- tmp[,index]
+	colnames(tmp) <- output_col
+
+	if(min(tmp$Log2FC) > 0){
+		tmp <- tmp[order(-tmp$Log2FC),]
+	}else{
+		tmp <- tmp[order(tmp$Log2FC),]
+	}
+  
+	return(tmp)
+}
+```
+
+# stage the data
+```{R}
+# as.data.frame important here to work in function indexing
+de_up <- get_upregulated(as.data.frame(res1))
+de_down <- get_downregulated(as.data.frame(res1))
+
+upregulated_genes <- annotate_de_genes(de_up)
+downregulated_genes <- annotate_de_genes(de_down)
+```
+
+# save to file
+```{R}
+write.table(upregulated_genes, "~/RNA-Seq/upregulated.txt", sep="\t", row.names=F, quote=F)	
+write.table(downregulated_genes, "~/RNA-Seq/downregulated.txt", sep="\t", row.names=F, quote=F)	
+```
+
+# Volcano plot
+Show the effect of apeglm (uncomment min/max, rename res1 to lung_v_ctrl in EnhancedVolcano function) after running. 
+```{R}
+res1 <- na.omit(res1)
+	
+min_width <- min(res1$log2FoldChange)
+max_width <- max(res1$log2FoldChange)
+max_height <- -log10(min(res1[res1$pvalue>0, 5]))
+
+up <- subset(res1, res1$log2FoldChange > 1 & res1$pvalue <= 0.05)
+up <- up[order(-up$log2FoldChange),]
+up_list <- head(rownames(up), n=10L)
+
+down <- subset(res1, res1$log2FoldChange < -1 & res1$pvalue <= 0.05)
+down <- down[order(down$log2FoldChange),]
+down_list <- head(rownames(down), n=10L)
+
+plot_top_20 <- c(up_list, down_list)
+EnhancedVolcano(res1,
+			          lab=rownames(res1),
+          			x="log2FoldChange",
+          			y="pvalue",
+          			selectLab=plot_top_20,
+          			drawConnectors=TRUE,
+          			FCcutoff=1.0,
+          			pCutoff=0.05,
+          			title="Volcano Plot",
+          			subtitle="Lung vs. Control",
+          			legendVisible=F,
+          			caption = paste0('Total Genes = ', nrow(res1)),
+          			xlim=c(min_width, max_width),
+          			ylim=c(0, max_height))
+```
+
+# Complex Heatmap
+```{R}
+# subset the counts matrix to get the lung and control samples
+subset <- counts[, 1:6]
+
+# now select de_up, de_down, i.e DE genes that passed the filtering
+up <- rownames(de_up)
+down <- rownames(de_down)
+
+# subset them
+key <- c(up, down)
+subset <- subset[which(rownames(subset) %in% key),]
+
+# Scale and center the counts matrix
+# Scale works on columns, transpose the matrix to scale and center genes, transpose back.
+mat <- t(subset)
+mat <- scale(mat, center=T, scale=T)
+mat <- t(mat)
+mat <- na.omit(mat)
+
+# set up annotation dataframe
+ann <- data.frame(Cell_Type = c(rep("control", 3), c(rep("lung", 3))))
+
+# set up heatmap column annotation
+ha_col = HeatmapAnnotation(df = ann, 
+                           col = list(Cell_Type = c("control" =  "gold", 
+                                                    "lung" = "forestgreen")), 
+                           annotation_legend_param = list(title_gp = gpar(fontsize = 12, fontface = "bold"), 
+                                                                          labels_gp = gpar(fontsize = 12)), 
+                          annotation_name_side = "left")
+
+
+# check the min and max values for our color gradient
+max(mat)
+min(mat)
+
+
+# set up heatmap object
+hm1 <- Heatmap(mat, 
+              col= colorRamp2(c(-2.6,-1,0,1,2.6),c("blue","skyblue","white","lightcoral","red")),
+              heatmap_legend_param=list(at=c(-2.6,-1,0,1,2.6),color_bar="continuous", 
+                                        legend_direction="vertical", legend_width=unit(5,"cm"),
+                                        title_position="topcenter", title_gp=gpar(fontsize=10, fontface="bold")), 
+              name = "Z-score",
+              
+              #Row annotation configurations
+              cluster_rows=T,
+              show_row_dend=T,
+              row_title_side="right",
+              row_title_gp=gpar(fontsize=8),
+              show_row_names=FALSE,
+              row_names_side="left",
+              
+              #Column annotation configuratiions
+              cluster_columns=T,
+              show_column_dend=T,
+              column_title="Lung vs. Control DE Genes",
+              column_title_side="top",
+              column_title_gp=gpar(fontsize=15, fontface="bold"),
+              show_column_names = T,
+              column_names_gp = gpar(fontsize = 12, fontface="bold"),
+              
+              #Dendrogram configurations: columns
+              clustering_distance_columns="euclidean",
+              clustering_method_columns="complete",
+              column_dend_height=unit(10,"mm"),
+
+              #Dendrogram configurations: rows
+              clustering_distance_rows="euclidean",
+              clustering_method_rows="complete",
+              row_dend_width=unit(4,"cm"),
+              row_dend_side = "left",
+              row_dend_reorder = TRUE,
+
+              #Splits
+              border=T,
+              row_km = 1,
+              column_km = 1,
+              
+              #plot params
+              width = unit(5, "inch"), 
+              height = unit(4, "inch"),
+              #height = unit(0.4, "cm")*nrow(mat),
+              
+              #Annotations
+              top_annotation = ha_col)
+
+# plot heatmap
+draw(hm1, annotation_legend_side = "right", heatmap_legend_side="right")
+```
+
+# Lets make a snapshot of the top 20 up regulated and down regulated genes using the DESeq2 results object
+```{R}
+# same logic as volcano plot
+up <- subset(res1, res1$log2FoldChange > 1 & res1$pvalue <= 0.05)
+up <- up[order(-up$log2FoldChange),]
+up_list <- head(rownames(up), n=10L)
+
+down <- subset(res1, res1$log2FoldChange < 1 & res1$pvalue <= 0.05)
+down <- down[order(down$log2FoldChange),]
+down_list <- head(rownames(down), n=10L)
+
+plot_top_20 <- c(up_list, down_list)
+
+# subset the counts matrix from last step
+top_genes <- mat[which(rownames(mat) %in% plot_top_20),]
+
+hm1 <- Heatmap(top_genes, 
+              col= colorRamp2(c(-2.6,-1,0,1,2.6),c("blue","skyblue","white","lightcoral","red")),
+              heatmap_legend_param=list(at=c(-2.6,-1,0,1,2.6),color_bar="continuous", 
+                                        legend_direction="vertical", legend_width=unit(5,"cm"),
+                                        title_position="topcenter", title_gp=gpar(fontsize=10, fontface="bold")), 
+              name = "Z-score",
+              
+              #Row annotation configurations
+              cluster_rows=T,
+              show_row_dend=T,
+              row_title_side="right",
+              row_title_gp=gpar(fontsize=8),
+              show_row_names=TRUE,
+              row_names_side="right",
+              
+              #Column annotation configuratiions
+              cluster_columns=T,
+              show_column_dend=T,
+              column_title="Lung vs. Control top 20 DE genes",
+              column_title_side="top",
+              column_title_gp=gpar(fontsize=15, fontface="bold"),
+              show_column_names = T,
+              column_names_gp = gpar(fontsize = 12, fontface="bold"),
+              
+              #Dendrogram configurations: columns
+              clustering_distance_columns="euclidean",
+              clustering_method_columns="complete",
+              column_dend_height=unit(10,"mm"),
+
+              #Dendrogram configurations: rows
+              clustering_distance_rows="euclidean",
+              clustering_method_rows="complete",
+              row_dend_width=unit(4,"cm"),
+              row_dend_side = "left",
+              row_dend_reorder = TRUE,
+
+              #Splits
+              border=T,
+              row_km = 1,
+              column_km = 1,
+              
+              #plot params
+              width = unit(5, "inch"), 
+              height = unit(4, "inch"),
+              #height = unit(0.4, "cm")*nrow(mat),
+              
+              #Annotations
+              top_annotation = ha_col)
+
+# plot heatmap
+draw(hm1, annotation_legend_side = "right", heatmap_legend_side="right")
+```
+
+# A more realistic situation might be where the investigator wants to see what pathways are enriched in the lung cancer cell lines. 
+
+# !! you should use GSEA software for this, not fgsea but time constraints etc etc. 
+```{R, message=F, warning=F}
+## we will use GO biological processes 
+
+## convert result object to dataframe
+res <- as.data.frame(res1)
+res$hgnc_symbol <- rownames(res)
+
+## use absolute value for LFC 
+res$log2FoldChange <- abs(res$log2FoldChange)
+
+# compute summary stat
+fgsea_rank <- res %>%
+              dplyr::select(hgnc_symbol, log2FoldChange) %>%
+              na.omit() %>%
+              distinct() %>%
+              group_by(hgnc_symbol) %>%
+              summarize(stat=mean(log2FoldChange))
+
+# create named list
+rank <- deframe(fgsea_rank)
+
+# read in gmt file
+pathway <- gmtPathways("~/RNA-Seq/c5.bp.v7.0.symbols.gmt")
+
+# run fgsea
+fgsea <- fgseaMultilevel(pathways=pathway, stats=rank, eps = 0, scoreType = "pos") %>%
+                         as_tibble() %>%
+                         arrange(padj)
+```
+
+# lets pretend he/she is interested in "GO_REGULATION_OF_INFLAMMATORY_RESPONSE"
+# do up some plots to keep him/her happy
+
+# isolate the gene list
+```{R}
+genes <- pathway$GO_REGULATION_OF_INFLAMMATORY_RESPONSE
+```
+
+# volcano plot
+```{R}
+# grab these genes from the deseq2 results contrast
+subs <- as.data.frame(res1[which(rownames(res1) %in% genes),])
+
+min_width <- min(subs$log2FoldChange)
+max_width <- max(subs$log2FoldChange)
+max_height <- -log10(min(subs[subs$pvalue>0, 5]))
+
+up <- subset(subs, subs$log2FoldChange > 1 & subs$pvalue <= 0.05)
+up <- up[order(-up$log2FoldChange),]
+up_list <- head(rownames(up), n=10L)
+
+down <- subset(subs, subs$log2FoldChange < -1 & subs$pvalue <= 0.05)
+down <- down[order(down$log2FoldChange),]
+down_list <- head(rownames(down), n=10L)
+
+plot <- c(up_list, down_list)
+EnhancedVolcano(subs,
+			          lab=rownames(subs),
+          			x="log2FoldChange",
+          			y="pvalue",
+          			selectLab=plot,
+          			drawConnectors=TRUE,
+          			FCcutoff=1.0,
+          			pCutoff=0.05,
+          			title="Regulation of Inflammatory Response",
+          			subtitle="Lung vs. Control",
+          			legendVisible=F,
+          			caption = paste0('Total Genes = ', nrow(subs)),
+          			xlim=c(min_width, max_width),
+          			ylim=c(0, max_height))
+
+```
+
+# heatmap
+```{R}
+# subset the counts matrix from last step (plot from volcano)
+
+top_genes <- mat[which(rownames(mat) %in% plot),]
+
+hm1 <- Heatmap(top_genes, 
+              col= colorRamp2(c(-2.6,-1,0,1,2.6),c("blue","skyblue","white","lightcoral","red")),
+              heatmap_legend_param=list(at=c(-2.6,-1,0,1,2.6),color_bar="continuous", 
+                                        legend_direction="vertical", legend_width=unit(5,"cm"),
+                                        title_position="topcenter", title_gp=gpar(fontsize=10, fontface="bold")), 
+              name = "Z-score",
+              
+              #Row annotation configurations
+              cluster_rows=T,
+              show_row_dend=T,
+              row_title_side="right",
+              row_title_gp=gpar(fontsize=8),
+              show_row_names=TRUE,
+              row_names_side="right",
+              
+              #Column annotation configuratiions
+              cluster_columns=T,
+              show_column_dend=T,
+              column_title="Regulation of Inflammatory Response",
+              column_title_side="top",
+              column_title_gp=gpar(fontsize=15, fontface="bold"),
+              show_column_names = T,
+              column_names_gp = gpar(fontsize = 12, fontface="bold"),
+              
+              #Dendrogram configurations: columns
+              clustering_distance_columns="euclidean",
+              clustering_method_columns="complete",
+              column_dend_height=unit(10,"mm"),
+
+              #Dendrogram configurations: rows
+              clustering_distance_rows="euclidean",
+              clustering_method_rows="complete",
+              row_dend_width=unit(4,"cm"),
+              row_dend_side = "left",
+              row_dend_reorder = TRUE,
+
+              #Splits
+              border=T,
+              row_km = 1,
+              column_km = 1,
+              
+              #plot params
+              width = unit(5, "inch"), 
+              height = unit(4, "inch"),
+              #height = unit(0.4, "cm")*nrow(mat),
+              
+              #Annotations
+              top_annotation = ha_col)
+
+# plot heatmap
+draw(hm1, annotation_legend_side = "right", heatmap_legend_side="right")
+```
+
+# boxplots!
+```{R}
+# use normalised counts for this
+
+# subset the norm counts mat
+
+mat <- counts[which(rownames(counts) %in% rownames(top_genes)),]
+
+# lung, ctrl 
+mat <- mat[,1:6]
+
+
+for(i in plot){
+  
+  # handy deseq2 function plotCounts to get data into ggplot2 format
+  d <- plotCounts(dds, gene=paste0(i), intgroup = "condition", returnData = T)
+  
+  # need to remove melanoma
+  d <- subset(d, d$condition != "melanoma")
+  
+  # set up comps 
+  compare_means(count ~ condition, data = d, paired = FALSE, method = "t.test")
+  my_comparisons <- list(c("lung", "control"))
+  
+  # ggpubr, for loops must assign plot to variable and use plot(var)
+  pdf(paste0("~/RNA-Seq/", i, "_boxplot.pdf", sep=""))
+  p <- ggboxplot(d, x = "condition", y = "count", color = "black", 
+                 ylab ="Normalized Counts", title = paste0(i, "Expression", sep=" "), 
+                 xlab="", add = c("dotplot"), 
+                 add.params = list(size=0.25, jitter=0.01), 
+                 legend = "none", bxp.errorbar = T,
+                 bxp.errorbar.width = 0.2, width=0.3, ggtheme = theme_classic()) + 
+                 theme(axis.text.x = element_text( colour = "black", size=14)) +
+                 theme(axis.title.y = element_text( colour = "black", size=14)) + 
+                 stat_compare_means(comparisons=my_comparisons) + 
+                 theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+  plot(p)
+  dev.off()
+}
+
+
+
+
+
+compare_means(count ~ condition,  data = d, paired = FALSE, method = "t.test")
+my_comparisons <- list(c("lung", "control"))
+ggboxplot(d, x = "condition", y = "count", color = "black", 
+                 ylab =paste0(i), title = paste0(i, "Expression", sep=" "), 
+                 xlab="", add = c("dotplot"), 
+                 add.params = list(size=0.25, jitter=0.01), 
+                 size=0.5, legend = "none", bxp.errorbar = T,
+                 bxp.errorbar.width = 0.2, width=0.3, ggtheme = theme_classic()) + 
+                 theme(axis.text.x = element_text( colour = "black", size=14)) +
+                 theme(axis.title.y = element_text( colour = "black", size=14)) + 
+                 stat_compare_means(comparisons=my_comparisons, paired = FALSE, ref.group = "control", label = "p.format") + 
+                 theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+```
