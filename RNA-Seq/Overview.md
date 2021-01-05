@@ -20,7 +20,7 @@ Unfortunately we cannot mount a conda environment in R Studio (to my knowledge) 
 
 ***
 
-## Dataset
+# Dataset
 
 <center>
 <img src="https://raw.githubusercontent.com/BarryDigby/BarryDigby.github.io/master/_images/rna-seq/rnaseq-data.png" width="100%" height="100%"/>
