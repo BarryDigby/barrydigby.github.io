@@ -549,14 +549,6 @@ draw(hm1, annotation_legend_side = "right", heatmap_legend_side="right")
 ```{R}
 # use normalised counts for this
 
-# subset the norm counts mat
-
-mat <- counts[which(rownames(counts) %in% rownames(top_genes)),]
-
-# lung, ctrl 
-mat <- mat[,1:6]
-
-
 for(i in plot){
   
   # handy deseq2 function plotCounts to get data into ggplot2 format
@@ -565,9 +557,8 @@ for(i in plot){
   # need to remove melanoma
   d <- subset(d, d$condition != "melanoma")
   
-  # set up comps 
-  compare_means(count ~ condition, data = d, paired = FALSE, method = "t.test")
-  my_comparisons <- list(c("lung", "control"))
+  # set up comparisons
+  comps <- list(c("lung", "control"))
   
   # ggpubr, for loops must assign plot to variable and use plot(var)
   pdf(paste0("~/RNA-Seq/", i, "_boxplot.pdf", sep=""))
@@ -579,26 +570,18 @@ for(i in plot){
                  bxp.errorbar.width = 0.2, width=0.3, ggtheme = theme_classic()) + 
                  theme(axis.text.x = element_text( colour = "black", size=14)) +
                  theme(axis.title.y = element_text( colour = "black", size=14)) + 
-                 stat_compare_means(comparisons=my_comparisons) + 
                  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
-  plot(p)
+  
+  # add significance rules
+  z <- p + stat_compare_means(comparisons=comps, 
+                              method="t.test", 
+                              aes(label = ifelse(
+                                  p < 1.e-2,
+                                  sprintf("p = %2.1e", as.numeric(..p.format..)),
+                                  sprintf("p = %5.4f", as.numeric(..p.format..)))))
+  # plot the object
+  plot(z)
   dev.off()
 }
 
-
-
-
-
-compare_means(count ~ condition,  data = d, paired = FALSE, method = "t.test")
-my_comparisons <- list(c("lung", "control"))
-ggboxplot(d, x = "condition", y = "count", color = "black", 
-                 ylab =paste0(i), title = paste0(i, "Expression", sep=" "), 
-                 xlab="", add = c("dotplot"), 
-                 add.params = list(size=0.25, jitter=0.01), 
-                 size=0.5, legend = "none", bxp.errorbar = T,
-                 bxp.errorbar.width = 0.2, width=0.3, ggtheme = theme_classic()) + 
-                 theme(axis.text.x = element_text( colour = "black", size=14)) +
-                 theme(axis.title.y = element_text( colour = "black", size=14)) + 
-                 stat_compare_means(comparisons=my_comparisons, paired = FALSE, ref.group = "control", label = "p.format") + 
-                 theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
 ```
