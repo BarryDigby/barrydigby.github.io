@@ -8,7 +8,7 @@ Due to time constraints, you are tasked with writing a nextflow script for the f
 1. Read Alignment
 2. Mark Duplicates
 
-I will provide a full nextflow script of the BASH workflow for you to run in your own time after the tutorial.
+I will provide a full nextflow script of the BASH workflow for you to run when you have completed the exercise. 
 
 ***
 
