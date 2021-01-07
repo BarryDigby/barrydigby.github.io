@@ -60,4 +60,17 @@ scp USERNAME@bactsrv.nuigalway.ie:/home/USERNAME/seurat.tar.gz ./ && tar -xvf se
 
 ***
 
-The R markdown document for the analysis is available at the previous [repository](https://github.com/BarryDigby/barrydigby.github.io/tree/master/scRNA-Seq) link. 
+The R markdown document for the analysis is available at the previous [repository](https://github.com/BarryDigby/barrydigby.github.io/tree/master/scRNA-Seq) link.
+
+*N.B* one of the ENSEMBL gene identifiers has no gene symbol, and will create an error in seurat.
+
+Identify the row and remove it:
+```
+awk 'NF!=2' genes.tsv
+ENSG00000237235.2
+grep -v "ENSG00000237235.2" genes.tsv > tmp.tsv && rm genes.tsv && mv tmp.tsv genes.tsv
+```
+
+Look up the gene ID (`ENSG00000237235.2`) in google and add back to the `genes.tsv` file using a text editor, using a tab delimiter.
+
+Realistically we would do this in biomaRt to automate the process...

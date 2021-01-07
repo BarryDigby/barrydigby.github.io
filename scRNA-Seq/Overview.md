@@ -12,5 +12,6 @@ Similarly to the RNA-Seq analysis, we will be splitting time between LUGH and R 
 Please install the following packages in R for the local analysis:
 
 ```
-library(seurat)
+library(Seurat)
+library(patchwork)
 ```
