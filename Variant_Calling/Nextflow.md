@@ -240,3 +240,8 @@ process MarkDuplicates{
     """
 }
 ```
+
+***
+
+# Full script
+The full nextflow script is available (variant_calling.nf) at the following [repository](https://github.com/BarryDigby/barrydigby.github.io/tree/master/Variant_Calling)
