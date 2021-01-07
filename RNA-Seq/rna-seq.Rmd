@@ -501,7 +501,7 @@ fgsea <- fgseaMultilevel(pathways=pathway, stats=rank, eps = 0, scoreType = "pos
 
 Lets pretend we presented the results of fgsea to your investigator. He/She does a little dance because regulation of inflammatory response is significantly enriched and supports their hypothesis - they didnt flush thousands of euro down the drain! 
 
-Lets make some plots for them specifically for the pathway to keep them happy. 
+Lets make some plots of the pathway of interest to keep them happy. 
 
 # isolate the gene list
 ```{R}
@@ -605,7 +605,7 @@ draw(hm1, annotation_legend_side = "right", heatmap_legend_side="right")
 # boxplots!
 we can make boxplots for each genes expression with signficance values plotted for the t.test performed. 
 
-Below is an example of the pdf() and dev.off() fucntions. You can apply these to any of these plots we have created during the tutorial. Simply wrap the plot function with pdf()....plot fn...dev.off(). 
+Below is an example of the pdf() and dev.off() functions. You can apply these to any of these plots we have created during the tutorial. Simply wrap the plot function with pdf()....plot fn...dev.off(). 
 ```{R}
 # use normalised counts for this
 
