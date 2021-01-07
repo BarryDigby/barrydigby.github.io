@@ -5,7 +5,7 @@ permalink: /scRNA-Seq/Nextflow
 ---
 
 # Walkthrough
-The analysis using `kallisto` and `bustools` is relatively straight forward, however it uses directory outputs as inputs to processes which we have not encountered before.
+The analysis using `kallisto` and `bustools` uses directory as outputs and inputs to downstream processes which we have not encountered before.
 
 I will demonstrate how these work with some proof of concept scripts below.
 
