@@ -132,13 +132,7 @@ process foo {
 ```
 
 # Exercise
-The first process in `kallisto` is to index the reference transcriptome file. This is straight forward, simply use `kallisto index -i GRCh38.cDNA.idx $transcriptome_file` in the script section of the process.
-
-The second process will use the indexed transcriptome channel created from the first process. Using the `combine` operator, combine the indexed transcriptome with the fastq reads channel to perform quantification.
-
-*N.B* Kallisto quantification produces output directories. To capture these, use `file("${base}/") into quant_complete` in the processes output.
-
-*N.B* add `--single`, `-l 200` and `-s 30` flags to the kallisto quantification script.
+Refer to the `pipeline` section of this weeks tutorial for tips on how to run kallisto. The previous tips using `map` and `combine` should provide you with eveything you need to execute the analysis. 
 
 ***
 
