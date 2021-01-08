@@ -23,7 +23,7 @@ In nextflow, parameters are variables that can be passed to the script. You can 
 
 Save the below script as `test.nf` and run `nextflow run test.nf`
 
-```java
+```javascript
 #!/usr/bin/env nextflow
 
 // Parameters
@@ -45,11 +45,11 @@ nextflow run test.nf --reads "/data/MSc/2020/MA5112/Variant_Calling/reads/*_r{1,
 # Tuples {#tuples}
 In the previous script `test.nf`, the output printed to the terminal showed you the structure of the files in the channel `reads_ch`. We used `fromFilePairs()`, which is specifically designed for paired end sequencing data. It works by creating a tuple in which the first element is the grouping key of the matching pair and the second element is the list of files (sorted in lexicographical order).
 
-Let's practice acessing the contents of these tuples in a process.
+Let's practice accessing the contents of these tuples in a process.
 
 Save the below script as `test1.nf` and run `nextflow run test1.nf`
 
-```java
+```brainfuck
 #!/usr/bin/env nextflow
 
 // Parameters
@@ -86,7 +86,7 @@ In the previous example we created the channel `reads_ch` by specifying `Channel
 
 *N.B: Channels can only be used once!*
 
-```java
+```bash
 #!/usr/bin/env nextflow
 
 
@@ -152,7 +152,7 @@ In the exercise below I have started a nextflow script to read in the raw reads 
 
 Save as `trim_qc.nf` and run in your own directory:
 
-```bash
+```python
 nextflow -bg -q run trim_qc.nf \
 --outDir $(pwd) \
 -with-singularity /data/MSc/2020/MA5112/week_1/container/week1.img
