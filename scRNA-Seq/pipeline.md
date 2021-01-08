@@ -8,7 +8,15 @@ A description of the `kallisto bustools` pipeline has been provided for you belo
 
 There is no need to run this for this weeks tutorial, it has been posted as a learning resource.
 
-# 1. Indexing
+1. [Indexing](#index)
+2. [kallisto bus](#bus)
+3. [bustools correct](#correct)
+4. [bustools sort](#sort)
+5. [bustools text](#text)
+
+***
+
+# 1. Indexing {#index}
 Kallisto requires an indexed genome file for downstream quantification.
 
 ##### *Inputs*
@@ -26,7 +34,7 @@ Kallisto index produces an indexed genome file with the filename specified by `-
 
 ***
 
-# 2. Kallisto bus
+# 2. Kallisto bus {#bus}
 Generate BUS files for single-cell sequencing
 
 ##### *Inputs*
@@ -59,7 +67,7 @@ Kallisto `bus` generates an output directory with the following files:
 
 ***
 
-# 3. Bustools correct
+# 3. Bustools correct {#correct}
 BUS files can be barcode error corrected w.r.t. a technology specific whitelist of barcodes. The correct command will correct all barcodes that are at Hamming distance 1 (i.e. one substitution) away from a single barcode in the whitelist.
 
 ##### *Inputs*
@@ -82,7 +90,7 @@ Bustools `correct` outputs a corrected BUS file.
 
 ***
 
-# 4. Bustools sort
+# 4. Bustools sort {#sort}
 Raw BUS output from pseudoalignment programs may be unsorted. To simply and accelerate downstream processing BUS files can be sorted using bustools sort.
 
 ##### *Inputs*
@@ -107,7 +115,7 @@ Bustools `sort` outputs a sorted BUS file.
 
 ***
 
-# 5. Bustools Text
+# 5. Bustools text {#text}
 BUS files can be converted to a tab-separated format for easy inspection and processing using shell scripts or high level languages before importing to R/Python for downstream analysis.
 
 ##### *Inputs*
@@ -124,4 +132,4 @@ bustools text \
 - `-o` File for text output
 
 ##### *Outputs*
-Bustools `text` produces a BUS file in text format. 
+Bustools `text` produces a BUS file in text format.
