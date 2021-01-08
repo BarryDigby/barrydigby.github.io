@@ -13,7 +13,7 @@ I will demonstrate how these work with some proof of concept scripts below.
 
 Save the below script as `test.nf` and run `nextflow run test.nf`
 
-```nextflow
+```bash
 #!/usr/bin/env nextflow
 
 
