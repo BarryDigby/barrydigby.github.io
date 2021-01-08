@@ -79,8 +79,8 @@ process baz{
 
 ***
 
-# Analysis
-There will be no exercise for the scRNA-Seq workflow as it is slightly complex.
+# Exercise
+Complete the scRNA-Seq pipeline below. Refer to the `pipeline` section of this weeks tutorial to check process requirements.
 
 Save the below script as `kallisto_bustools.nf` and run in your directory:
 
@@ -91,7 +91,11 @@ run kallisto_bustools.nf \
 -with-singularity /data/MSc/2020/MA5112/scRNA-Seq/container/scRNA.img
 ```
 
-```nextflow
+*N.B* `bustools correct` will use the output directory from `kallisto bus`, account for this in the script. Refer to the walkthrough examples above of how to handle directories in processes.
+
+***
+
+```bash
 #!/usr/bin/env nextflow
 
 // FASTQ reads
@@ -121,68 +125,66 @@ process kallisto{
 	publishDir "$params.outDir/analysis/raw", mode:'copy'
 
 	input:
-	tuple val(base), file(reads) from reads_ch
-	file(idx) from params.idx
+
 
 	output:
-	file("bus_output") into kallisto_bus_sort
-	file("kallisto.log") into log_out
+
 
 	script:
 	"""
-	kallisto bus \
-	-i $idx \
-	-o bus_output/ \
-	-x ${params.chemistry} \
-	-t 2 \
-	$reads | tee kallisto.log
+
 	"""
 }
 
 
-process bustools_correct_sort{
+process bustools_correct{
 
 	publishDir "$params.outDir/analysis/sorted", mode:'copy'
 
 	input:
-	file(bus) from kallisto_bus_sort
-	file(whitelist) from params.whitelist
+
 
 	output:
-	file(bus) into kallisto_corrected
+
 
 	script:
-	correct = "bustools correct -w $whitelist -o ${bus}/output.corrected.bus ${bus}/output.bus"
-	sort_file = "${bus}/output.corrected.bus"
 	"""
-	$correct
-	mkdir -p tmp
-	bustools sort \
-	-T tmp/ \
-	-t 2 \
-	-o ${bus}/output.sort.bus \
-	$sort_file
+
+	"""
+}
+
+process bustools_sort{
+
+	publishDir "$params.outDir/analysis/sorted", mode:'copy'
+
+	input:
+
+
+	output:
+
+
+	script:
+	"""
+	mkdir -p tmp/
+
+
 	"""
 }
 
 
-
-process bustools_count{
+process bustools_text{
 
 	publishDir "$params.outDir/analysis/counts", mode:'copy'
 
 	input:
-	file(bus) from kallisto_corrected
-	file(tx2gene) from params.tx2gene
+
 
 	output:
-	file("output.sort.txt") into out
+
 
 	script:
 	"""
-	bustools text \
-	-o output.sort.txt \
-	${bus}/output.sort.bus
+
 	"""
 }
 ```
