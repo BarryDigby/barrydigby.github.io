@@ -60,10 +60,7 @@ In this weeks tutorial we want to create an environment for the quality control 
 
 Choosing a trimming tool is highly subjective however, I like the flexibility of `bbduk`, part of the `bbtools` suite.
 
-### To Do:
-Below I have provided an incomplete `.yml` file, where the name and channels have been specified for you.
-1. Complete the `.yml` file by specifing the 3 dependencies referenced above.
-2. Save as `week1.yml`.
+Please save the below block as `week1.yml`. 
 
 ```
 name: QC
@@ -73,9 +70,9 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  -
-  -
-  -
+  - fastqc
+  - multiqc
+  - bbtools
 ```
 
 To create a conda environment using the `.yml` file, run the following command in the terminal:
