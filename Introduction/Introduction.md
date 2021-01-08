@@ -4,7 +4,9 @@ layout: page
 permalink: /Introduction/Overview
 ---
 
-The tutorial will be conducted both locally and on Lugh. We will cover the following topics:
+The tutorial will be conducted both locally and on Lugh. The goal of this weeks tutorial is to get you comfortable designing your own containers, which play a huge role in creating reproducible workflows. This is the only week we will dedicate to creating containers, due to time constraints I will prepare containers for subsequent weeks analyses.
+
+We will cover the following topics:
 
 1. [Conda](http://barrydigby.github.io/Week_1/Conda): Install packages & create environments using a `yaml` file *~20 min*
 2. [Docker](http://barrydigby.github.io/Week_1/Docker): Create Docker image using `Dockerfile` with a Conda layer. Store image on Dockerhub *~20 min*
