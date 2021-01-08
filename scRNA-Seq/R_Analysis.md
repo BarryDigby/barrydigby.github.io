@@ -20,13 +20,8 @@ analysis/
 │   │   └── transcripts.txt
 │   └── kallisto.log
 └── sorted
-    └── bus_output
-        ├── matrix.ec
-        ├── output.bus
-        ├── output.corrected.bus
-        ├── output.sort.bus
-        ├── run_info.json
-        └── transcripts.txt
+    ├── output.corrected.bus
+    └── output.sort.bus
 ```
 
 We are going to use a python script `make_mtx.py`, available at the following  [repository](https://github.com/BarryDigby/barrydigby.github.io/tree/master/scRNA-Seq)
