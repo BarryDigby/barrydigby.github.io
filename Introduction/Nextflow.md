@@ -23,7 +23,7 @@ In nextflow, parameters are variables that can be passed to the script. You can 
 
 Save the below script as `test.nf` and run `nextflow run test.nf`
 
-```javascript
+```bash
 #!/usr/bin/env nextflow
 
 // Parameters
@@ -49,7 +49,7 @@ Let's practice accessing the contents of these tuples in a process.
 
 Save the below script as `test1.nf` and run `nextflow run test1.nf`
 
-```brainfuck
+```bash
 #!/usr/bin/env nextflow
 
 // Parameters
@@ -152,13 +152,13 @@ In the exercise below I have started a nextflow script to read in the raw reads 
 
 Save as `trim_qc.nf` and run in your own directory:
 
-```python
+```bash
 nextflow -bg -q run trim_qc.nf \
 --outDir $(pwd) \
 -with-singularity /data/MSc/2020/MA5112/week_1/container/week1.img
 ```
 
-```nextflow
+```bash
 #!/usr/bin/env nextflow
 
 // Parameters
