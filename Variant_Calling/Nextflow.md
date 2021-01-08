@@ -118,7 +118,6 @@ process qux{
 	"""
 	# to access individual read pairs, use 0 based indexing
 	# use ${base} to name files, appending the correct extension.
-  # we will change `fastq.gz` to `fq.gz`
 	mv ${reads[0]} ${base}_r1.fq.gz
 	mv ${reads[1]} ${base}_r2.fq.gz
 	"""
