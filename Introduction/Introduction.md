@@ -11,6 +11,8 @@ The tutorial will be conducted both locally and on Lugh. We will cover the follo
 3. [Singularity](http://barrydigby.github.io/Week_1/Singularity): Pull image from Dockerhub and convert to container. (20 min)
 4. [Nextflow](http://barrydigby.github.io/Week_1/Nextflow): Create workflow pipeline performing QC on sequencing reads. (1 hr)
 
+***
+
 ## Prerequisites
  Please make sure you have the following for the tutorial:
  - Local [Anaconda](https://www.anaconda.com/products/individual) installation.
