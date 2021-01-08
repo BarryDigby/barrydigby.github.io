@@ -8,7 +8,7 @@ Due to time constraints, you are tasked with writing a nextflow script for the f
 1. Read Alignment
 2. Mark Duplicates
 
-I will provide a full nextflow script of the BASH workflow for you to run when you have completed the exercise. 
+I will provide a full nextflow script of the BASH workflow for you to run when you have completed the exercise.
 
 ***
 
@@ -116,14 +116,9 @@ process qux{
 
 	script:
 	"""
-	echo "tuple val(base) uses the common string in the fastq read pair name, dictated by the glob pattern in params.reads"
-	echo "in our case, the variable base is: $base"
-	echo ""
-	echo 'The variable (dollar)reads stores r1 & r2 in the order they appear in the tuple'
-	echo "$reads"
-
 	# to access individual read pairs, use 0 based indexing
-	# use ${base} to name outputs, appending the correct extension
+	# use ${base} to name files, appending the correct extension.
+  # we will change `fastq.gz` to `fq.gz`
 	mv ${reads[0]} ${base}_r1.fq.gz
 	mv ${reads[1]} ${base}_r2.fq.gz
 	"""
@@ -245,3 +240,12 @@ process MarkDuplicates{
 
 # Full script
 The full nextflow script is available (variant_calling.nf) at the following [repository](https://github.com/BarryDigby/barrydigby.github.io/tree/master/Variant_Calling)
+
+Save the script to your own directory and run it by calling:
+
+```bash
+nextflow -bg -q run variant_calling.nf \
+--outDir $(pwd) \
+--analysisDir "/data/MSc/2020/MA5112/Variant_Calling" \
+-with-singularity /data/MSc/2020/MA5112/Variant_Calling/contaier/germline_vc.img
+```
