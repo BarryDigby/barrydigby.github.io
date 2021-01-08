@@ -1,10 +1,10 @@
 ---
-title: Exome Sequencing Analysis
+title: Exome Sequencing Pipeline
 layout: page
-permalink: /Variant_Calling/BASH
+permalink: /Variant_Calling/pipeline
 ---
 
-A detailed workflow has been provided for you to run a germline variant calling analysis on LUGH before attempting to create a nextflow script.
+A detailed pipeline has been provided for you to run a germline variant calling analysis on LUGH before attempting to create a nextflow script.
 
 1. [Genome Indexing](#index)  
     - [BWA Index](#bwaidx)  
@@ -30,7 +30,7 @@ A detailed workflow has been provided for you to run a germline variant calling 
 ***
 
 # Compute Resources
-**Do not run this analysis on the head node!**.
+**Do not run this analysis on the head node!**
 
 Request computing resources on LUGH:
 
@@ -46,8 +46,9 @@ ssh compute0{1..3}
 
 Tools required for the analysis are available in a pre-prepared container for the tutorial. Invoke an interactive shell session within the container.
 
-```
-singularity shell -B /data /path/to/container
+```bash
+singularity shell -B /data \
+/data/MSc/2020/MA5112/Variant_Calling/container/germline_vc.img
 ```
 
 Please ask for help if you are uncertain that you have completed this step correctly.
@@ -435,7 +436,9 @@ gatk MergeVcfs \
 - `-O`: The same VCF file output by `GenotypeVCFs`, with added annotations denoting filtering thresholds failed or `PASS` if the variant passed all thresholds.
 
 # 9. Annotate Variants {#annotate}
-Run in your own time, this step takes a long time. Usually we submit this job to SLURM with much more resources than we have initially requested.
+Please do not run this as you will not be able to complete this step with the compute resources we have requested.
+
+I have included `snpEff` in the full nextflow script, which I will provide at the end of the tutorial.
 
 ```bash
 snpEff GRCh37.75 \
