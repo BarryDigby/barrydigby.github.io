@@ -12,15 +12,18 @@ We will use `nextflow` to construct a script capable of performing read QC, adap
 
 Jump to:
 - [Parameters](#params)
+- [Tuples](#tuples)
 - [Channels](#channel)
 - [Exercise](#exercise)
 
 I will show you how to construct the processes, leaving you to stitch them together to make a single script.
 
 # Parameters {#params}
-In nextflow, parameters are variables that can be passed to the script. You can hard-code them in the script, or pass them to the script via the command line.
+In nextflow, parameters are variables that can be passed to the script. You can hard-code them in the script, or pass them to the script via the command line. Whichever method you choose, the parameter must be declared in the script i.e `params.reads = "/path/*glob"` or `params.reads = null`
 
-```nextflow
+Save the below script as `test.nf` and run `nextflow run test.nf`
+
+```java
 #!/usr/bin/env nextflow
 
 // Parameters
@@ -31,42 +34,59 @@ reads_ch = Channel.fromFilePairs(params.reads)
 reads_ch.view()
 ```
 
-Run the hard-coded paramters below by calling:
+Pass a different FASTQ pair to the script via the command line by calling:
 
 ```bash
-nextflow run quality_control.nf
+nextflow run test.nf --reads "/data/MSc/2020/MA5112/Variant_Calling/reads/*_r{1,2}.fastq.gz"
 ```
 
-Pass parameters via the command line by calling:
+***
 
-```bash
-nextflow run quality_control.nf --reads "/data/MSc/2020/MA5112/week_1/raw_data/*_r{1,2}.fastq.gz"
+# Tuples {#tuples}
+In the previous script `test.nf`, the output printed to the terminal showed you the structure of the files in the channel `reads_ch`. We used `fromFilePairs()`, which is specifically designed for paired end sequencing data. It works by creating a tuple in which the first element is the grouping key of the matching pair and the second element is the list of files (sorted in lexicographical order).
+
+Let's practice acessing the contents of these tuples in a process.
+
+Save the below script as `test1.nf` and run `nextflow run test1.nf`
+
+```java
+#!/usr/bin/env nextflow
+
+// Parameters
+params.outdir = "./"
+params.reads = "/data/MSc/2020/MA5112/week_1/raw_data/*_r{1,2}.fastq.gz"
+
+// Initialise Channel
+reads_ch = Channel.fromFilePairs(params.reads)
+
+process test{
+
+	echo true
+
+	input:
+	tuple val(base), file(reads) from reads_ch
+
+	output:
+	stdout to out
+
+	script:
+	"""
+	echo "$base"
+	echo ""
+	echo "$reads"
+	"""
+}
 ```
 
-Both produce the same output
-
-```
-N E X T F L O W  ~  version 20.10.0
-Launching `quality_control.nf` [berserk_gutenberg] - revision: eace5429d7
-[hcc1395_normal_rep1, [/data/MSc/2020/MA5112/week_1/raw_data/hcc1395_normal_rep1_r1.fastq.gz, /data/MSc/2020/MA5112/week_1/raw_data/hcc1395_normal_rep1_r2.fastq.gz]]
-[hcc1395_normal_rep2, [/data/MSc/2020/MA5112/week_1/raw_data/hcc1395_normal_rep2_r1.fastq.gz, /data/MSc/2020/MA5112/week_1/raw_data/hcc1395_normal_rep2_r2.fastq.gz]]
-[hcc1395_normal_rep3, [/data/MSc/2020/MA5112/week_1/raw_data/hcc1395_normal_rep3_r1.fastq.gz, /data/MSc/2020/MA5112/week_1/raw_data/hcc1395_normal_rep3_r2.fastq.gz]]
-[hcc1395_tumor_rep1, [/data/MSc/2020/MA5112/week_1/raw_data/hcc1395_tumor_rep1_r1.fastq.gz, /data/MSc/2020/MA5112/week_1/raw_data/hcc1395_tumor_rep1_r2.fastq.gz]]
-[hcc1395_tumor_rep2, [/data/MSc/2020/MA5112/week_1/raw_data/hcc1395_tumor_rep2_r1.fastq.gz, /data/MSc/2020/MA5112/week_1/raw_data/hcc1395_tumor_rep2_r2.fastq.gz]]
-[hcc1395_tumor_rep3, [/data/MSc/2020/MA5112/week_1/raw_data/hcc1395_tumor_rep3_r1.fastq.gz, /data/MSc/2020/MA5112/week_1/raw_data/hcc1395_tumor_rep3_r2.fastq.gz]]
-
-```
 
 # Channels {#channel}
 In nextflow files are passed to each process via channels.
 
-In the previous example we created the channel `reads_ch` by specifying `Channel.fromFilePairs()`. The channel now contains each file matching the glob pattern `*.fastq.gz` in the directory given by `params.reads`.
-
-We will use the `read_ch` to provide the `FastQC` process the raw data, collect the files prodcued from FastQC and pass them to MultiQC.
+In the previous example we created the channel `reads_ch` by specifying `Channel.fromFilePairs()`. We will use the `read_ch` to provide the `FastQC` process the raw data, collect the files prodcued from FastQC and pass them to MultiQC, demonstrating inputs and output usage in processes.
 
 *N.B: Channels can only be used once!*
 
-```nextflow
+```java
 #!/usr/bin/env nextflow
 
 
@@ -79,14 +99,13 @@ reads_ch = Channel.fromFilePairs(params.reads)
 
 process FastQC {
 
-	label 'FastQC'
 	publishDir "$params.outdir/QC/raw", mode:'copy'
 
 	input:
-		tuple val(key), file(reads) from reads_ch
+	tuple val(key), file(reads) from reads_ch
 
 	output:
-		file("*.{html,zip}") into fastqc_ch
+	file("*.{html,zip}") into fastqc_ch
 
 	script:
 	"""
@@ -96,14 +115,13 @@ process FastQC {
 
 process MultiQC {
 
-	label 'MultiQC'
 	publishDir "${params.outdir}/QC/raw", mode:'copy'
 
 	input:
-		file(htmls) from fastqc_ch.collect()
+	file(htmls) from fastqc_ch.collect()
 
 	output:
-		file("*multiqc_report.html") into multiqc_report_ch
+	file("*multiqc_report.html") into multiqc_report_ch
 
 	script:
 	"""
@@ -116,29 +134,35 @@ process MultiQC {
 To run the script on Lugh we will add additional parameters to the command line:
 
 ```bash
-nextflow -bg -q run quality_control.nf -with-singularity container/week1.img
+nextflow -bg -q run quality_control.nf \
+-with-singularity /data/MSc/2020/MA5112/week_1/container/week1.img
 ```
 
-1. `-bg`: Run the script in the background. Nextflow will parse the Configuration file located at `~/.nextflow/config` to determine the resource usage for SLURM.
-2. `-q`: Quiet, do not print stdout to console.
-3. `-with-singularity`: Use container to execute the script. Provide the path to the container.
+- `-bg` Run the script in the background. Nextflow will parse the Configuration file located at `~/.nextflow/config` to determine the resource usage for SLURM.
+- `-q` Quiet, do not print stdout to console.
+- `-with-singularity` Use container to execute the script. Provide the path to the container.
 
 Run this line of code yourself, and type `squeue -u mscstudent` on Lugh to view the submitted jobs.
-
-When the job is finished, the reports will be under `PATH_TO_YOUR_DIRECTORY/QC/raw`.
 
 # Exercise {#exercise}
 ***
 I have shown you how to intitialise a raw read channel for downstream use with FastQC and MultiQC.
 
-In the exercise below I have started a nextflow script to read in the raw reads and perform adapter trimming and read filtering using bbduk.sh. Finish the script by using the trimmed reads channel, passing it to a FastQC and MultiQC processes to inspect the statistics of the filtered reads.
+In the exercise below I have started a nextflow script to read in the raw reads and perform adapter trimming and read filtering using bbduk.sh. Finish the script by using the trimmed reads channel, passing it to FastQC, and collecting the outputs of FastQC as inputs to Multiqc.
+
+Save as `trim_qc.nf` and run in your own directory:
+
+```bash
+nextflow -bg -q run trim_qc.nf \
+--outDir $(pwd) \
+-with-singularity /data/MSc/2020/MA5112/week_1/container/week1.img
+```
 
 ```nextflow
 #!/usr/bin/env nextflow
 
-
 // Parameters
-params.outdir = "./"
+params.outDir = "./"
 params.reads = "/data/MSc/2020/MA5112/week_1/raw_data/*_r{1,2}.fastq.gz"
 params.adapters = "/data/MSc/2020/MA5112/week_1/assets/adapters.fa"
 
@@ -148,8 +172,8 @@ reads_ch = Channel.fromFilePairs(params.reads)
 process Trim {
 
 	label 'BBDUK'
-	publishDir "${params.outdir}/trimmed_reads", mode:'copy', pattern: "*.fq.gz"
-	publishDir "${params.outdir}/QC/trimmed", mode:'copy', pattern: "*.stats.txt"
+	publishDir "${params.outDir}/trimmed_reads", mode:'copy', pattern: "*.fq.gz"
+	publishDir "${params.outDir}/QC/trimmed", mode:'copy', pattern: "*.stats.txt"
 
 	input:
 		tuple val(key), file(reads) from reads_ch
@@ -179,7 +203,7 @@ process Trim {
 process FastQC {
 
 	label 'FastQC'
-	publishDir "${params.outdir}/QC/trimmed", mode:'copy'
+	publishDir "${params.outDir}/QC/trimmed", mode:'copy'
 
 	input:
 
@@ -196,7 +220,7 @@ process FastQC {
 process MultiQC {
 
 	label 'MultiQC'
-	publishDir "${params.outdir}/QC/trimmed", mode:'copy'
+	publishDir "${params.outDir}/QC/trimmed", mode:'copy'
 
 	input:
 
