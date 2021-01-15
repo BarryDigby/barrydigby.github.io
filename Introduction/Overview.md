@@ -8,10 +8,10 @@ The tutorial will be conducted both locally and on Lugh. The goal of this weeks 
 
 We will cover the following topics:
 
-1. [Conda](http://barrydigby.github.io/Week_1/Conda): Install packages & create environments using a `yaml` file *~20 min*
-2. [Docker](http://barrydigby.github.io/Week_1/Docker): Create Image using `Dockerfile` with a Conda layer. Push image to Dockerhub *~20 min*
-3. [Singularity](http://barrydigby.github.io/Week_1/Singularity): Pull image from Dockerhub and convert to container *~20 min*
-4. [Nextflow](http://barrydigby.github.io/Week_1/Nextflow): Create workflow pipeline performing QC on sequencing reads *~1 hour*
+1. [Conda](http://barrydigby.github.io/Introduction/Conda): Install packages & create environments using a `yaml` file *~20 min*
+2. [Docker](http://barrydigby.github.io/Introduction/Docker): Create Image using `Dockerfile` with a Conda layer. Push image to Dockerhub *~20 min*
+3. [Singularity](http://barrydigby.github.io/Introduction/Singularity): Pull image from Dockerhub and convert to container *~20 min*
+4. [Nextflow](http://barrydigby.github.io/Introduction/Nextflow): Create workflow pipeline performing QC on sequencing reads *~1 hour*
 
 ***
 
