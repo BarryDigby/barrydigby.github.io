@@ -12,7 +12,7 @@ To cover the login once more:
 
 1. On your local machine, type `ssh <username>@bactsrv.nuigalway.ie`. This will prompt your password. If you have not yet changed it, the temporary password for `bactsrv` is `Galway2019!`
 
-2. When you are on `bactsrv` prompt a password change by typing the command `passwd`. Follow the instructions on screen. 
+2. When you are on `bactsrv` prompt a password change by typing the command `passwd`. Follow the instructions on screen.
 3. Log into `lugh` *from `bactsrv`* by typing `ssh <username>@lugh.nuigalway.ie` . Once again you will be prompted for a password, the temporary password is `Galway2020`.
 4. Change your `lugh` password using `passwd`.
 
@@ -29,23 +29,23 @@ To cover the `~/.ssh/config` file, all we are doing is creating a shortcut to po
    	Hostname bactsrv.nuigalway.ie
    	User bdigby
    	ForwardX11 yes
-   
+
    Host lugh
    	HostName lugh.nuigalway.ie
    	User bdigby
    	ForwardX11 yes
-   
+
    Host *
    	ServerAliveInterval 180
    ```
 
-   \* Substitute bdigby for your username. 
+   \* Substitute bdigby for your username.
 
-Personally, I am able to port straight to `lugh` by typing `ssh lugh`. I am not sure if this will work on your machine, but the most important thing is that you are able to log in, even if it via the slightly longer method. 
+Personally, I am able to port straight to `lugh` by typing `ssh lugh`. I am not sure if this will work on your machine, but the most important thing is that you are able to log in, even if it via the slightly longer method.
 
-Please get this working for next weeks tutorial. If you are having trouble with logging in from now until the next practical, email Shane as he is a system admin for `lugh`. 
+Please get this working for next weeks tutorial. If you are having trouble with logging in from now until the next practical, email Shane as he is a system admin for `lugh`.
 
-You are also assumed to be comfortable navigating the file system, so get back up to speed using `cd`, `pwd`, `ls`, `mv`, `cp` etc. 
+You are also assumed to be comfortable navigating the file system, so get back up to speed using `cd`, `pwd`, `ls`, `mv`, `cp` etc.
 
 ***
 
@@ -63,19 +63,19 @@ Week 1 tutorial assumes you have the following installed **on your local machine
 
    ```
    curl -s https://get.nextflow.io | bash
-   
+
    mv nextflow /usr/bin/
    ```
 
 5. Please create a Dockerhub account. I would advise using a similar username to your one on lugh, and a similar/same password.
 
-We will be creating docker containers locally and pushing them to dockerhub. This cannot be done on lugh because Docker requires sudo privileges which our accounts do not, and will never have. Once on lugh we can pull the images from dockerhub using singularity. 
+We will be creating docker containers locally and pushing them to dockerhub. This cannot be done on lugh because Docker requires sudo privileges which our accounts do not, and will never have. Once on lugh we can pull the images from dockerhub using singularity.
 
 ***
 
 ### `~/.bashrc`
 
-On `lugh`, you need to configure your `~/.bashrc` file. The `~/.bashrc` file is essentially a set of 'startup instructions'. So once again, go from your local machine to `bactsrv`, and then log into `lugh`. 
+On `lugh`, you need to configure your `~/.bashrc` file. The `~/.bashrc` file is essentially a set of 'startup instructions'. So once again, go from your local machine to `bactsrv`, and then log into `lugh`.
 
 Once on `lugh`, open your `~/.bashrc` file using nano or vim. This example should set you up with most things you need, copy them into the file:
 
@@ -96,7 +96,7 @@ module load singularity
 module load nano
 source /home/mscstudent/anaconda3/bin/activate
 
-## Colour 
+## Colour
 case "$TERM" in
     xterm-color|*-256color) color_prompt=yes;;
 esac
@@ -148,9 +148,21 @@ alias sq="squeue"
 alias squ="squeue -u bdigby"
 ```
 
-Changes instances of `bdigby` to your username (just the last line). 
+Changes instances of `bdigby` to your username (just the last line).
 
-To initialise the changes, type `source ~/.bashrc`. 
+To initialise the changes, type `source ~/.bashrc`.
+
+***
+
+### Nextflow on lugh
+
+Similarly to the local install, run the command:
+
+```
+  curl -s https://get.nextflow.io | bash
+
+  mv nextflow /usr/bin/
+```
 
 ***
 
@@ -158,7 +170,4 @@ To initialise the changes, type `source ~/.bashrc`.
 
 I have created directories for each of you under `/data/MSc/2021/<username>`
 
-This is where you will run your analyses. Stay out of `/home/<username>` as the home directory is low on storage. Do not ever run an analysis there. 
-
-
-
+This is where you will run your analyses. Stay out of `/home/<username>` as the home directory is low on storage. Do not ever run an analysis there.
