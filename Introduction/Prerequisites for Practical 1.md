@@ -171,3 +171,5 @@ Similarly to the local install, run the command:
 I have created directories for each of you under `/data/MSc/2021/<username>`
 
 This is where you will run your analyses. Stay out of `/home/<username>` as the home directory is low on storage. Do not ever run an analysis there.
+
+See you all next Thursday
