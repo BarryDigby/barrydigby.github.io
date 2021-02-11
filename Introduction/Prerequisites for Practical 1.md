@@ -96,6 +96,9 @@ module load singularity
 module load nano
 source /home/mscstudent/anaconda3/bin/activate
 
+# on startup, move to this directory
+cd /data/MSc/2021
+
 ## Colour
 case "$TERM" in
     xterm-color|*-256color) color_prompt=yes;;
