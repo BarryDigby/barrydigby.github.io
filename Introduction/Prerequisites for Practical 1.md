@@ -41,7 +41,7 @@ To cover the `~/.ssh/config` file, all we are doing is creating a shortcut to po
 
    \* Substitute bdigby for your username.
 
-Personally, I am able to port straight to `lugh` by typing `ssh lugh`. I am not sure if this will work on your machine, but the most important thing is that you are able to log in, even if it via the slightly longer method.
+Personally, I am able to port straight to `lugh` by typing `ssh lugh`. I am not sure if this will work on your machine, but the most important thing is that you are able to log in, even if it is via the scenic route.
 
 Please get this working for next weeks tutorial. If you are having trouble with logging in from now until the next practical, email Shane as he is a system admin for `lugh`.
 
@@ -57,7 +57,7 @@ Week 1 tutorial assumes you have the following installed **on your local machine
 
 2. Singularity (https://singularity.lbl.gov/install-linux#option-1-download-latest-stable-release)
 
-3. Anaconda (https://repo.anaconda.com/archive/Anaconda3-2020.11-Linux-x86_64.sh) - This will download an executable `.sh` file. Located it on the command line (`~/Downloads`?) and type `bash Anaconda3-2020.11-Linux-x86_64.sh` and follow the prompts. You do not need to change the install directory, `/home/username/anaconda3` is fine. 
+3. Anaconda (https://repo.anaconda.com/archive/Anaconda3-2020.11-Linux-x86_64.sh) - This will download an executable `.sh` file. Located it on the command line (`~/Downloads`?) and type `bash Anaconda3-2020.11-Linux-x86_64.sh` and follow the prompts. You do not need to change the install directory, `/home/username/anaconda3` is fine.
 
 4. Nextflow:
 
