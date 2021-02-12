@@ -90,8 +90,6 @@ On `lugh`, you need to configure your `~/.bashrc` file. The `~/.bashrc` file is 
 
 Once on `lugh`, open your `~/.bashrc` file using nano or vim. This example should set you up with most things you need, copy them into the file (replace current file with this).
 
-*N.B: There is a chance nano wont be loaded for you on your first login. Type `module load nano` to load it, or use vim.*
-
 ```
 # .bashrc
 
@@ -104,7 +102,6 @@ fi
 module load EasyBuild/3.4.1
 module load Java/1.8.0_144
 module load singularity
-module load nano
 source /home/mscstudent/anaconda3/bin/activate
 
 # on startup, move to this directory
