@@ -77,7 +77,7 @@ We will be creating docker containers locally and pushing them to dockerhub. Thi
 
 On `lugh`, you need to configure your `~/.bashrc` file. The `~/.bashrc` file is essentially a set of 'startup instructions'. So once again, go from your local machine to `bactsrv`, and then log into `lugh`.
 
-Once on `lugh`, open your `~/.bashrc` file using nano or vim. This example should set you up with most things you need, copy them into the file:
+Once on `lugh`, open your `~/.bashrc` file using nano or vim. This example should set you up with most things you need, copy them into the file (replace current file with this).
 
 *N.B: There is a chance nano wont be loaded for you on your first login. Type `module load nano` to load it, or use vim.*
 
