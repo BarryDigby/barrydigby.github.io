@@ -110,7 +110,7 @@ Currently Loaded Modules:
 
 ### `~/.bashrc`
 
-We are going to configure your `~/.bashrc` file to automatically load modules (amongst other things) on startup so you dont have to do it manually every time. Open your `~/.bashrc` file using nano or vim and delete all of the contents, replacing them with the file below:
+We are going to configure your `~/.bashrc` file **on lugh** to automatically load modules (amongst other things) on startup so you dont have to do it manually every time. Open your `~/.bashrc` file using nano or vim and delete all of the contents, replacing them with the file below:
 
 ```
 # .bashrc
