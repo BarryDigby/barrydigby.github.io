@@ -75,8 +75,7 @@ sudo apt install default-jre
 java -version
 ```
 
-You should see that Java 11 has been installed. 
-
+You should see that Java 11 has been installed. Any Java version above 8 is fine. 
 
 5. Please create a Dockerhub account. I would advise using a similar username to your one on lugh, and a similar/same password.
 
@@ -84,11 +83,32 @@ We will be creating docker containers locally and pushing them to dockerhub. Thi
 
 ***
 
+### Lugh
+When you first log into lugh, you need to run the following commands to 1) Load EasyBuild 2) Set up Java via EasyBuild. 
+
+```bash
+module load EasyBuild
+eb -r /data/MSc/2021/jdk-8u144-linux-x64.tar.gz   /data/MSc/2021/Java-1.8.0_144.eb
+```
+
+or 
+
+```bash
+module load EasyBuild
+eb -r /data/MSc/2021/jdk-8u144-linux-x64.tar.gz
+```
+
+After running this, `module li` should return currently loaded modules:
+
+```bash
+Currently Loaded Modules:
+ 1) autotools  3) gnu7/7.2.0    5) ohpc       7) Java/1.8.0_144
+ 2) prun/1.2  4) openmpi3/3.0.0  6) EasyBuild/3.4.1
+ ```
+
 ### `~/.bashrc`
 
-On `lugh`, you need to configure your `~/.bashrc` file. The `~/.bashrc` file is essentially a set of 'startup instructions'. So once again, go from your local machine to `bactsrv`, and then log into `lugh`.
-
-Once on `lugh`, open your `~/.bashrc` file using nano or vim. This example should set you up with most things you need, copy them into the file (replace current file with this).
+We are going to configure your `~/.bashrc` file to automatically load modules (amongst other things) on startup so you dont have to do it manually every time. Open your `~/.bashrc` file using nano or vim and delete all of the contents, replacing them with the file below:
 
 ```
 # .bashrc
@@ -162,6 +182,14 @@ alias squ="squeue -u bdigby"
 Changes instances of `bdigby` to your username (just the last line).
 
 To initialise the changes, type `source ~/.bashrc`.
+
+`module li` should output:
+
+```
+Currently Loaded Modules:
+ 1) autotools  3) gnu7/7.2.0    5) ohpc       7) Java/1.8.0_144
+ 2) prun/1.2  4) openmpi3/3.0.0  6) EasyBuild/3.4.1  8) singularity/3.4.1`
+```
 
 ***
 
