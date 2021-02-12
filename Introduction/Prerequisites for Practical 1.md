@@ -67,6 +67,17 @@ Week 1 tutorial assumes you have the following installed **on your local machine
    mv nextflow /usr/bin/
    ```
 
+You must have Java 8 or higher installed for this to work:
+
+```bash
+sudo apt update
+sudo apt install default-jre
+java -version
+```
+
+You should see that Java 11 has been installed. 
+
+
 5. Please create a Dockerhub account. I would advise using a similar username to your one on lugh, and a similar/same password.
 
 We will be creating docker containers locally and pushing them to dockerhub. This cannot be done on lugh because Docker requires sudo privileges which our accounts do not, and will never have. Once on lugh we can pull the images from dockerhub using singularity.
@@ -164,7 +175,7 @@ Similarly to the local install, run the command:
 ```
   curl -s https://get.nextflow.io | bash
 
-  mv nextflow /usr/bin/
+  mv nextflow ~/bin
 ```
 
 ***
