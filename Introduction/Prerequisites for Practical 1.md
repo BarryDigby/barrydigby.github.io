@@ -71,21 +71,22 @@ Week 1 tutorial assumes you have the following installed **on your local machine
 
 4. Nextflow:
 
-   ```
-   curl -s https://get.nextflow.io | bash
+    You must have Java 8 or higher installed for this to work:
 
-   mv nextflow /usr/bin/
-   ```
+    ```bash
+    sudo apt update
+    sudo apt install default-jre
+    java -version
+    ```
+    You should see that Java 11 has been installed. Any Java version above 8 is fine. 
+    
+    Install `nextflow`:
 
-You must have Java 8 or higher installed for this to work:
+    ```
+    curl -s https://get.nextflow.io | bash
 
-```bash
-sudo apt update
-sudo apt install default-jre
-java -version
-```
-
-You should see that Java 11 has been installed. Any Java version above 8 is fine. 
+    mv nextflow /usr/bin/
+    ```
 
 5. Please create a Dockerhub account. I would advise using a similar username to your one on lugh, and a similar/same password.
 
