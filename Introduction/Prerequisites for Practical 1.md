@@ -55,7 +55,17 @@ Week 1 tutorial assumes you have the following installed **on your local machine
 
 1. Docker (https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository)
 
-2. Singularity (https://singularity.lbl.gov/install-linux#option-1-download-latest-stable-release)
+2. Singularity (https://sylabs.io/guides/3.6/admin-guide/installation.html#id1)
+
+    - Install Dependencies
+    - Install GO
+    - Install Stable Release (version 3.6.4)
+    
+    If you have installed singularity version 2.5.2 (check `singularity --version`) please delete the executable and install version 3.6.4 following the final step above. 
+    ```bash
+    ## delete old version 
+    sudo rm -rf /usr/local/libexec/singularity
+    ```
 
 3. Anaconda (https://repo.anaconda.com/archive/Anaconda3-2020.11-Linux-x86_64.sh) - This will download an executable `.sh` file. Locate it on the command line (`~/Downloads`?) and type `bash Anaconda3-2020.11-Linux-x86_64.sh` and follow the prompts. You do not need to change the install directory, `/home/username/anaconda3` is fine.
 
