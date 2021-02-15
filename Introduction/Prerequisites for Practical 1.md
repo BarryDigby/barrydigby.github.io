@@ -60,8 +60,9 @@ Week 1 tutorial assumes you have the following installed **on your local machine
     - Install Dependencies
     - Install GO
     - Install Stable Release (version 3.6.4)
+    - ! Don't forget to compile the code !
     
-    If you have installed singularity version 2.5.2 (check `singularity --version`) please delete the executable and install version 3.6.4 following the final step above. 
+    If you have installed singularity version 2.5.2 (check `singularity --version`) please delete the executable and install version 3.6.4 following the final 2 steps above. 
     ```bash
     ## delete old version 
     sudo rm -rf /usr/local/libexec/singularity
