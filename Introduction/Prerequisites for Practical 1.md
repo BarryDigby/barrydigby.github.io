@@ -213,7 +213,7 @@ Similarly to the local install, run the command:
 ```
   curl -s https://get.nextflow.io | bash
 
-  mv nextflow ~/bin
+  mv nextflow ~/bin/
 ```
 
 ***
