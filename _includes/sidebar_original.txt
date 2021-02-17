@@ -1,0 +1,50 @@
+<!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+     styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox" checked>
+
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>{{ site.description }}</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item{% if page.url == site.baseurl %} active{% endif %}" href="{{ site.baseurl }}/">Home</a>
+    {% comment %}
+      The code below dynamically generates a sidebar nav of pages with
+      `layout: page` in the front-matter. See readme for usage.
+    {% endcomment %}
+          <a class="sidebar-nav-item">Introduction</a>
+          <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/Introduction/Overview">&nbsp;&nbsp;&nbsp;&nbsp;Overview</a>
+          <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/Introduction/Conda">&nbsp;&nbsp;&nbsp;&nbsp;Anaconda</a>
+          <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/Introduction/Docker">&nbsp;&nbsp;&nbsp;&nbsp;Docker</a>
+          <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/Introduction/Singularity">&nbsp;&nbsp;&nbsp;&nbsp;Singularity</a>
+          <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/Introduction/Nextflow">&nbsp;&nbsp;&nbsp;&nbsp;Nextflow</a>
+
+          <a class="sidebar-nav-item">Variant Calling</a>
+          <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/Variant_Calling/Overview">&nbsp;&nbsp;&nbsp;&nbsp;Overview</a>
+          <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/Variant_Calling/Container">&nbsp;&nbsp;&nbsp;&nbsp;Container</a>
+          <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/Variant_Calling/pipeline">&nbsp;&nbsp;&nbsp;&nbsp;Pipeline</a>
+          <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/Variant_Calling/Nextflow">&nbsp;&nbsp;&nbsp;&nbsp;Nextflow</a>
+
+          <a class="sidebar-nav-item">RNA-Seq</a>
+          <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/RNA-Seq/Overview">&nbsp;&nbsp;&nbsp;&nbsp;Overview</a>
+          <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/RNA-Seq/Container">&nbsp;&nbsp;&nbsp;&nbsp;Container</a>
+          <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/RNA-Seq/pipeline">&nbsp;&nbsp;&nbsp;&nbsp;Pipeline</a>
+          <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/RNA-Seq/Nextflow">&nbsp;&nbsp;&nbsp;&nbsp;Nextflow</a>
+          <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/RNA-Seq/R_Analysis">&nbsp;&nbsp;&nbsp;&nbsp;R Analysis</a>
+
+          <a class="sidebar-nav-item">scRNA-Seq</a>
+          <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/scRNA-Seq/Overview">&nbsp;&nbsp;&nbsp;&nbsp;Overview</a>
+          <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/scRNA-Seq/Container">&nbsp;&nbsp;&nbsp;&nbsp;Container</a>
+          <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/scRNA-Seq/pipeline">&nbsp;&nbsp;&nbsp;&nbsp;Pipeline</a>
+          <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/scRNA-Seq/Nextflow">&nbsp;&nbsp;&nbsp;&nbsp;Nextflow</a>
+          <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="http://barrydigby.github.io/scRNA-Seq/R_Analysis">&nbsp;&nbsp;&nbsp;&nbsp;R Analysis</a>
+
+
+
+  </nav>
+
+  <div class="sidebar-item">
+  </div>
+</div>
