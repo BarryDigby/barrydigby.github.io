@@ -152,6 +152,8 @@ I have shown you how to intitialise a raw read channel for downstream use with F
 
 In the exercise below I have started a nextflow script to read in the raw reads and perform adapter trimming and read filtering using bbduk.sh. Finish the script by using the trimmed reads channel, passing it to FastQC, and collecting the outputs of FastQC as inputs to Multiqc.
 
+> If this tasks seems daunting, break the script into processes. First, include only the first process in the script, and add `trimmed_reads_ch.view()` after the process block to check the outputs. Keep adding processes iteratively - this is how I develop nextflow pipelines, writing multiple processes in one run is asking for trouble :) 
+
 Save as `trim_qc.nf` and run in your own directory:
 
 ```bash
