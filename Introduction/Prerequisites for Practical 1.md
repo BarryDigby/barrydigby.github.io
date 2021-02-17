@@ -55,17 +55,39 @@ Week 1 tutorial assumes you have the following installed **on your local machine
 
 1. Docker (https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository)
 
-2. Singularity (https://singularity.lbl.gov/install-linux#option-1-download-latest-stable-release)
+2. Singularity (https://sylabs.io/guides/3.6/admin-guide/installation.html#id1)
 
-3. Anaconda (https://repo.anaconda.com/archive/Anaconda3-2020.11-Linux-x86_64.sh) - This will download an executable `.sh` file. Located it on the command line (`~/Downloads`?) and type `bash Anaconda3-2020.11-Linux-x86_64.sh` and follow the prompts. You do not need to change the install directory, `/home/username/anaconda3` is fine.
+    - Install Dependencies
+    - Install GO
+    - Install Stable Release (version 3.6.4)
+    - ! Don't forget to compile the code !
+    
+    If you have installed singularity version 2.5.2 (check `singularity --version`) please delete the executable and install version 3.6.4 following the final 2 steps above. 
+    ```bash
+    ## delete old version 
+    sudo rm -rf /usr/local/libexec/singularity
+    ```
+
+3. Anaconda (https://repo.anaconda.com/archive/Anaconda3-2020.11-Linux-x86_64.sh) - This will download an executable `.sh` file. Locate it on the command line (`~/Downloads`?) and type `bash Anaconda3-2020.11-Linux-x86_64.sh` and follow the prompts. You do not need to change the install directory, `/home/username/anaconda3` is fine.
 
 4. Nextflow:
 
-   ```
-   curl -s https://get.nextflow.io | bash
+    You must have Java 8 or higher installed for this to work:
 
-   mv nextflow /usr/bin/
-   ```
+    ```bash
+    sudo apt update
+    sudo apt install default-jre
+    java -version
+    ```
+    You should see that Java 11 has been installed. Any Java version above 8 is fine. 
+    
+    Install `nextflow`:
+
+    ```
+    curl -s https://get.nextflow.io | bash
+
+    mv nextflow /usr/bin/
+    ```
 
 5. Please create a Dockerhub account. I would advise using a similar username to your one on lugh, and a similar/same password.
 
@@ -73,13 +95,34 @@ We will be creating docker containers locally and pushing them to dockerhub. Thi
 
 ***
 
+### Lugh
+When you first log into lugh, you need to run the following commands to 1) Load EasyBuild 2) Set up Java via EasyBuild. 
+
+```bash
+module load EasyBuild
+eb -r /data/MSc/2021/jdk-8u144-linux-x64.tar.gz   /data/MSc/2021/Java-1.8.0_144.eb
+```
+
+or 
+
+```bash
+module load EasyBuild
+eb -r /data/MSc/2021/jdk-8u144-linux-x64.tar.gz
+```
+
+After running this, `module li` should return currently loaded modules:
+
+```bash
+Currently Loaded Modules:
+ 1) autotools  3) gnu7/7.2.0    5) ohpc       7) Java/1.8.0_144
+ 2) prun/1.2  4) openmpi3/3.0.0  6) EasyBuild/3.4.1
+ ```
+
+***
+
 ### `~/.bashrc`
 
-On `lugh`, you need to configure your `~/.bashrc` file. The `~/.bashrc` file is essentially a set of 'startup instructions'. So once again, go from your local machine to `bactsrv`, and then log into `lugh`.
-
-Once on `lugh`, open your `~/.bashrc` file using nano or vim. This example should set you up with most things you need, copy them into the file:
-
-*N.B: There is a chance nano wont be loaded for you on your first login. Type `module load nano` to load it, or use vim.*
+We are going to configure your `~/.bashrc` file **on lugh** to automatically load modules (amongst other things) on startup so you dont have to do it manually every time. Open your `~/.bashrc` file using nano or vim and delete all of the contents, replacing them with the file below:
 
 ```
 # .bashrc
@@ -93,8 +136,10 @@ fi
 module load EasyBuild/3.4.1
 module load Java/1.8.0_144
 module load singularity
-module load nano
 source /home/mscstudent/anaconda3/bin/activate
+
+# on startup, move to this directory
+cd /data/MSc/2021
 
 ## Colour
 case "$TERM" in
@@ -152,6 +197,14 @@ Changes instances of `bdigby` to your username (just the last line).
 
 To initialise the changes, type `source ~/.bashrc`.
 
+`module li` should output:
+
+```
+Currently Loaded Modules:
+ 1) autotools  3) gnu7/7.2.0    5) ohpc       7) Java/1.8.0_144
+ 2) prun/1.2  4) openmpi3/3.0.0  6) EasyBuild/3.4.1  8) singularity/3.4.1`
+```
+
 ***
 
 ### Nextflow on lugh
@@ -161,7 +214,7 @@ Similarly to the local install, run the command:
 ```
   curl -s https://get.nextflow.io | bash
 
-  mv nextflow /usr/bin/
+  mv nextflow ~/bin/
 ```
 
 ***
