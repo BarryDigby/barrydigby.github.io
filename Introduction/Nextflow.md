@@ -247,7 +247,9 @@ process MultiQC {
 
 ***
 
-Congratulations on making it through the week 1 tutorial. Please do not hesistate to contact me if you have any questions! [b.digby1@nuigalway.ie](mailto:b.digby1@nuigalway.ie)
+Congratulations on making it through the week 1 tutorial. Please do not hesistate to post in the slack channel if you need help - preferably to a public channel!
+
+As the tutorials progress I expect you to help each other with troubleshooting.
 
 Files used for the tutorial are available at the following [link](https://github.com/BarryDigby/barrydigby.github.io/tree/master/Week_1)
 
