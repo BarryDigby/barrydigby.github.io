@@ -249,7 +249,7 @@ process MultiQC {
 
 Congratulations on making it through the week 1 tutorial. Please do not hesistate to post in the slack channel if you need help - preferably to a public channel!
 
-As the tutorials progress I expect you to help each other with troubleshooting.
+As the tutorials progress I expect you to help each other with troubleshooting or I will go AFK.. 
 
 Files used for the tutorial are available at the following [link](https://github.com/BarryDigby/barrydigby.github.io/tree/master/Week_1)
 
