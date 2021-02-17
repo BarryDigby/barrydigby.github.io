@@ -115,7 +115,7 @@ process FastQC {
 
 process MultiQC {
 
-	publishDir "${params.outdir}/QC/raw", mode:'copy'
+	publishDir "$params.outdir/QC/raw", mode:'copy'
 
 	input:
 	file(htmls) from fastqc_ch.collect()
@@ -162,7 +162,7 @@ nextflow -bg -q run trim_qc.nf \
 #!/usr/bin/env nextflow
 
 // Parameters
-params.outDir = "./"
+params.outdir = "./"
 params.reads = "/data/MSc/2020/MA5112/week_1/raw_data/*_r{1,2}.fastq.gz"
 params.adapters = "/data/MSc/2020/MA5112/week_1/assets/adapters.fa"
 
@@ -172,8 +172,8 @@ reads_ch = Channel.fromFilePairs(params.reads)
 process Trim {
 
 	label 'BBDUK'
-	publishDir "${params.outDir}/trimmed_reads", mode:'copy', pattern: "*.fq.gz"
-	publishDir "${params.outDir}/QC/trimmed", mode:'copy', pattern: "*.stats.txt"
+	publishDir "$params.outdir/trimmed_reads", mode:'copy', pattern: "*.fq.gz"
+	publishDir "$params.outdir/QC/trimmed", mode:'copy', pattern: "*.stats.txt"
 
 	input:
 		tuple val(key), file(reads) from reads_ch
@@ -203,7 +203,7 @@ process Trim {
 process FastQC {
 
 	label 'FastQC'
-	publishDir "${params.outDir}/QC/trimmed", mode:'copy'
+	publishDir "$params.outdir/QC/trimmed", mode:'copy'
 
 	input:
 
@@ -220,7 +220,7 @@ process FastQC {
 process MultiQC {
 
 	label 'MultiQC'
-	publishDir "${params.outDir}/QC/trimmed", mode:'copy'
+	publishDir "$params.outdir/QC/trimmed", mode:'copy'
 
 	input:
 
