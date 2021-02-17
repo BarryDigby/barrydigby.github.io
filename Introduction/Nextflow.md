@@ -131,6 +131,8 @@ process MultiQC {
 
 ```
 
+Save the script as `quality_control.nf`.
+
 To run the script on Lugh we will add additional parameters to the command line:
 
 ```bash
