@@ -245,12 +245,26 @@ process MultiQC {
 2. Fill in the inputs and outputs for the process MultiQC. Use the FastQC html reports **and** bbduk statistics text file as inputs for this process. (*Hint use .collect() on both inputs*).
 3. Save the script and run using `nextflow -bg -q trim_qc.nf -with-singularity /<path to>/week1.img`.
 
+Check that your MultiQC outputs are the same as the screenshots below:
+
+<center>
+<img src="https://raw.githubusercontent.com/BarryDigby/barrydigby.github.io/master/Introduction/exercise_outputs/Screenshot%20from%202021-02-17%2019-34-51.png" width="100%" height="100%"/>
+</center>
+
+<center>
+<img src="https://raw.githubusercontent.com/BarryDigby/barrydigby.github.io/master/Introduction/exercise_outputs/Screenshot%20from%202021-02-17%2019-34-55.png" width="100%" height="100%"/>
+</center>
+
+<center>
+<img src="https://raw.githubusercontent.com/BarryDigby/barrydigby.github.io/master/Introduction/exercise_outputs/Screenshot%20from%202021-02-17%2019-35-31.png" width="100%" height="100%"/>
+</center>
+
 ***
 
 Congratulations on making it through the week 1 tutorial. Please do not hesistate to post in the slack channel if you need help - preferably to a public channel!
 
 As the tutorials progress I expect you to help each other with troubleshooting or I will go AFK..
 
-Files used for the tutorial are available at the following [link](https://github.com/BarryDigby/barrydigby.github.io/tree/master/Week_1)
+Files used for the tutorial are available at the following [link](https://github.com/BarryDigby/barrydigby.github.io/tree/master/Introduction).
 
 > Barry
