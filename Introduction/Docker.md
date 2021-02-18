@@ -29,7 +29,7 @@ LABEL authors="Barry Digby" \
 WORKDIR ./
 COPY week1.yml ./
 RUN conda env create -f week1.yml && conda clean -a
-ENV PATH /opt/conda/envs/week1/bin:$PATH
+ENV PATH /opt/conda/envs/QC/bin:$PATH
 ```
 
 The commands used in the `Dockerfile`:
