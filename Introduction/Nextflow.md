@@ -335,17 +335,17 @@ process MultiQC {
 
 Move the `multiqc_report.html` file under `QC/trimmed` to your local machine using `scp`:
 
-	```bash
-	# This pushes the file to bactsrv
-	scp multiqc_report.html username@bactsrv.nuigalway.ie:/home/username/
-	```
+```bash
+# This pushes the file to bactsrv
+scp multiqc_report.html username@bactsrv.nuigalway.ie:/home/username/
+```
 
 Now move to your local machine and run:
 
-	```bash
-	# Pull the file from bactsrv to current dir ('.')
-	scp username@bactsrv.nuigalway.ie:/home/mscstudent/multiqc_report.html .
-	```
+```bash
+# Pull the file from bactsrv to current dir ('.')
+scp username@bactsrv.nuigalway.ie:/home/mscstudent/multiqc_report.html .
+```
 
 Check that your MultiQC outputs are the same as the screenshots below:
 
