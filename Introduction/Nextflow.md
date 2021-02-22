@@ -121,7 +121,11 @@ Firstly we will fix the permissions error:
 	}
 	```
 
-This confguration file worked for the script `quality_control.nf` given below. We are telling the config file to pull the image from `barryd237/week1:test` and to store it under `/data/MSc/2021/container_cache`. When you run the command for the first time, nextflow will output this message: `Pulling Singularity image docker://barryd237/week1:test [cache /data/MSc/2021/container_cache/barryd237-week1-test.img]`. I have already pulled the container to this directory, so this message should not be printed and the processes will run automatically.
+(This confguration file worked for the script `quality_control.nf` given below.)
+
+We are telling the config file to pull the image from `barryd237/week1:test` and to store it under `/data/MSc/2021/container_cache`.
+
+When you run the command for the first time, nextflow will output this message: `Pulling Singularity image docker://barryd237/week1:test [cache /data/MSc/2021/container_cache/barryd237-week1-test.img]`. I have already pulled the container to this directory, so this message should not be printed and the processes will run automatically.
 
 If for some reason nextflow complains about permissions (or you want to test this out yourself), create a `container_cache` directory in your own directory, and update the `.nextflow/config` file accordingly i.e : `cacheDir = '/data/MSc/2021/username/container_cache'`.
 
@@ -145,6 +149,8 @@ To fix this, change the permissions to the directory and delete it:
 	```
 
 *Note* this might affect other `publishDir` directories, check if they have incompatible user permissions `(?)` and delete them in the same manner given above.  
+
+***
 
 # Channels {#channel}
 In nextflow files are passed to each process via channels.
