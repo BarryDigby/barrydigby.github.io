@@ -87,39 +87,39 @@ Firstly we will fix the permissions error:
 
 1. In your directory where the nextflow scripts are based (i.e where you ran the `nextflow run` commands) there is a hidden folder called `.nextflow/`. Change the permissions to this directory and delete it:
 
-	```bash
-	chmod -R 777 .nextflow/
+```bash
+chmod -R 777 .nextflow/
 
-	rm -rf .nextflow/
-	```
+rm -rf .nextflow/
+```
 
 2. Perform the same action for your work directory.
 
-	```bash
-	chmod -R 777 work/
+```bash
+chmod -R 777 work/
 
-	rm -rf work/
-	```
+rm -rf work/
+```
 
 3. Next we will examine the `~/.nextflow/config` file:
 
-	```bash
-	process {
-		beforeScript = 'module load singularity'
-		containerOptions = '-B /data/'
-		container = 'barryd237/week1:test'
-		executor='slurm'
-		queue='normal'
-		clusterOptions = '-n 1'
-	}
+```bash
+process {
+	beforeScript = 'module load singularity'
+	containerOptions = '-B /data/'
+	container = 'barryd237/week1:test'
+	executor='slurm'
+	queue='normal'
+	clusterOptions = '-n 1'
+}
 
-	singularity.enabled = true
-	singularity.autoMounts = true
+singularity.enabled = true
+singularity.autoMounts = true
 
-	singularity{
-		cacheDir = '/data/MSc/2021/container_cache'
-	}
-	```
+singularity{
+	cacheDir = '/data/MSc/2021/container_cache'
+}
+```
 
 (This confguration file worked for the script `quality_control.nf` given below.)
 
@@ -131,22 +131,21 @@ If for some reason nextflow complains about permissions (or you want to test thi
 
 4. If nextflow complains that it cannot publish the files to the `QC/` directory, I am willing to bet that the `QC/` directory has unknown permissions:
 
-	```bash
-	?????????? ? ? ?            ? hcc1395_normal_rep1_r1_fastqc.html
-	?????????? ? ? ?            ? hcc1395_normal_rep1_r1_fastqc.zip
-	?????????? ? ? ?            ? hcc1395_normal_rep1_r2_fastqc.html
-	?????????? ? ? ?            ? hcc1395_normal_rep1_r2_fastqc.zip
-	?????????? ? ? ?            ? hcc1395_normal_rep2_r1_fastqc.html
-	?????????? ? ? ?            ? hcc1395_normal_rep2_r1_fastqc.zip
-	```
+```bash
+?????????? ? ? ?            ? hcc1395_normal_rep1_r1_fastqc.html
+?????????? ? ? ?            ? hcc1395_normal_rep1_r1_fastqc.zip
+?????????? ? ? ?            ? hcc1395_normal_rep1_r2_fastqc.html
+?????????? ? ? ?            ? hcc1395_normal_rep1_r2_fastqc.zip
+?????????? ? ? ?            ? hcc1395_normal_rep2_r1_fastqc.html
+?????????? ? ? ?            ? hcc1395_normal_rep2_r1_fastqc.zip
+```
 
 To fix this, change the permissions to the directory and delete it:
 
-	```bash
-	chmod -R 777 QC/
-
-	rm -rf QC/
-	```
+```bash
+chmod -R 777 QC/
+rm -rf QC/
+```
 
 *Note* this might affect other `publishDir` directories, check if they have incompatible user permissions `(?)` and delete them in the same manner given above.  
 
@@ -208,7 +207,7 @@ Save the script as `quality_control.nf`.
 
 To run the script on Lugh we will add additional parameters to the command line:
 
-	```bash
+	```
 	nextflow -bg -q run quality_control.nf \
 	-with-singularity /data/MSc/2020/MA5112/week_1/container/week1.img
 	```
@@ -221,7 +220,7 @@ Run this line of code yourself, and type `squeue -u mscstudent` on Lugh to view 
 
 *UPDATE* You should be able to run the above script by simply running:
 
-	```bash
+	```
 	nextflow -bg run quality_control.nf
 	```
 
@@ -239,9 +238,16 @@ Save as `trim_qc.nf` and run in your own directory:
 
 ```bash
 nextflow -bg -q run trim_qc.nf \
---outDir $(pwd) \
+--outdir $(pwd) \
 -with-singularity /data/MSc/2020/MA5112/week_1/container/week1.img
 ```
+
+or
+
+```bash
+nextflow -bg run trim_qc.nf --outdir $(pwd)
+```
+
 
 ```bash
 #!/usr/bin/env nextflow
