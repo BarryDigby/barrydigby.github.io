@@ -13,6 +13,7 @@ We will use `nextflow` to construct a script capable of performing read QC, adap
 Jump to:
 - [Parameters](#params)
 - [Tuples](#tuples)
+- [Week 1 Troubleshooting](#trouble)
 - [Channels](#channel)
 - [Exercise](#exercise)
 
@@ -80,7 +81,7 @@ process test{
 
 ***
 
-# Troubleshooting
+# Troubleshooting {#trouble}
 During the tutorial we ran into errors with pulling the docker image from Dockerhub via the nextflow config file. I also ran into a `.nextflow/history.lock (no such file or directory)` error when attempting to run nextflow in my directory.
 
 Firstly we will fix the permissions error:
