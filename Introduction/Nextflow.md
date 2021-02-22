@@ -147,7 +147,7 @@ chmod -R 777 QC/
 rm -rf QC/
 ```
 
-*Note* this might affect other `publishDir` directories, check if they have incompatible user permissions `(?)` and delete them in the same manner given above.  
+*Note:* this might affect other `publishDir` directories, check if they have incompatible user permissions `(?)` and delete them in the same manner given above.  
 
 ***
 
