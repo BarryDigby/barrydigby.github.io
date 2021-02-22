@@ -219,7 +219,7 @@ Run this line of code yourself, and type `squeue -u mscstudent` on Lugh to view 
 	nextflow -bg run quality_control.nf
 	```
 
-The container + container_cache specified in the config file should now work. This is also applicable to the exercise, you should not have to specify the container via the command line each time. 
+The container + container_cache specified in the config file should now work. This is also applicable to the exercise, you should not have to specify the container via the command line each time.
 
 # Exercise {#exercise}
 ***
@@ -319,6 +319,21 @@ process MultiQC {
 1. Fill in the inputs and outputs for the process FastQC.
 2. Fill in the inputs and outputs for the process MultiQC. Use the FastQC html reports **and** bbduk statistics text file as inputs for this process. (*Hint use .collect() on both inputs*).
 3. Save the script and run using `nextflow -bg -q trim_qc.nf -with-singularity /<path to>/week1.img`.
+
+
+Move the `multiqc_report.html` file under `QC/trimmed` to your local machine using `scp`:
+
+	```bash
+	# This pushes the file to bactsrv
+	scp multiqc_report.html username@bactsrv.nuigalway.ie:/home/username/
+	```
+
+Now move to your local machine and run:
+
+	```bash
+	# Pull the file from bactsrv to current dir ('.')
+	scp username@bactsrv.nuigalway.ie:/home/mscstudent/multiqc_report.html .
+	```
 
 Check that your MultiQC outputs are the same as the screenshots below:
 
