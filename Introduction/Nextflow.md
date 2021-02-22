@@ -85,7 +85,7 @@ During the tutorial we ran into errors with pulling the docker image from Docker
 
 Firstly we will fix the permissions error:
 
-1. In your directory where the nextflow scripts are based (i.e where you ran the `nextflow run` commands) there is a hidden folder called `.nextflow/`. Change the permissions to this directory and delete it:
+- In your directory where the nextflow scripts are based (i.e where you ran the `nextflow run` commands) there is a hidden folder called `.nextflow/`. Change the permissions to this directory and delete it:
 
 ```bash
 chmod -R 777 .nextflow/
@@ -93,7 +93,7 @@ chmod -R 777 .nextflow/
 rm -rf .nextflow/
 ```
 
-2. Perform the same action for your work directory.
+- Perform the same action for your work directory.
 
 ```bash
 chmod -R 777 work/
@@ -101,7 +101,7 @@ chmod -R 777 work/
 rm -rf work/
 ```
 
-3. Next we will examine the `~/.nextflow/config` file:
+- Next we will examine the `~/.nextflow/config` file:
 
 ```bash
 process {
@@ -129,7 +129,7 @@ When you run the command for the first time, nextflow will output this message: 
 
 If for some reason nextflow complains about permissions (or you want to test this out yourself), create a `container_cache` directory in your own directory, and update the `.nextflow/config` file accordingly i.e : `cacheDir = '/data/MSc/2021/username/container_cache'`.
 
-4. If nextflow complains that it cannot publish the files to the `QC/` directory, I am willing to bet that the `QC/` directory has unknown permissions:
+- If nextflow complains that it cannot publish the files to the `QC/` directory, I am willing to bet that the `QC/` directory has unknown permissions:
 
 ```bash
 ?????????? ? ? ?            ? hcc1395_normal_rep1_r1_fastqc.html
