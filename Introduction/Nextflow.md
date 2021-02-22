@@ -102,7 +102,9 @@ chmod -R 777 work/
 rm -rf work/
 ```
 
-- Next we will examine the `~/.nextflow/config` file:
+***
+
+Next we will examine the `~/.nextflow/config` file:
 
 ```bash
 process {
@@ -126,11 +128,17 @@ singularity{
 
 We are telling the config file to pull the image from `barryd237/week1:test` and to store it under `/data/MSc/2021/container_cache`.
 
-When you run the command for the first time, nextflow will output this message: `Pulling Singularity image docker://barryd237/week1:test [cache /data/MSc/2021/container_cache/barryd237-week1-test.img]`. I have already pulled the container to this directory, so this message should not be printed and the processes will run automatically.
+When you run the command for the first time, nextflow will output this message:
 
-If for some reason nextflow complains about permissions (or you want to test this out yourself), create a `container_cache` directory in your own directory, and update the `.nextflow/config` file accordingly i.e : `cacheDir = '/data/MSc/2021/username/container_cache'`.
+> `Pulling Singularity image docker://barryd237/week1:test [cache /data/MSc/2021/container_cache/barryd237-week1-test.img]`.
 
-- If nextflow complains that it cannot publish the files to the `QC/` directory, I am willing to bet that the `QC/` directory has unknown permissions:
+As I have already pulled the container to this directory, this message should not be printed and the processes will run automatically.
+
+If for some reason nextflow complains about container permissions (or you want to test this out yourself), create a `container_cache` directory in your own directory, and update the `.nextflow/config` file accordingly i.e : `cacheDir = '/data/MSc/2021/username/container_cache'`.
+
+***
+
+Finally, if nextflow complains that it cannot publish the files to the `QC/` directory, I am willing to bet that the `QC/` directory has unknown permissions:
 
 ```bash
 ?????????? ? ? ?            ? hcc1395_normal_rep1_r1_fastqc.html
