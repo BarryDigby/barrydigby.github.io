@@ -136,7 +136,7 @@ picard CreateSequenceDictionary \
 ```
 
 ##### *Outputs*
-A dictionary file. You may name this whatever you want, however common convention dictates `*.dict`.
+- `O`: Dictionary file. You may name this whatever you want, however common convention dictates using  `*.dict` extensions.
 
 # 2. **Align Reads** {#align}
 Map the reads to the reference genome using `bwa mem`. The SAM files produced have reads in the order that the sequences occurred in the input FASTQ files i.e in randomn order. `samtools sort` orders the reads by their leftmost coordinate i.e in 'genome order'. This is a requirement for downstream tools.
@@ -371,6 +371,8 @@ gatk SelectVariants \
 ##### *Outputs*
 - `-O`: VCF file containing SNPs
 
+***
+
 ## INDELs {#subsetindel}
 
 ##### *Inputs*
@@ -458,7 +460,7 @@ gatk VariantFiltration \
 
 ***
 
-*N.B* Both filtering steps require the samtools reference index file `*.fai` and picards dictionary `*.dict` file to be present in the working directory.
+*N.B* Both filtering steps require the samtools reference index file `*.fai` and picards dictionary `*.dict` file to be present in the reference genome directory.
 
 # 8. Merge VCFs {#mergevcf}
 `MergeVCFs` combines multiple variant files into a single variant file.
@@ -491,4 +493,4 @@ snpEff GRCh37.75 \
        -v filtered_sample.vcf > subsample.snpEff.ann.vcf
 ```
 
-I will show you a pre-prepared snpEff file to conclude the pipeline walkthrough. 
+I will show you a pre-prepared snpEff file to conclude the pipeline walkthrough.
