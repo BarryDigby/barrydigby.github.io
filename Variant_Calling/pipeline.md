@@ -35,23 +35,56 @@ A detailed pipeline has been provided for you to run a germline variant calling 
 Request computing resources on LUGH:
 
 ```bash
-salloc -p MSC -c 1 -n 1
+salloc -p MSC -n 1
 ```
 
+Check which compute node your job is on:
+
 ```bash
-ssh compute0{1..3}
+bdigby@lugh:/data/bdigby$ squeue -u bdigby
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           4529470       MSC     bash   bdigby  R       0:07      1 compute01
+```
+
+ssh to the NODELIST listed:
+
+```bash
+ssh compute01
 ```
 
 ***
 
-Tools required for the analysis are available in a pre-prepared container for the tutorial. Invoke an interactive shell session within the container.
+# Pre-prepared Files
+Due to time constraints, the reference genome files, SNP, INDEL and exome interval files have been prepared for you.
+
+These files and sequencing reads are located under the `assets/`, `reads/` and `reference/` directories at
+
+> `/data/MSc/2020/MA5112/Variant_Calling`
+
+**Do not** copy these files to your directory, this will cause uneccessary bloat in `data/`. We are going to create a shell variable `$var_cal` as a shorthand reference to the path.
+
+First, shell into the singularity container:
 
 ```bash
 singularity shell -B /data \
 /data/MSc/2020/MA5112/Variant_Calling/container/germline_vc.img
 ```
 
-Please ask for help if you are uncertain that you have completed this step correctly.
+Now create the shorthand path variable:
+
+```bash
+var_cal="/data/MSc/2020/MA5112/Variant_Calling"
+```
+
+Test it quickly by running the following command:
+
+```bash
+head ${var_cal}/assets/exome.bed.interval_list
+```
+
+This is much faster than typing out `head /data/MSc/2020/MA5112/Variant_Calling/assets/exome.bed.interval_list` and will save time when stepping through the pipeline.
+
+***
 
 # 1. Genome Index {#index}
 **Due to time constraints all indexing has been performed for you. Skip to step 2.**  
@@ -94,7 +127,7 @@ Samtools fasta indexing generates a `*.fai` file.
 Creates a sequence dictionary of the reference fasta file specifying the chromosomes and chromosome sizes. Required for downstream analysis tools by GATK.
 
 ##### *Inputs*
-- Reference Genome
+- `R`: Reference Genome
 
 ```bash
 picard CreateSequenceDictionary \
@@ -116,13 +149,14 @@ We will also convert the SAM file to to its binary counterpart: a BAM file.
 
 ```bash
 bwa mem \
-    -K 10000000 \
-    -R '@RG\tID:sample_1\tLB:sample_1\tPL:ILLUMINA\tPM:HISEQ\tSM:sample_1' \
-    -t 8 \
-    GRCh37.fasta \
-    ../reads/subsample_r1.fastq.gz \
-    ../reads/subsample_r2.fastq.gz \
+    -K 100000000 \
+    -R @RG\tID:sample_1\tLB:sample_1\tPL:ILLUMINA\tPM:HISEQ\tSM:sample_1 \
+    -t 2 \
+    ${var_cal}/reference/GRCh37.fasta \
+    ${var_cal}/reads/subsample_r1.fastq.gz \
+    ${var_cal}/reads/subsample_r2.fastq.gz \
     | samtools sort - > subsample.bam
+
 ```
 
 ##### *Flags*
@@ -133,7 +167,7 @@ bwa mem \
 ##### *Outputs*
 The script passes the output of `bwa mem` (`subsample.sam`) directly to `samtools sort` by using the pipe command (`|`). A dash `-` is used to indicate the incoming file from the previous process for samtools. When working with full sized samples, allocate more threads to samtools like so `samtools sort --threads 8 - > subsample.bam`.
 
-*N.B*: `bwa mem` requires all `bwa idx` output files & the reference genome to be present in the working directory for the tool to run.
+*N.B*: `bwa mem` requires all `bwa idx` output files & the reference genome to be present in the `GRCh37.fasta` directory to run.
 
 ***
 
@@ -141,7 +175,7 @@ The script passes the output of `bwa mem` (`subsample.sam`) directly to `samtool
 *"Almost all statistical models for variant calling assume some sort of independence between measurements. The duplicates (if one assumes that they arise from PCR artifact) are not independent. This lack of independence will usually lead to a breakdown of the statistical model and measures of statistical significance that are incorrect"* -- Sean Davis.
 
 ##### *Inputs*
-- Sorted BAM file.
+- `--INPUT`: Sorted BAM file.
 
 ```bash
 gatk --java-options -Xmx2g \
@@ -154,6 +188,9 @@ gatk --java-options -Xmx2g \
      --CREATE_INDEX true \
      --OUTPUT subsample.markdup.bam
 ```
+##### *Flags*:
+- `--MAX_RECORDS_IN_RAM`: When writing files that need to be sorted, this will specify the number of records stored in RAM before spilling to disk.
+- `--ASSUME_SORT_ORDER`: Assume that the input file has this order (even if the header says otherwise). Default value: null. Possible values: {unsorted, queryname, coordinate, duplicate, unknown}.
 
 ##### *Outputs*
 - `--METRICS_FILE`: Statistics of duplication events in sequencing reads.
@@ -175,21 +212,21 @@ For each bin, the tool counts the number of bases within the bin and how often s
 ***
 
 ##### *Inputs*
-- Marked Duplicates BAM file
-- Exome Interval list
-- Reference Genome
-- Known variants (SNPs + INDELs)
+- `-I`: Marked Duplicates BAM file
+- `-L`: Exome Interval list
+- `-R`: Reference Genome
+- `--known-sites`: Known variants (SNPs + INDELs)
 
 ```bash
 gatk --java-options -Xmx2g \
      BaseRecalibrator \
      -I subsample.markdup.bam \
      -O subsample.recal.table \
-     -L ../assets/exome.bed.interval_list \
-     --tmp-dir . \
-     -R GRCh37.fa \
-     --known-sites ../assets/Mills_KG_gold.indels.b37.vcf.gz \
-     --known-sites ../assets/dbsnp_138.b37.vcf.gz
+     -L ${var_cal}/assets/exome.bed.interval_list \
+     --tmp-dir ./ \
+     -R ${var_cal}/reference/GRCh37.fasta \
+     --known-sites ${var_cal}/assets/Mills_KG_gold.indels.b37.vcf.gz \
+     --known-sites ${var_cal}/assets/dbsnp_138.b37.vcf.gz
 ```
 
 ##### *Outputs*
@@ -207,18 +244,18 @@ gatk --java-options -Xmx2g \
 Following recalibration, the read quality scores are much closer to their empirical scores than before. This means they can be used in a statistically robust manner for downstream processing, such as variant calling. In addition, by accounting for quality changes by cycle and sequence context, we can identify truly high quality bases in the reads, often finding a subset of bases that are Q30 even when no bases were originally labeled as such.
 
 ##### *Input*
-- Marked Duplicates BAM file
-- Exome Interval list
-- Reference Genome
-- Recalibration table file (previous step).
+- `-I`: Marked Duplicates BAM file
+- `-L`: Exome Interval list
+- `-R`: Reference Genome
+- `--bqsr-recal-file`: Recalibration table file (generated in previous step).
 
 ```bash
 gatk --java-options -Xmx2g \
      ApplyBQSR \
      -I subsample.markdup.bam \
      -O subsample.recal.bam \
-     -L ../assets/exome.bed.interval_list \
-     -R GRCh37.fasta \
+     -L ${var_cal}/assets/exome.bed.interval_list \
+     -R ${var_cal}/reference/GRCh37.fasta \
      --bqsr-recal-file subsample.recal.table
 ```
 
@@ -239,7 +276,7 @@ samtools stats subsample.recal.bam > subsample.recal.stats
 
 ***
 
-*N.B* Both BQSR steps require the samtools reference index file `*.fai` and picards dictionary `*.dict` file to be present in the working directory.
+*N.B* Both BQSR steps require the samtools reference index file `*.fai` and picards dictionary `*.dict` file to be present in the reference genome directory.
 
 # 5. Germline Variant Calling {#germline_vc}
 Identify germline short variants (SNPs and INDELs) in an individual, or in a cohort. This tutorial is focused on a single sample germline variant calling analysis. Not to be confused with somatic variant calling which uses matched tumour - normal samples, requiring a different workflow.
@@ -261,24 +298,24 @@ Call germline SNPs and indels via local re-assembly of haplotypes by:
 ***
 
 ##### *Inputs*
-- Reference Genome
-- Recalibrated BAM
-- Exome Interval list
-- Known SNPs (dbSNP)
+- `-R`: Reference Genome
+- `-I`: Recalibrated BAM
+- `-L`: Exome Interval list
+- `-D`: Known SNPs (dbSNP)
 
 ```bash
 gatk --java-options -Xmx2g \
      HaplotypeCaller \
-     -R GRCh37.fasta \
+     -R ${var_cal}/reference/GRCh37.fasta \
      -I subsample.recal.bam \
-     -L ../assets/exome.bed.interval_list \
-     -D ../assets/dbsnp_138.b37.vcf.gz \
+     -L ${var_cal}/assets/exome.bed.interval_list \
+     -D ${var_cal}/assets/dbsnp_138.b37.vcf.gz \
      -O subsample.g.vcf \
      -ERC GVCF
 ```
 
 ##### *Flags*
-- `ERC`: Mode for emitting reference confidence scores. The key difference between a regular VCF and a GVCF is that the GVCF has records for all sites, whether there is a variant call there or not. The goal is to have every site represented in the file in order to do joint analysis of a cohort in subsequent steps.
+- `-ERC`: Mode for emitting reference confidence scores. The key difference between a regular VCF and a GVCF is that the GVCF has records for all sites, whether there is a variant call there or not. The goal is to have every site represented in the file in order to do joint analysis of a cohort in subsequent steps.
 
 ##### *Outputs*
 - `-O`: GVCF as described above.
@@ -289,17 +326,17 @@ gatk --java-options -Xmx2g \
 `GenotypeVCFs` is designed to perform joint genotyping on a single input, which may contain one or many samples. In any case, the input samples must possess genotype likelihoods produced by HaplotypeCaller with `-ERC GVCF` or `-ERC BP_RESOLUTION`.
 
 ##### *Inputs*
-- Reference Genome
-- Exome Interval list
-- GVCF
-- Known SNPs (dbSNP)
+- `-R`: Reference genome file.
+- `-L`: Exome interval list file.
+- `-D`: dbSNP annotation file.
+- `-V`: GVCF file generated from `HaplotypeCaller`.
 
 ```bash
 gatk --java-options -Xmx2g \
      GenotypeGVCFs \
-     -R GRCh37.fasta \
-     -L ../assets/exome.bed.interval_list \
-     -D ../assets/dbsnp_138.b37.vcf.gz \
+     -R ${var_cal}/reference/GRCh37.fasta \
+     -L ${var_cal}/assets/exome.bed.interval_list \
+     -D ${var_cal}/assets/dbsnp_138.b37.vcf.gz \
      -V subsample.g.vcf \
      -O subsample.vcf
 ```
@@ -309,7 +346,7 @@ gatk --java-options -Xmx2g \
 
 ***
 
-*N.B* Both Variant Calling steps require the samtools reference index file `*.fai` and picards dictionary `*.dict` file to be present in the working directory.
+*N.B* Both Variant Calling steps require the samtools reference index file `*.fai` and picards dictionary `*.dict` file to be present in the reference genome directory.
 
 # 6. Subset Variants {#subset}
 Before applying filtering thresholds to the called variants, subset the VCF file for both SNPs and INDELs using `SelectVariants`.
@@ -317,16 +354,19 @@ Before applying filtering thresholds to the called variants, subset the VCF file
 ## SNPs {#subsetsnp}
 
 ##### *Inputs*
-- Reference Genome
-- VCF file produced by `GenotypeVCFs`
+- `-R`: Reference Genome
+- `-V`: VCF file produced by `GenotypeVCFs`
 
 ```bash
 gatk SelectVariants \
-     -R GRCh37.fasta \
+     -R ${var_cal}/reference/GRCh37.fasta \
      -V subsample.vcf \
      -O subsample.snps.vcf.gz \
      -select-type SNP
 ```
+
+##### *Flags*
+- `-select-type`: Specify variant type to subset (SNP/INDEL).
 
 ##### *Outputs*
 - `-O`: VCF file containing SNPs
@@ -334,23 +374,25 @@ gatk SelectVariants \
 ## INDELs {#subsetindel}
 
 ##### *Inputs*
-- Reference Genome
-- VCF file produced by `GenotypeVCFs`
+- `-R`: Reference Genome
+- `-V`: VCF file produced by `GenotypeVCFs`
 
 ```bash
 gatk SelectVariants \
-     -R GRCh37.fasta \
+     -R ${var_cal}/reference/GRCh37.fasta \
      -V subsample.vcf \
      -O subsample.indels.vcf.gz \
      -select-type INDEL
 ```
+##### *Flags*
+- `-select-type`: Specify variant type to subset (SNP/INDEL).
 
 ##### *Outputs*
 - `-O`: VCF file containing INDELs
 
 ***
 
-*N.B* Both subsetting steps require the samtools reference index file `*.fai` and picards dictionary `*.dict` file to be present in the working directory.
+*N.B* Both subsetting steps require the samtools reference index file `*.fai` and picards dictionary `*.dict` file to be present in the reference genome directory.
 
 # 7. Filter Variants {#filter}
 Apply filtering to selected variants generated in the previous step.
@@ -359,12 +401,12 @@ Apply filtering to selected variants generated in the previous step.
 Please refer to the following [blog post](https://gatk.broadinstitute.org/hc/en-us/articles/360035890471-Hard-filtering-germline-short-variants) by GATK regarding hard-filtering SNPs.
 
 ##### *Inputs*
-- Reference Genome
-- VCF file containing SNPs
+- `-R`: Reference Genome
+- `-V`: VCF file containing SNPs
 
 ```bash
 gatk VariantFiltration \
-     -R GRCh37.fasta \
+     -R ${var_cal}/reference/GRCh37.fasta \
      -V subsample.snps.vcf.gz \
      -O subsample.filt_snps.vcf \
      --filter-expression "QD < 2.0" \
@@ -392,12 +434,12 @@ gatk VariantFiltration \
 Please refer to the following [blog post](https://gatk.broadinstitute.org/hc/en-us/articles/360035890471-Hard-filtering-germline-short-variants) by GATK regarding hard-filtering INDELs.
 
 ##### *Inputs*
-- Reference Genome
-- VCF file containing INDELs
+- `-R`: Reference Genome
+- `-V`: VCF file containing INDELs
 
 ```bash
 gatk VariantFiltration \
-     -R GRCh37.fasta \
+     -R ${var_cal}/reference/GRCh37.fasta \
      -V subsample.vcf \
      -O subsample.filt_indels.vcf \
      --filter-expression "QD < 2.0" \
@@ -422,8 +464,8 @@ gatk VariantFiltration \
 `MergeVCFs` combines multiple variant files into a single variant file.
 
 ##### *Inputs*
-- Filtered SNPs VCF file
-- Filtered INDELs VCF file
+- `-I`: Filtered SNPs VCF file
+- `-I`: Filtered INDELs VCF file
 
 ```bash
 gatk MergeVcfs \
@@ -436,7 +478,7 @@ gatk MergeVcfs \
 - `-O`: The same VCF file output by `GenotypeVCFs`, with added annotations denoting filtering thresholds failed or `PASS` if the variant passed all thresholds.
 
 # 9. Annotate Variants {#annotate}
-Please do not run this as you will not be able to complete this step with the compute resources we have requested.
+**Please do not run this.** You will not be able to complete this step with the compute resources we have requested (`java.lang.OutOfMemoryError: GC overhead limit exceeded`).
 
 I have included `snpEff` in the full nextflow script, which I will provide at the end of the tutorial.
 
@@ -448,3 +490,5 @@ snpEff GRCh37.75 \
        -canon \
        -v filtered_sample.vcf > subsample.snpEff.ann.vcf
 ```
+
+I will show you a pre-prepared snpEff file to conclude the pipeline walkthrough. 
