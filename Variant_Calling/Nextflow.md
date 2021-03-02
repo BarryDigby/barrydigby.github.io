@@ -12,233 +12,268 @@ I will provide a full nextflow script of the BASH workflow for you to run when y
 
 ***
 
-## getVal()
-In the BASH workflow, you may have noticed nearly every step required the reference genome. In `nextflow` we typically intialise files with a channel, however, as channels can only be used once we would have to create multiple channels for the reference genome file (something like `fasta_a`, `fasta_b`. `fasta_c` etc.) for each step in the workflow.
+# Reusable Channels
+In the BASH workflow, you may have noticed nearly every step required the reference genome or the exome interval list file. In `nextflow` we typically intialise files with a channel, however usually channels can only be used once.
 
-Instead we are going to use `getVal()` when specifying the parameter file path. When using the parameter in a process we have two choices:
-1. Call the file on its own: `file(var_name) from params.var`
-2. Combine files in a tuple: `tuple file(var1), file(var2) from Channel.value([params.var1, params.var2])`
+### Error example
+Save the script as `non-reusable.nf` and run it -> `nextflow run non-reusable.nf`.
 
-Run the below nextflow script to gain some intuition: `nextflow run test.nf`
-
-```nextflow
+```bash
 #!/usr/bin/env nextflow
 
-// Reference Genome
-params.fasta = Channel.fromPath("/data/MSc/2020/MA5112/Variant_Calling/reference/*fasta").getVal()
-params.fai = Channel.fromPath("/data/MSc/2020/MA5112/Variant_Calling/reference/*fai").getVal()
+Channel
+	.fromPath("/data/MSc/2020/MA5112/Variant_Calling/reference/GRCh37.fasta")
+	.set{ fasta_ch }
 
-// Process foo uses the reference genome only
-
-process foo{
+process A{
     	echo true
 
     	input:
-    	file(fasta) from params.fasta
-
-    	output:
-   	stdout to foo_out
+    	file(fasta) from fasta_ch
 
     	script:
     	"""
-   	echo "process foo output"
-    	echo "Reference Genome file:  $fasta"
+    	printf "Process A, fasta file: $fasta\n"
     	"""
 }
 
-
-// process bar uses both the reference genome and the samtools index file
-// Call them both in the same line using Channel.value() placing them in a tuple
-
-process bar{
+process B{
     	echo true
 
     	input:
-    	tuple file(fasta), file(fai) from Channel.value([params.fasta, params.fai])
-
-    	output:
-    	stdout to bar_out
+    	file(fasta) from fasta_ch
 
     	script:
     	"""
-    	echo "process bar output"
-    	echo "Reference genome file: $fasta"
-    	echo "Samtools index file: $fai"
+    	printf "Process B, fasta file: $fasta\n"
+    	"""
+}
+```
+
+Note the error message:
+
+> Channel `fasta_ch` has been used twice as an input by process `B` and process `A`
+
+***
+
+### .into{} example
+One way to overcome this is to put the file into multiple channels using `.into{}` instead of `.set{}`.
+
+Save the script as `into-reusable.nf` and run -> `nextflow run into-reusable.nf`
+
+```bash
+#!/usr/bin/env nextflow
+
+Channel
+	.fromPath("/data/MSc/2020/MA5112/Variant_Calling/reference/GRCh37.fasta")
+	.into{ fasta_ch1; fasta_ch2 }
+
+process A{
+    	echo true
+
+    	input:
+    	file(fasta) from fasta_ch1
+
+    	script:
+    	"""
+    	printf "Process A, fasta file: $fasta\n"
     	"""
 }
 
-// process baz modifies the index file (trivial example)
-// to demonstrate examples of basic outputs
+process B{
+    	echo true
 
-process baz{
+    	input:
+    	file(fasta) from fasta_ch2
 
-	input:
-	file(fai) from params.fai
+    	script:
+    	"""
+    	printf "Process B, fasta file: $fasta\n"
+    	"""
+}
+```
 
-	output:
-	file("*.fai") into baz_output
+Process A and B can now run because the file has been put into two unique channels.
 
-	script:
-	"""
-	mv $fai new_index.fai
-	"""
+***
+
+### .value(file()) example
+Placing a file into multiple channels is fine but is considered poor practice when writing large pipelines. For the variant calling workflow, we would have to place the fasta reference genome file into multiple channels, with each process hardcoded to a specific `fasta_ch(n)`. This is cumbersome to keep track of!
+
+To create a reusable channel we are going to use `Channel.value(file())` to tell nextflow to stage the file path as a value and intialise it as a file. We can reuse this throughout the pipeline.
+
+Save the below script as `value-reusable.nf` and run -> `nextflow run value-reusable.nf`
+
+```bash
+#!/usr/bin/env nextflow
+
+Channel
+	.value(file("/data/MSc/2020/MA5112/Variant_Calling/reference/GRCh37.fasta"))
+	.set{ fasta_ch }
+
+process A{
+    	echo true
+
+    	input:
+    	file(fasta) from fasta_ch
+
+    	script:
+    	"""
+    	printf "Process A, fasta file: $fasta\n"
+    	"""
 }
 
-// In a nextflow process, you can only capture what the process
-// created to an output channel (unless you use special flags)
-// this is why GRCh37.fai is not captured by *.fai
+process B{
+    	echo true
 
-// lets view the contents of the channel to confirm this:
-baz_output.view()
+    	input:
+    	file(fasta) from fasta_ch
+
+    	script:
+    	"""
+      printf "Process B, fasta file: $fasta\n"
+    	"""
+}
+```
+
+We can see that the channel `fasta_ch` is reusable across processes.
+
+***
+
+# Staging files for Variant Calling
+I have started you off by staging the input files required for the variant calling workflow. The Index files (`.amb`, `.ann`, `.bwt`, `.pac`, `.sa`, `.fai`, `.dict`) are all in a channel called `index_ch`. You will never need to specifically call one of these files, they just have to be present in the nextflow workdir for certain processes like read alignment (requires BWA indices) or BQSR (requires SAMtools `.fai` and Sequence Dictironary `.dict` files).
+
+Other files such as `dbSNP`, `Mills_KG` or `exome_intervals` do need to be called specifically for flags. For this reason, they are in their own channel.
+
+Save the script as `stage_inputs.nf` and run -> `nextflow run stage_inputs.nf`
+
+```bash
+#!/usr/bin/env nextflow
 
 /*
-  FASTQ Example
-*/
+ * Stage PE Sequencing Reads
+ */
 
-params.reads = "/data/MSc/2020/MA5112/Variant_Calling/reads/*_r{1,2}.fastq.gz"
-Channel
- .fromFilePairs(params.reads)
- .into{reads_ch; reads_ch_print}
+reads_ch = Channel.fromFilePairs("/data/MSc/2020/MA5112/Variant_Calling/reads/*_r{1,2}.fastq.gz")
 
-// set{a} for one channel
-// into{a;b;c;...} for multiple channels
-// view the tuple in channel
-reads_ch_print.view()
+/*
+ * Stage Input files for Variant Calling:
+ */
 
-process qux{
-	echo true
+fasta_ch = Channel.value(file("/data/MSc/2020/MA5112/Variant_Calling/reference/GRCh37.fasta"))
+exome_interval_ch = Channel.value(file("/data/MSc/2020/MA5112/Variant_Calling/assets/exome.bed.interval_list"))
+mills_ch = Channel.value(file("/data/MSc/2020/MA5112/Variant_Calling/assets/Mills_KG_gold.indels.b37.vcf.gz"))
+dbsnp_ch = Channel.value(file("/data/MSc/2020/MA5112/Variant_Calling/assets/dbsnp_138.b37.vcf.gz"))
+index_ch = Channel.value(file("/data/MSc/2020/MA5112/Variant_Calling/reference/*GRCh37.{dict,fasta.}*"))
 
-	input:
-	tuple val(base), file(reads) from reads_ch
+/*
+ * I will show you how to call each of these files
+ */
 
-	output:
-	tuple val(base), file("*.fq.gz") into qux_out
+process A {
+    	echo true
 
-	script:
-	"""
-	# to access individual read pairs, use 0 based indexing
-	# use ${base} to name files, appending the correct extension.
-	mv ${reads[0]} ${base}_r1.fq.gz
-	mv ${reads[1]} ${base}_r2.fq.gz
-	"""
+    	input:
+    	tuple val(base), file(reads) from reads_ch
+    	file(index) from index_ch
+    	file(exome) from exome_interval_ch
+    	file(dbsnp) from dbsnp_ch
+    	file(mills) from mills_ch
+
+    	script:
+    	"""
+    	echo $base, $reads
+    	echo $index
+    	echo $exome
+    	echo $dbsnp
+    	echo $mills
+    	"""
 }
 
-qux_out.view()
+/*
+ * Check they can be reused.. (not the fastq pairs)
+ */
+
+index_ch.view()
+exome_interval_ch.view()
+dbsnp_ch.view()
+mills_ch.view()
 ```
+
 
 ***
 
 # Exercise
-I have initialised all of the parameters required to run the first 2 processes. Look back at the BASH workflow to see what files are required for each step.
+You are required to build on the `stage_inputs.nf` script and perform read alignment + markduplicates.
 
-*N.B* pass `--analysisDir` via the command line (`/data/MSc/2020/MA5112/Variant_Calling`) & `--outDir` when running the script. Assuming you are running the script in your personal directory on lugh (`/data/MSc/2020/username`), set this to `.`
+Refer to the full pipeline we ran for guidance. Below is a skeleton script to help:
 
 ```bash
-nextflow run germline_vc.nf \
---analysisDir /data/MSc/2020/MA5112/Variant_Calling \
---outDir /data/MSc/2020/username \
--with-singularity /data/MSc/2020/MA5112/Variant_Calling/container/germline_vc.img
-```
-
-You must fill in all inputs/outputs/script body for both processes or the script will not run. When you think you have completed the script, let me know and I will check it before you run it.
-
-```nextflow
 #!/usr/bin/env nextflow
 
-/*
-Sequencing Reads Channel
-*/
-
-params.reads = "/data/MSc/2020/MA5112/Variant_Calling/reads/*_r{1,2}.fastq.gz"
-Channel
- .fromFilePairs(params.reads)
- .set{reads_ch}
+params.outdir = "./"
 
 /*
-Reference Genome Files
-*/
+ * Stage PE Sequencing Reads
+ */
 
-params.fasta = Channel.fromPath("$params.analysisDir/reference/*fasta").getVal()
-params.fai = Channel.fromPath("$params.analysisDir/reference/*.fasta.fai").getVal()
-params.dict = Channel.fromPath("$params.analysisDir/reference/*.dict").getVal()
-
-params.amb = Channel.fromPath("$params.analysisDir/reference/*fasta.amb").getVal()
-params.ann = Channel.fromPath("$params.analysisDir/reference/*fasta.ann").getVal()
-params.bwt = Channel.fromPath("$params.analysisDir/reference/*fasta.bwt").getVal()
-params.pac = Channel.fromPath("$params.analysisDir/reference/*fasta.pac").getVal()
-params.sa = Channel.fromPath("$params.analysisDir/reference/*fasta.sa").getVal()
+reads_ch = Channel.fromFilePairs("/data/MSc/2020/MA5112/Variant_Calling/reads/*_r{1,2}.fastq.gz")
 
 /*
- Directories
-*/
+ * Stage Input files for Variant Calling:
+ */
 
-params.outDir = ""
-params.analysisDir = ""
+fasta_ch = Channel.value(file("/data/MSc/2020/MA5112/Variant_Calling/reference/GRCh37.fasta"))
+exome_interval_ch = Channel.value(file("/data/MSc/2020/MA5112/Variant_Calling/assets/exome.bed.interval_list"))
+mills_ch = Channel.value(file("/data/MSc/2020/MA5112/Variant_Calling/assets/Mills_KG_gold.indels.b37.vcf.gz"))
+dbsnp_ch = Channel.value(file("/data/MSc/2020/MA5112/Variant_Calling/assets/dbsnp_138.b37.vcf.gz"))
+index_ch = Channel.value(file("/data/MSc/2020/MA5112/Variant_Calling/reference/*GRCh37.{dict,fasta.}*"))
 
 /*
-================================================================================
-                                 ALIGNMENT
-================================================================================
-*/
+ * ALIGN READS
+ */
 
-process MapReads{
+process bwa {
+      publishDir "${params.outdir}/bwa_aln", mode:'copy'
 
-publishDir path: "$params.outDir/analysis/bwa_aln", mode: "copy"
-
-    input:
+      input:
 
 
-    output:
+      output:
 
 
-    script:
-    readGroup = "@RG\\tID:sample_1\\tLB:sample_1\\tPL:ILLUMINA\\tPM:HISEQ\\tSM:sample_1"
-    """
-    bwa mem \
+      script:
+      """
 
-    -R \"${readGroup}\" \
-
-
-
-
-    """
+      """
 }
 
-
 /*
-================================================================================
-                                PROCESSING
-================================================================================
-*/
+ * MARK DUPLICATES
+ */
+
+// Use the output BAM file as an input for this process
+
+process markduplicates{
+      publishDir "${params.outdir}/markdups", mode:'copy'
+
+      input:
 
 
-process MarkDuplicates{
-
-    publishDir path: "$params.outDir/analysis/mark_dups", mode: "copy"
-
-    input:
+      output:
 
 
-    output:
+      script:
+      """
 
-
-    script:
-    """
-
-
-
-
-
-
-
-    """
+      """
 }
 ```
 
 ***
 
 # Full script
-The full nextflow script is available (variant_calling.nf) at the following [repository](https://github.com/BarryDigby/barrydigby.github.io/tree/master/Variant_Calling)
+If you want to see the full pipeline in nextflow, it is available (variant_calling.nf) at the following [repository](https://github.com/BarryDigby/barrydigby.github.io/tree/master/Variant_Calling). Note I used `.getval()` instead of `Channel.value(file())`, slightly outdated syntax but it still works.
 
 Save the script to your own directory and run it by calling:
 
