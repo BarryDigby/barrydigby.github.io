@@ -150,7 +150,7 @@ We will also convert the SAM file to to its binary counterpart: a BAM file.
 ```bash
 bwa mem \
     -K 100000000 \
-    -R ""@RG\tID:sample_1\tLB:sample_1\tPL:ILLUMINA\tPM:HISEQ\tSM:sample_1" \
+    -R "@RG\tID:sample_1\tLB:sample_1\tPL:ILLUMINA\tPM:HISEQ\tSM:sample_1" \
     -t 2 \
     ${var_cal}/reference/GRCh37.fasta \
     ${var_cal}/reads/subsample_r1.fastq.gz \
