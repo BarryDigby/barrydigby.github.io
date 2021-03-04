@@ -56,7 +56,7 @@ Note the error message:
 
 ***
 
-### .into{} example
+### `.into{}` example
 One way to overcome this is to put the file into multiple channels using `.into{}` instead of `.set{}`.
 
 Save the script as `into-reusable.nf` and run -> `nextflow run into-reusable.nf`
@@ -97,7 +97,7 @@ Process A and B can now run because the file has been put into two unique channe
 
 ***
 
-### .value(file()) example
+### `.value(file())` example
 Placing a file into multiple channels is fine but is considered poor practice when writing large pipelines. For the variant calling workflow, we would have to place the fasta reference genome file into multiple channels, with each process hardcoded to a specific `fasta_ch(n)`. This is cumbersome to keep track of!
 
 To create a reusable channel we are going to use `Channel.value(file())` to tell nextflow to stage the file path as a value and intialise it as a file. We can reuse this throughout the pipeline.
