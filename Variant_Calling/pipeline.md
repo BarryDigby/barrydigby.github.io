@@ -442,7 +442,7 @@ Please refer to the following [blog post](https://gatk.broadinstitute.org/hc/en-
 ```bash
 gatk VariantFiltration \
      -R ${var_cal}/reference/GRCh37.fasta \
-     -V subsample.vcf \
+     -V subsample.indels.vcf.gz \
      -O subsample.filt_indels.vcf \
      --filter-expression "QD < 2.0" \
      --filter-name "filterQD" \
