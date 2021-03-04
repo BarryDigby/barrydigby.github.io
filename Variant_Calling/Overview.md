@@ -16,6 +16,6 @@ Before constructing a nextflow workflow, it is imperative to understand what fil
 The tutorial will be composed of:
 
 1. Work through the [pipeline](http://barrydigby.github.io/Variant_Calling/pipeline) *~1 hour*
-2. Description of nextflow [getVal()](http://barrydigby.github.io/Variant_Calling/Nextflow) *~10 min*
+2. Reusable channels in [nextflow](http://barrydigby.github.io/Variant_Calling/Nextflow) *~20 min*
 3. Alignment, Mark Duplicates [exercise](http://barrydigby.github.io/Variant_Calling/Nextflow) *~40 min*
-4. Execute full nextflow [script](https://github.com/BarryDigby/barrydigby.github.io/tree/master/Variant_Calling) *~10 min*
+4. Execute full nextflow [script](https://github.com/BarryDigby/barrydigby.github.io/tree/master/Variant_Calling)
