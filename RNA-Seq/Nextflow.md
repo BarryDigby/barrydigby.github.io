@@ -96,7 +96,7 @@ We wanted the process to submit a job for each fastq file and run in parallel - 
 
 ***
 
-To remedy the above problem, we will use the `combine` operator. Essentially, we are telling the process to use the `transcriptome_ch` for *every item* in the reads channel.
+To remedy the above problem, we will use the `combine` operator. This will add the transcriptome index file to each read tuple: [ base, [ fastq, index]]. When calling them in `inputs:`, the channel will acknowledge that the index file came from a different channel and can thus be called with its own `file(idx)` call. 
 
 Save the below script as `test4.nf` and run `nextflow run test4.nf`
 
@@ -132,7 +132,7 @@ process foo {
 ```
 
 # Exercise
-Refer to the `pipeline` section of this weeks tutorial for tips on how to run kallisto. The previous tips using `map` and `combine` should provide you with eveything you need to execute the analysis. 
+Refer to the `pipeline` section of this weeks tutorial for tips on how to run kallisto. The previous tips using `map` and `combine` should provide you with eveything you need to execute the analysis.
 
 ***
 
