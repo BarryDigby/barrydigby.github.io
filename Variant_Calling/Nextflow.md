@@ -204,7 +204,7 @@ mills_ch.view()
 ***
 
 # Exercise
-You are required to build on the `stage_inputs.nf` script and perform read alignment + markduplicates.
+You are required to build on the `stage_inputs.nf` script and perform read alignment + markduplicates. Do not run this on the head node, submit the script with the `-bg` flag to invoke the SLURM job scheduler settings in your config file. 
 
 Refer to the full pipeline we ran for guidance. Below is a skeleton script to help:
 
@@ -281,5 +281,5 @@ Save the script to your own directory and run it by calling:
 nextflow -bg -q run variant_calling.nf \
 --outDir $(pwd) \
 --analysisDir "/data/MSc/2020/MA5112/Variant_Calling" \
--with-singularity /data/MSc/2020/MA5112/Variant_Calling/contaier/germline_vc.img
+-with-singularity /data/MSc/2020/MA5112/Variant_Calling/container/germline_vc.img
 ```
