@@ -118,7 +118,7 @@ ch_index = params.index ? Channel.value(file(params.index)) : index_created
 
 process kallisto{
 
-	publishDir "${params.outdir}/kallisto", pattern: "${base}", mode:'copy'
+	publishDir "${params.outdir}/quant", pattern: "${base}", mode:'copy'
 
 	input:
 	tuple val(base), file(reads) from ch_reads
@@ -150,4 +150,4 @@ process kallisto{
 	$reads
 	"""
 	}
-}	
+}
