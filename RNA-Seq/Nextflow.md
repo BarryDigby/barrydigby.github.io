@@ -73,3 +73,5 @@ Now we can use the format `tuple val(base), file(reads) from ch_reads` for kalli
 Go to the main nextflow script available at this link: [https://github.com/BarryDigby/barrydigby.github.io/blob/master/RNA-Seq/main.nf](https://github.com/BarryDigby/barrydigby.github.io/blob/master/RNA-Seq/main.nf).
 
 Save the contents as `main.nf` and invoke the help message by running `nextflow run main.nf --help`.  
+
+> Note: the fastq files for the practical are located at: /data/MA5112/Practicals/RNA-Seq/Kallisto_Practical/Data/
