@@ -4,9 +4,9 @@ layout: page
 permalink: /RNA-Seq/Overview
 ---
 
-Running a RNA-Seq quantification analysis on LUGH is extremely straight forward thanks to the simplicity of `kallisto`. The majority of this tutorial will be spent on downstream differential expression analysis in R.
+For this weeks tutorial we will use `Kallisto` to perform RNA-Seq pseudo-alignment to the reference cDNA (protein coding only). As with other weeks, containers have been prepared for you and a decription of the workflow via the command line.
 
-1. Nextflow tutorial + exercise *~1 hour*
+1. Nextflow tutorial *~1 hour*
 2. DESeq2 Differential Expression Analysis in R *~ 1 hour*
 
 Please install the following packages in R Studio:
@@ -29,8 +29,6 @@ fgsea
 tidyverse
 ggpubr
 ```
-
-Unfortunately we cannot mount a conda environment in R Studio (to my knowledge) thus each package must be installed manually.
 
 ***
 

@@ -60,7 +60,7 @@ kallisto quant \
 * `-i` Indexed genome file from `kallisto index`
 * `--single` Indicate input is single-end reads (requires `-l` and `-s`)
 * `-t` *n* threads to use
-* `-o` Output directory of the sample, containing 3 files
+* `-o` Output directory of the sample, containing 3 files. Do not name the directory `outDir`, name it according to the sample name e.g CTRL_2.fastq should have the directory name CTRL_2/
 * `-l` Estimated average fragment length
 * `-s` Estimated standard deviation of fragment length
 * `--bias` Perform sequence based bias correction
