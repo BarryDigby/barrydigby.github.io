@@ -70,4 +70,6 @@ ch_reads.view()
 Now we can use the format `tuple val(base), file(reads) from ch_reads` for kallisto alignment.
 
 ## Nextflow script
-Go to the main nextflow script available at this link: 
+Go to the main nextflow script available at this link: [https://github.com/BarryDigby/barrydigby.github.io/blob/master/RNA-Seq/main.nf](https://github.com/BarryDigby/barrydigby.github.io/blob/master/RNA-Seq/main.nf).
+
+Save the contents as `main.nf` and invoke the help message by running `nextflow run main.nf --help`.  
