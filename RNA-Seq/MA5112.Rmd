@@ -14,6 +14,7 @@ library(biomaRt)
 library(tximport)
 library(rhdf5)
 library(gplots)
+library(org.Hs.eg.db)
 library(DESeq2)
 library(DT)
 library(apeglm)
@@ -21,6 +22,7 @@ library(RColorBrewer)
 library(IHW)
 library(PCAtools)
 library(pheatmap)
+library(clusterProfiler)
 library(EnhancedVolcano)
 library(ComplexHeatmap)
 library(circlize)
@@ -30,14 +32,14 @@ library(ggpubr)
 ```
 
 # Introduction
-This R markdown document walks through an RNA-Seq differential expression analysis using `DESeq2` for MA5112. Quality control plots, differential expression results, plots and pathway analysis are covered in the document. 
+This R markdown document walks through an RNA-Seq differential expression analysis using `DESeq2` for MA5112. Quality control plots, differential expression results, plots and pathway analysis are covered in the document.
 
-The tutorial assumes you have 9 Kallisto quantification directories under `~/RNA-Seq/quant/` on your laptop. 
+The tutorial assumes you have 9 Kallisto quantification directories under `~/RNA-Seq/quant/` on your laptop.
 
 # Reading Input Data
 
 ### Metadata
-Read in the file `samples.csv` which contains the experimental metadata. Please make sure that the rownames of this dataframe match the kallisto quantification directory names at `/home/RNA-Seq/quant/`. 
+Read in the file `samples.csv` which contains the experimental metadata. Please make sure that the rownames of this dataframe match the kallisto quantification directory names at `/home/RNA-Seq/quant/`.
 ```{R}
 samples <- read.csv("~/RNA-Seq/samples.csv", header=T, row.names = "sample", stringsAsFactors = T)
 samples
@@ -49,9 +51,9 @@ When performing differential expression analysis using `DESeq2`, if a column in 
 
 > the design formula contains a numeric variable with integer values, specifying a model with increasing fold change for higher values. did you mean for this to be a factor? if so, first convert this variable to a factor using the factor() function
 
-What does this mean? From Mike Love (`DESeq2` author): 
+What does this mean? From Mike Love (`DESeq2` author):
 
-> There is a constant fold change for every unit of change in replicates. So if the estimated fold change is 2, this implies that replicates 2 = 2x replicates 1, replicates 3 = 2x replicates 2, etc. Or in other words, the relationship is linear on the log counts scale. 
+> There is a constant fold change for every unit of change in replicates. So if the estimated fold change is 2, this implies that replicates 2 = 2x replicates 1, replicates 3 = 2x replicates 2, etc. Or in other words, the relationship is linear on the log counts scale.
 
 This is not what we want. We want each replicate to be modelled as a seperate term in the model. To overcome this, we could convert 1 -> A, 2 -> B, 3 -> C or we can use `factor()` to specify that replicates should be treated as a factor, not a numeric.
 
@@ -86,7 +88,7 @@ files
 ```
 
 # Tximport
-`tximport` imports transcript-level abundances from quantification tools (`kallisto` in our case) and converts them to gene counts for downstream analyses using a differential expression analysis package. 
+`tximport` imports transcript-level abundances from quantification tools (`kallisto` in our case) and converts them to gene counts for downstream analyses using a differential expression analysis package.
 
 ### BiomaRt
 We will use `biomaRt` to connect to the `ENSEMBL` databases and map transcript IDs to gene IDs. Firstly, we will create the `mart` object specifying which database to use:
@@ -95,14 +97,14 @@ mart <- useMart(biomart = "ensembl", dataset = "hsapiens_gene_ensembl")
 ```
 
 ### Transcript to gene (tx2gene)
-Recall we used the `ENSEMBL` reference cDNA file `Homo_sapiens.GRCh38.cdna.all.fa.gz` for `Kallisto quant` on LUGH. This means that our quantification files have `ENSEMBL` transcript ID's. We can map them to gene symbols running the code below: 
+Recall we used the `ENSEMBL` reference cDNA file `Homo_sapiens.GRCh38.cdna.all.fa.gz` for `Kallisto quant` on LUGH. This means that our quantification files have `ENSEMBL` transcript ID's. We can map them to gene symbols running the code below:
 ```{R, message=F, warning=F}
 tx2gene <- getBM(attributes = c("ensembl_transcript_id_version", "hgnc_symbol"), mart = mart, useCache = FALSE)
 head(tx2gene)
 ```
 
 ### TXI object
-Create a `txi` object summarising `kallisto` transcipt quantification to the gene-level. 
+Create a `txi` object summarising `kallisto` transcipt quantification to the gene-level.
 ```{R, message=F, warning=F}
 txi <- tximport(files, type = "kallisto", tx2gene = tx2gene)
 head(txi$abundance)
@@ -111,7 +113,7 @@ head(txi$abundance)
 # DESeq2
 Now we are ready to create the `DDS` object for `DESeq2` analysis that contains metadata (colData), counts further information that can be obtained via `dds@`.
 
-### Design 
+### Design
 The model design is one of the most important steps for an RNA-Seq analysis. Here, we are going to specify the design `~ replicate + condition` (columns of the metadata file). The factor of interest goes last in the model terms, we want to compare control vs. lung vs. melanoma in the experiment. Replicate has been included as we want to control for the effect of sample replicates.
 
 ### DDS
@@ -123,15 +125,15 @@ dds <- DESeqDataSetFromTximport(txi, colData = samples, design = ~ replicate + c
 ### Factor levels
 By default, R will choose a reference level for factors based on alphabetical order. If you never tell the DESeq2 functions which level you want to compare against (e.g. which level represents the control group), the comparisons will be based on the alphabetical order of the levels. Set the reference level using `relevel()`, and create the `(DESeq) DDS` object using `DESeq()`.
 
-Check that `relevel()` worked correctly by running `resultsNames(dds)` - we want control to be the reference level so we can compare lung vs control and melanoma vs. control. 
+Check that `relevel()` worked correctly by running `resultsNames(dds)` - we want control to be the reference level so we can compare lung vs control and melanoma vs. control.
 ```{R, message=F, warning=F}
-dds$condition <- relevel(dds$condition, ref = "control") 
-dds <- DESeq(dds) 
+dds$condition <- relevel(dds$condition, ref = "control")
+dds <- DESeq(dds)
 resultsNames(dds)
 ```
 
-# Quality Control 
-We will use the gene-level counts to perform some quality control checks on the samples in the experiment. 
+# Quality Control
+We will use the gene-level counts to perform some quality control checks on the samples in the experiment.
 
 ### Extract Counts
 Extract gene-level counts from the `DDS` object.
@@ -149,7 +151,7 @@ write.table(log2, "~/RNA-Seq/counts/log2_counts.txt", sep="\t", quote = F)
 ```
 
 ### Sample Heatmap
-A heatmap of sample distances matrix (`dist(t(log2))`) gives us an overview over similarities and dissimilarities between samples. 
+A heatmap of sample distances matrix (`dist(t(log2))`) gives us an overview over similarities and dissimilarities between samples.
 ```{R, message=F, warning=F}
 sampleDists <- dist(t(log2))
 sampleDistMatrix <- as.matrix(sampleDists)
@@ -162,23 +164,23 @@ pheatmap(mat=sampleDistMatrix,
 ```
 
 ### PCA
-PCA plots the variance explained by samples in each principal component. Typically PC1 & PC2 explain the most variation in the dataset, you should look at these first and foremost. 
+PCA plots the variance explained by samples in each principal component. Typically PC1 & PC2 explain the most variation in the dataset, you should look at these first and foremost.
 
-In the plot below we can see that the lung and control samples cluster tightly together, indicating the replicates were performed rigorously in the lab. 
+In the plot below we can see that the lung and control samples cluster tightly together, indicating the replicates were performed rigorously in the lab.
 
-The melanoma samples overlap with the control samples in PC1/PC2. Make the effort to explore other principal components - we can see that in PC2 vs PC4 there is excellent separation between the melanoma and control samples. 
+The melanoma samples overlap with the control samples in PC1/PC2. Make the effort to explore other principal components - we can see that in PC2 vs PC4 there is excellent separation between the melanoma and control samples.
 
 PCA can give you a good idea of how succesful the Differential Expression analysis will be - samples that are very close together in PC feature space will not produce as many DE genes as those that are separated by a large distance.
 ```{R, message=F,warning=F}
 p <- pca(log2, metadata = samples)
 
 biplot(p,
-       colby = 'condition', 
+       colby = 'condition',
        colkey = c('melanoma'='royalblue', 'control'='red1', 'lung'='forestgreen'),
-       hline = 0, 
+       hline = 0,
        vline = 0,
-       legendPosition = 'right', 
-       legendLabSize = 12, 
+       legendPosition = 'right',
+       legendLabSize = 12,
        legendIconSize = 8.0,
        lab = TRUE,
        drawConnectors = TRUE,
@@ -188,12 +190,12 @@ biplot(p,
 biplot(p,
        x = "PC2",
        y = "PC4",
-       colby = 'condition', 
+       colby = 'condition',
        colkey = c('melanoma'='royalblue', 'control'='red1', 'lung'='forestgreen'),
-       hline = 0, 
+       hline = 0,
        vline = 0,
-       legendPosition = 'right', 
-       legendLabSize = 12, 
+       legendPosition = 'right',
+       legendLabSize = 12,
        legendIconSize = 8.0,
        drawConnectors = TRUE,
        title = 'PCA bi-plot',
@@ -205,6 +207,8 @@ biplot(p,
 ### DESeq results()
 We can extract differentially expressed genes between phenotypes of interest by using `results()` on the `DDS` object. Furtehrmore, we will apply the `apeglm` shrinkage estimator on our results. I will demonstrate the effect of `apeglm` with volcano plots. In summary `apeglm` shrinks low confidence (high inter sample variation) differentially expressed genes towards 0, producing a robust set of differentially expressed genes.
 
+The argument `coef` in `lfcShrink` refers to the contrast of interest returned by `resultsNames(dds)`. For lung vs. control, it is the 4th character string returned thus `coef=4` for lung vs. control.
+
 Set up lung vs control, melanoma vs control:
 ```{R, message=F, warning=F}
 # make lung vs control object
@@ -212,38 +216,43 @@ lung_v_ctrl <- results(dds, filterFun=ihw, alpha=0.05, c("condition", "lung", "c
 res1 <- lfcShrink(dds=dds, res=lung_v_ctrl, coef=4, type="apeglm")
 summary(res1)
 
-# make melanoma vs control object 
+# make melanoma vs control object
 melanoma_v_ctrl <- results(dds, filterFun=ihw, alpha=0.05, c("condition", "melanoma", "control"))
 res2 <- lfcShrink(dds=dds, res=melanoma_v_ctrl, coef=5, type="apeglm")
 summary(res2)
 ```
 
-Set up lung vs melanoma:
+Set up lung vs melanoma. We need to reconfigure the `DDS` object so 'melanoma' is the reference level in 'condition', and re-run `DESeq()`.
+
+Check `resultsNames(dds)` to ensure the correct contrasts are set:
 ```{R, message=F, warning=F}
 # to make lung vs melanoma, relevel the dds object reference level and redo the DESeq call
 dds$condition <- relevel(dds$condition, ref = "melanoma")
 dds <- DESeq(dds)
 
-# double chekck it worked
+# double check it worked
 resultsNames(dds)
+```
 
-# make lung vs melanoma 
+Now extract the contrast results and perform `apeglm`.
+```{R, message=F, warning=F}
+# make lung vs melanoma
 lung_v_melanoma <- results(dds, filterFun=ihw, alpha=0.05, c("condition", "lung", "melanoma"))
 res3 <- lfcShrink(dds=dds, res=lung_v_melanoma, coef=5, type="apeglm")
 summary(res3)
 ```
 
-> Take a look at the summary statistics of the number of DE genes. Do they conform to comments made about the PCA plot? 
+> Take a look at the summary statistics of the number of DE genes. Do they conform to comments made about the PCA plot?
 
 ### Resusable Functions
-Below are some handy functions I re-use all the time for extracting differentially expressed genes and performing annotation of DE genes. 
+Below are some handy functions I re-use all the time for extracting differentially expressed genes and performing annotation of DE genes.
 
 ##### Extract Up Regulated Genes
 ```{R}
 get_upregulated <- function(df){
 
 	key <- intersect(rownames(df)[which(df$log2FoldChange>=1)], rownames(df)[which(df$pvalue<=0.05)])
-  
+
   results <- as.data.frame((df)[which(rownames(df) %in% key),])
 	return(results)
 }
@@ -254,7 +263,7 @@ get_upregulated <- function(df){
 get_downregulated <- function(df){
 
   	key <- intersect(rownames(df)[which(df$log2FoldChange<=-1)], rownames(df)[which(df$pvalue<=0.05)])
-  
+
   	results <- as.data.frame((df)[which(rownames(df) %in% key),])
   	return(results)
 }
@@ -302,6 +311,9 @@ annotate_de_genes <- function(df){
 
 ### Write DE results
 Use the above functions to extract up/down regulated genes and annotate them using biomaRt, and write to a file. Please note that the get_(up/down)regulated function requires a dataframe as input.
+
+> Note: we will focus on lung vs control for the remainder of the practical
+
 ```{R, message=F, warning=F}
 de_up <- get_upregulated(as.data.frame(res1))
 de_down <- get_downregulated(as.data.frame(res1))
@@ -310,8 +322,8 @@ upregulated_genes <- annotate_de_genes(de_up)
 downregulated_genes <- annotate_de_genes(de_down)
 
 dir.create("~/RNA-Seq/DESeq_results/")
-write.table(upregulated_genes, "~/RNA-Seq/DESeq_results/lung_vs_control_upregulated.txt", sep="\t", row.names=F, quote=F)	
-write.table(downregulated_genes, "~/RNA-Seq/DESeq_results/lung_vs_control_downregulated.txt", sep="\t", row.names=F, quote=F)	
+write.table(upregulated_genes, "~/RNA-Seq/DESeq_results/lung_vs_control_upregulated.txt", sep="\t", row.names=F, quote=F)
+write.table(downregulated_genes, "~/RNA-Seq/DESeq_results/lung_vs_control_downregulated.txt", sep="\t", row.names=F, quote=F)
 ```
 
 # Results Plots
@@ -319,11 +331,11 @@ write.table(downregulated_genes, "~/RNA-Seq/DESeq_results/lung_vs_control_downre
 ### Volcano Plot
 Volcano plots are useful to show how many genes are differentially expressed in the experimental contrast of interest. Labels are optional, I have included them so you know how to use them.
 
-N.B Volcano plots use -log10 on the Y-axis.
+> N.B Volcano plots use -log10 on the Y-axis.
 
 ```{R, message=F, warning=F}
 res1 <- na.omit(res1)
-	
+
 min_width <- min(res1$log2FoldChange)
 max_width <- max(res1$log2FoldChange)
 max_height <- -log10(min(res1[res1$pvalue>0, 5]))
@@ -354,12 +366,12 @@ EnhancedVolcano(res1,
 ```
 
 ### Bonus: apeglm visualised
-Make a volcano plot of `lung_v_ctrl`, the `DESeq2` results object that has not been filtered by `apeglm`. 
+Make a volcano plot of `lung_v_ctrl`, the `DESeq2` results object that has not been filtered by `apeglm`.
 
-You can see that there are genes with very large log2 FC values. As a rule of thumb, be skeptical of genes that have LFC values over +/- 10. 
+You can see that there are genes with very large log2 FC values. As a rule of thumb, be skeptical of genes that have LFC values over +/- 10.
 ```{R, message=F, warning=F}
 res1 <- na.omit(lung_v_ctrl)
-	
+
 min_width <- min(res1$log2FoldChange)
 max_width <- max(res1$log2FoldChange)
 max_height <- -log10(min(res1[res1$pvalue>0, 5]))
@@ -415,27 +427,21 @@ mat <- na.omit(mat)
 ann <- data.frame(Cell_Type = c(rep("control", 3), c(rep("lung", 3))))
 
 # set up heatmap column annotation
-ha_col = HeatmapAnnotation(df = ann, 
-                           col = list(Cell_Type = c("control" =  "gold", 
-                                                    "lung" = "forestgreen")), 
-                           annotation_legend_param = list(title_gp = gpar(fontsize = 12, fontface = "bold"), 
-                                                                          labels_gp = gpar(fontsize = 12)), 
+ha_col = HeatmapAnnotation(df = ann,
+                           col = list(Cell_Type = c("control" =  "gold",
+                                                    "lung" = "forestgreen")),
+                           annotation_legend_param = list(title_gp = gpar(fontsize = 12, fontface = "bold"),
+                                                                          labels_gp = gpar(fontsize = 12)),
                           annotation_name_side = "left")
 
-
-# check the min and max values for our color gradient
-max(mat)
-min(mat)
-
-
 # set up heatmap object
-hm1 <- Heatmap(mat, 
+hm1 <- Heatmap(mat,
               col= colorRamp2(c(-2.6,-1,0,1,2.6),c("blue","skyblue","white","lightcoral","red")),
-              heatmap_legend_param=list(at=c(-2.6,-1,0,1,2.6),color_bar="continuous", 
+              heatmap_legend_param=list(at=c(-2.6,-1,0,1,2.6),color_bar="continuous",
                                         legend_direction="vertical", legend_width=unit(5,"cm"),
-                                        title_position="topcenter", title_gp=gpar(fontsize=10, fontface="bold")), 
+                                        title_position="topcenter", title_gp=gpar(fontsize=10, fontface="bold")),
               name = "Z-score",
-              
+
               #Row annotation configurations
               cluster_rows=T,
               show_row_dend=T,
@@ -443,7 +449,7 @@ hm1 <- Heatmap(mat,
               row_title_gp=gpar(fontsize=8),
               show_row_names=FALSE,
               row_names_side="left",
-              
+
               #Column annotation configuratiions
               cluster_columns=T,
               show_column_dend=T,
@@ -452,7 +458,7 @@ hm1 <- Heatmap(mat,
               column_title_gp=gpar(fontsize=15, fontface="bold"),
               show_column_names = T,
               column_names_gp = gpar(fontsize = 12, fontface="bold"),
-              
+
               #Dendrogram configurations: columns
               clustering_distance_columns="euclidean",
               clustering_method_columns="complete",
@@ -469,12 +475,12 @@ hm1 <- Heatmap(mat,
               border=T,
               row_km = 1,
               column_km = 1,
-              
+
               #plot params
-              width = unit(5, "inch"), 
+              width = unit(5, "inch"),
               height = unit(4, "inch"),
               #height = unit(0.4, "cm")*nrow(mat),
-              
+
               #Annotations
               top_annotation = ha_col)
 
@@ -483,7 +489,7 @@ draw(hm1, annotation_legend_side = "right", heatmap_legend_side="right")
 ```
 
 ### Heatmap (top 20 genes)
-Instead of plotting all DE genes in a heatmap, we can select the top n differentially expressed genes to plot. I have decided to use the largest LFC values to plot the top 20 genes, however you might see people plotting the top n variable genes in this situation. 
+Instead of plotting all DE genes in a heatmap, we can select the top n differentially expressed genes to plot. I have decided to use the largest LFC values to plot the top 20 genes, however you might see people plotting the top n variable genes in this situation.
 ```{R}
 # same logic as volcano plot
 up <- subset(de_up, de_up$log2FoldChange > 1 & de_up$pvalue <= 0.05)
@@ -499,13 +505,13 @@ plot_top_20 <- c(up_list, down_list)
 # subset the counts matrix from last step
 top_genes <- mat[which(rownames(mat) %in% plot_top_20),]
 
-hm1 <- Heatmap(top_genes, 
+hm1 <- Heatmap(top_genes,
               col= colorRamp2(c(-2.6,-1,0,1,2.6),c("blue","skyblue","white","lightcoral","red")),
-              heatmap_legend_param=list(at=c(-2.6,-1,0,1,2.6),color_bar="continuous", 
+              heatmap_legend_param=list(at=c(-2.6,-1,0,1,2.6),color_bar="continuous",
                                         legend_direction="vertical", legend_width=unit(5,"cm"),
-                                        title_position="topcenter", title_gp=gpar(fontsize=10, fontface="bold")), 
+                                        title_position="topcenter", title_gp=gpar(fontsize=10, fontface="bold")),
               name = "Z-score",
-              
+
               #Row annotation configurations
               cluster_rows=T,
               show_row_dend=T,
@@ -513,7 +519,7 @@ hm1 <- Heatmap(top_genes,
               row_title_gp=gpar(fontsize=8),
               show_row_names=TRUE,
               row_names_side="right",
-              
+
               #Column annotation configuratiions
               cluster_columns=T,
               show_column_dend=T,
@@ -522,7 +528,7 @@ hm1 <- Heatmap(top_genes,
               column_title_gp=gpar(fontsize=15, fontface="bold"),
               show_column_names = T,
               column_names_gp = gpar(fontsize = 12, fontface="bold"),
-              
+
               #Dendrogram configurations: columns
               clustering_distance_columns="euclidean",
               clustering_method_columns="complete",
@@ -539,12 +545,12 @@ hm1 <- Heatmap(top_genes,
               border=T,
               row_km = 1,
               column_km = 1,
-              
+
               #plot params
-              width = unit(5, "inch"), 
+              width = unit(5, "inch"),
               height = unit(4, "inch"),
               #height = unit(0.4, "cm")*nrow(mat),
-              
+
               #Annotations
               top_annotation = ha_col)
 
@@ -553,51 +559,204 @@ draw(hm1, annotation_legend_side = "right", heatmap_legend_side="right")
 ```
 
 # Pathway Analysis
+
+## fgsea
 Please download the GO Biological processes GMT file from the following link: https://raw.githubusercontent.com/BarryDigby/barrydigby.github.io/master/RNA-Seq/c5.bp.v7.0.symbols.gmt
 
-Run fGSEA:
+### Create ranked gene list
+Convert the `DESeq` results object to a dataframe, (not the `apeglm` filtered results object, which has no column named `stat`) and produce a dataframe of genes with their summary statistic.
 ```{r, message=F, warning=F}
 ## convert result object to dataframe
-res <- as.data.frame(res1)
+res <- as.data.frame(lung_v_ctrl)
 res$hgnc_symbol <- rownames(res)
-
-## use absolute value for LFC 
-res$log2FoldChange <- abs(res$log2FoldChange)
 
 # compute summary stat
 fgsea_rank <- res %>%
-              dplyr::select(hgnc_symbol, log2FoldChange) %>%
+              dplyr::select(hgnc_symbol, stat) %>%
               na.omit() %>%
               distinct() %>%
               group_by(hgnc_symbol) %>%
-              summarize(stat=mean(log2FoldChange))
+              summarize(stat=mean(stat))
 
+fgsea_rank
+```
+
+### Convert to a named list
+```{R,message=F, warning=F}
 # create named list
 rank <- deframe(fgsea_rank)
+head(rank, 20)
+```
 
+### Read GMT file
+```{R, message=F, warning=F}
 # read in gmt file
 pathway <- gmtPathways("~/RNA-Seq/c5.bp.v7.0.symbols.gmt")
+head(pathway, 1)
+```
 
+### Run fgsea
+```{R, message=F, warning=F}
 # run fgsea
-fgsea <- fgseaMultilevel(pathways=pathway, stats=rank, eps = 0, scoreType = "pos") %>%
-                         as_tibble() %>%
-                         arrange(padj)
+fgsea <- fgsea(pathways=pathway, stats=rank, nperm=1000)
 
-head(fgsea)
+fgseaResTidy <- fgsea %>%
+  as_tibble() %>%
+  arrange(desc(NES))
+
+# Show in a nice table:
+fgseaResTidy %>%
+  dplyr::select(-leadingEdge, -ES, -nMoreExtreme) %>%
+  arrange(padj) %>%
+  DT::datatable()
 ```
 
 ### Enrichment plots
-Subset the `fgsea` results object to include results whose adjusted pvalue is < 0.0001. You can use any preferred filtering method here, this is just to return a handful of pathways for the enrichment plot for loop. 
+Subset the `fgsea` results object to include results whose normalised enrichment score is > 2.3. You can use any preferred filtering method here, this is just to return a handful of pathways for the enrichment plot for loop.
 ```{R, message=F, warning=F}
-filtered_pathway <- subset(fgsea, padj < 0.0001)
+filtered_pathway <- subset(fgsea, NES > 2.3)
 
 filt_p <- as.vector(filtered_pathway$pathway)
 
 for (i in filt_p){
-    plt <- plotEnrichment(pathway = pathway[[i]], 
-    gseaParam = 1, ticksSize = 0.5, stats= rank) + 
+    plt <- plotEnrichment(pathway = pathway[[i]],
+    gseaParam = 1, ticksSize = 0.5, stats= rank) +
     labs(title=i) + theme(plot.title = element_text(hjust = 0.5, face="bold"))
     print(plt)
 }
 ```
 
+## clusterProfiler
+To use cluster profiler, gene IDs must be converted to ENTREZ IDs. We can achieve this using biomaRt and attaching the ENTREZ IDs to the results table. For the sake of the tutorial, we are only going to supply statistically significant genes to clusterProfiler (padj < 0.01)
+```{R, message=F, warning=F}
+df <- as.data.frame(res1)
+df$hgnc_symbol <- rownames(df)
+info <- getBM(attributes=c("hgnc_symbol",
+                           "entrezgene_id"),
+                  filters = c("hgnc_symbol"),
+                  values = df$hgnc_symbol,
+                  mart = mart,
+                  useCache=FALSE)
+tmp <- merge(df, info, by="hgnc_symbol")
+
+# subset the dataframe to include only stat sig genes
+tmp <- tmp[tmp$padj < 0.01,]
+```
+
+### Run clusterProfiler
+Be careful to specify the ENTREZ IDs (which are numeric names) as characters.
+```{R, message=F, warning=F}
+OrgDb <- org.Hs.eg.db
+
+geneList <- as.vector(tmp$log2FoldChange)
+names(geneList) <- as.character(tmp$entrezgene_id)
+gene <- na.omit(as.character(tmp$entrezgene_id))
+
+
+# GO over-representation test
+ego <- clusterProfiler::enrichGO(gene          = gene,
+                                 OrgDb         = OrgDb,
+                                 ont           = "BP",
+                                 pAdjustMethod = "BH",
+                                 pvalueCutoff  = 0.001,
+                                 qvalueCutoff  = 0.01,
+                                 readable      = TRUE)
+head(summary(ego))
+```
+
+### CNET plot
+Subset the `enrichment object`, be sure to add `asis = T`. For the sake of the tutorial, we are selecting pathways with 21 genes in them to reduce the plot size. You may want to filter by pathways or genes of interest here.
+
+clusterProfiler produces a nice gene-concept network plot showing gene fold changes and the pathway to which they belong.
+```{R}
+subset <- ego[ego$Count == 21, asis=T]
+cnetplot(subset, categorySize="geneNum", foldChange=geneList)
+```
+
+# Boxplots
+You may wish to demonstrate specific gene expression values using boxplots. We will use the package `ggpubr` here which produces really nice publication ready plots.
+
+We will make plots for a handful of genes returned as significant in the lung vs control contrast. Select the top 3 up and down regulated de genes:
+```{R, message=F, warning=F}
+up <- res1[order(-res1$log2FoldChange),]
+up_list <- head(rownames(up), n=3L)
+
+down <- res1[order(res1$log2FoldChange),]
+down_list <- head(rownames(down), n=3L)
+
+gene_list <- c(up_list, down_list)
+gene_list
+```
+
+## T-test
+Now create a for loop (extracting counts in long format using `plotCounts`):
+```{R,message=F, warning=F}
+# loop over gene list in plot
+for(i in gene_list){
+
+  # handy deseq2 function plotCounts to get data into ggplot2 format
+  d <- plotCounts(dds, gene=paste0(i), intgroup = "condition", returnData = T)
+
+  # need to remove melanoma
+  d <- subset(d, d$condition != "melanoma")
+
+  # set up comparisons
+  comps <- list(c("lung", "control"))
+
+  # ggpubr, for loops must assign plot to variable and use plot(var)
+  p <- ggboxplot(d, x = "condition", y = "count",
+                 fill = "condition", color = "black", palette = "jco",
+                 ylab ="Normalized Counts", title = paste0(i),
+                 xlab="", add = c("dotplot"),
+                 add.params = list(size=0.75, jitter=0.01),
+                 legend = "none", bxp.errorbar = T,
+                 bxp.errorbar.width = 0.2, width=0.3, ggtheme = theme_classic()) +
+                 theme(axis.text.x = element_text( colour = "black", size=14)) +
+                 theme(axis.title.y = element_text( colour = "black", size=14)) +
+                 theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+
+  z <- p + stat_compare_means(comparisons=comps,
+                              method="t.test",
+                              aes(label = ifelse(
+                                  p < 1.e-2,
+                                  sprintf("p = %2.1e", as.numeric(..p.format..)),
+                                  sprintf("p = %5.4f", as.numeric(..p.format..)))))
+
+  plot(z)
+}
+```
+
+## Anova
+Create plots for control, lung and melanoma:
+```{R, message=F, warning=F}
+for(i in gene_list){
+
+  # handy deseq2 function plotCounts to get data into ggplot2 format
+  d <- plotCounts(dds, gene=paste0(i), intgroup = "condition", returnData = T)
+
+  # we need to bump the anova value above the other signif icons or else it is overlayed.
+  # just add 10% of value ..
+  max <- max(d$count)
+  max <- max + (max*0.10)
+
+  compare_means(count ~ condition,  data = d,
+              ref.group = ".all.", method = "t.test")
+
+   p <- ggboxplot(d, x = "condition", y = "count",
+                 fill = "condition", color = "black", palette = "jco",
+                 ylab ="Normalized Counts", title = paste0(i),
+                 xlab="", add = c("dotplot"),
+                 add.params = list(size=0.75, jitter=0.01),
+                 legend = "none", bxp.errorbar = T,
+                 bxp.errorbar.width = 0.2, width=0.3, ggtheme = theme_classic()) +
+                 theme(axis.text.x = element_text( colour = "black", size=14)) +
+                 theme(axis.title.y = element_text( colour = "black", size=14)) +
+                 theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
+                 rotate_x_text(angle = 45) +
+                 geom_hline(yintercept = mean(d$count), linetype = 2) +
+                 stat_compare_means(method = "anova", label.y = max) +        
+                 stat_compare_means(label = "p.signif", method = "t.test",
+                                    ref.group = ".all.")
+   plot(p)
+}
+```

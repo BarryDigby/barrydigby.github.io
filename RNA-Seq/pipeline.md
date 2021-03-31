@@ -9,20 +9,20 @@ A description of the `kallisto` pipeline has been provided for you below.
 There is no need to run this for this weeks tutorial, it has been posted as a learning resource.
 
 # 1. Indexing
-Kallisto requires an indexed genome file for downstream quantification.
+Kallisto requires an indexed transcriptome file for downstream quantification.
 
 ##### *Inputs*
-- Reference Genome
+- Reference [transcriptome file](http://ftp.ensembl.org/pub/release-103/fasta/homo_sapiens/cdna/Homo_sapiens.GRCh38.cdna.all.fa.gz).
 
 ```bash
-kallisto index -i GRCh37.idx GRCh37.fa
+kallisto index -i GRCh38.idx Homo_sapiens.GRCh38.cdna.all.fa
 ```
 
 ##### *Flags*
-* `-i`: Filename for the kallisto index to be constructed
+* `-i`: Output filename
 
 ##### *Outputs*
-Kallisto index produces an indexed genome file with the filename specified by `-i`
+Kallisto index produces an indexed transcriptome file
 
 ***
 
@@ -30,7 +30,7 @@ Kallisto index produces an indexed genome file with the filename specified by `-
 Kallisto can perform quantification using either single-end or paired-end fastq files.
 
 ##### *Inputs*
-- Indexed Genome
+- Indexed transcriptome
 - FASTQ files
 
 ##### Paired-end
@@ -60,10 +60,12 @@ kallisto quant \
 * `-i` Indexed genome file from `kallisto index`
 * `--single` Indicate input is single-end reads (requires `-l` and `-s`)
 * `-t` *n* threads to use
-* `-o` Output directory of the sample, containing 3 files. Do not name the directory `outDir`, name it according to the sample name e.g CTRL_2.fastq should have the directory name CTRL_2/
+* `-o` Output directory of the sample, containing 3 files. Do not name the directory `outDir`, name it according to the sample name e.g CTRL_2.fastq should have the directory name CTRL_2/ etc.
 * `-l` Estimated average fragment length
 * `-s` Estimated standard deviation of fragment length
 * `--bias` Perform sequence based bias correction
+
+> Note: Estimated fragment lengths and standard deviation must be retrieved from the sequencing center. If using public data, try to find this information online. Using incorrect values will greatly influence the outputs. 200 and 30 are typically used for average fragment length and standard deviation, respectively. 
 
 ##### *Outputs*
 Kallisto `quant` will output a directory for each sample containing:

@@ -7,7 +7,7 @@ permalink: /RNA-Seq/Nextflow
 # Introduction
 There will be no exercise for you to complete in nextflow this week. Instead, I have designed a simple nextflow script that can perform both single-end and paired-end analysis with kallisto by using `if/else` statements.
 
-Furthermore, the script is capable of downloading the reference cDNA index file and performing `kallisto index` if either file is not provided.
+Furthermore, the script is capable of downloading the reference cDNA index file and performing `kallisto index` if neither file is not provided.
 
 ## Single end data
 Before we walk thorugh the script, you need to know how to handle single-end fastq files with nextflow. In the example below, we specify the paths to the fastq files using `fromPath()`. This will return a channel with the paths to the fastq files.
@@ -38,7 +38,7 @@ ch_reads.view()
 /data/MA5112/Practicals/RNA-Seq/Kallisto_Practical/Data/A549_3.fastq.gz
 ```
 
-The channel outputs file paths. We want it to mimick `fromFilePairs()` and create a tuple with a key for each file path, so we can name the output directories when running `Kallisto` for single end data.
+The channel outputs file paths. We want it to mimick `fromFilePairs()` and create a tuple with a key for each file path, so we can name the output directories when running `kallisto quant` for single end data.
 
 Save the below script and run it:
 
@@ -68,6 +68,8 @@ ch_reads.view()
 ```
 
 Now we can use the format `tuple val(base), file(reads) from ch_reads` for kallisto alignment.
+
+Read [here](https://www.nextflow.io/docs/latest/faq.html?highlight=simplename#how-do-i-get-a-unique-id-based-on-the-file-name) for descriptions on how to get unique IDs based on filenames using `simpleName` and `baseName`. 
 
 ## Nextflow script
 Go to the main nextflow script available at this link: [https://github.com/BarryDigby/barrydigby.github.io/blob/master/RNA-Seq/main.nf](https://github.com/BarryDigby/barrydigby.github.io/blob/master/RNA-Seq/main.nf).
