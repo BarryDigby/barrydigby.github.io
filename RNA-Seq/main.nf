@@ -5,7 +5,7 @@ params.index = ''
 params.input = ''
 params.input_type = ''
 params.fragment_length = ''
-params.standard_dev = ''
+params.standard_deviation = ''
 params.cpus = ''
 params.outdir = ''
 
@@ -22,26 +22,26 @@ def helpMessage() {
     nextflow -bg run main.nf --input "/data/reads/*_r{1,2}.fastq.gz" --input_type 'paired_end' --fasta '/data/index/GRCh38.cdna.fa' --cpus 2
 
    Arguments:
-      -input                        [path] Path to input RNA-Seq data. Use a suitable wildcard glob pattern to capture paired end
+      --input                        [path] Path to input RNA-Seq data. Use a suitable wildcard glob pattern to capture paired end
                                            or single end reads and surround in double quotes
 
-      -input_type                    [str] Input data type
+      --input_type                    [str] Input data type
                                            Available: paired-end, single-end
 
-      -fasta                        [path] Path to reference cDNA file
+      --fasta                        [path] Path to reference cDNA file
                                            Automatically downloaded if left empty
 
-      -index                        [path] Path to reference cDNA Kallisto index file
+      --index                        [path] Path to reference cDNA Kallisto index file
                                            Automatically generated if left empty
 
-      -outdir                       [path] Directory to write results to
+      --outdir                       [path] Directory to write results to
 
    Kallisto arguments:
-      -cpus                          [int] Number of CPU cores to use for alignment
+      --cpus                          [int] Number of CPU cores to use for alignment
 
-      -fragment_length               [int] Estimated average fragment length (single end data)
+      --fragment_length               [int] Estimated average fragment length (single end data)
 
-      -standard_deviation            [int] Estimated standard deviation of fragment length (single end data)
+      --standard_deviation            [int] Estimated standard deviation of fragment length (single end data)
 
     """.stripIndent()
 }
@@ -62,7 +62,7 @@ if(!params.outdir) exit 1, "error: No output directory provided. Please provide 
 
 if(!params.cpus) exit 1, "error: Please specify the number of CPUs for Kallisto pseudo-alignment."
 
-if(params.input_type == 'single-end' && (!params.fragment_length || !params.standard_dev)) exit 1, "error: Single end data selected, but --fragment_length and/or --standard_dev not specified. Please provide values for both."
+if(params.input_type == 'single-end' && (!params.fragment_length || !params.standard_deviation)) exit 1, "error: Single end data selected, but --fragment_length and/or --standard_deviation not specified. Please provide values for both."
 
 // Place reads in channel
 if(params.input_type == 'paired-end'){
@@ -142,7 +142,7 @@ process kallisto{
 	kallisto quant \
 	--single \
 	-l ${params.fragment_length} \
-	-s ${params.standard_dev} \
+	-s ${params.standard_deviation} \
 	-i $index \
 	-t ${params.cpus}/ \
 	-o ${base}/ \

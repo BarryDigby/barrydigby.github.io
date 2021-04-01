@@ -1,6 +1,7 @@
 ---
 output:
   html_document:
+    title: 'MA5112 RNA-Seq'
     toc: true
     toc_float: true
     code_folding: hide
@@ -39,7 +40,7 @@ The tutorial assumes you have 9 Kallisto quantification directories under `~/RNA
 # Reading Input Data
 
 ### Metadata
-Read in the file `samples.csv` which contains the experimental metadata. Please make sure that the rownames of this dataframe match the kallisto quantification directory names at `/home/RNA-Seq/quant/`.
+Read in the file `samples.csv` which contains the experimental metadata. Please make sure that the rownames of this dataframe match the kallisto quantification directory names at `~/RNA-Seq/quant/`.
 ```{R}
 samples <- read.csv("~/RNA-Seq/samples.csv", header=T, row.names = "sample", stringsAsFactors = T)
 samples
@@ -676,37 +677,31 @@ cnetplot(subset, categorySize="geneNum", foldChange=geneList)
 # Boxplots
 You may wish to demonstrate specific gene expression values using boxplots. We will use the package `ggpubr` here which produces really nice publication ready plots.
 
-We will make plots for a handful of genes returned as significant in the lung vs control contrast. Select the top 3 up and down regulated de genes:
-```{R, message=F, warning=F}
-up <- res1[order(-res1$log2FoldChange),]
-up_list <- head(rownames(up), n=3L)
+## plotCounts
+In the example below we will use the `DESeq2` `plotCounts` function, which converts the count matrix for gene $i$ into long format, and appends metadata. This is the standard input format for plotting categorical data in R.
 
-down <- res1[order(res1$log2FoldChange),]
-down_list <- head(rownames(down), n=3L)
-
-gene_list <- c(up_list, down_list)
-gene_list
+```{R,message=F, warning=F}
+d <- plotCounts(dds, gene="PTEN", intgroup = "condition", returnData = T)
+d
 ```
 
-## T-test
-Now create a for loop (extracting counts in long format using `plotCounts`):
-```{R,message=F, warning=F}
-# loop over gene list in plot
-for(i in gene_list){
+We could use the function to produce count plots (`returnData=F`), however in my opinion the plot is rather lackluster...
+```{R, message=F, warning=F}
+plotCounts(dds, gene="PTEN", intgroup="condition", returnData=F)
+```
 
-  # handy deseq2 function plotCounts to get data into ggplot2 format
-  d <- plotCounts(dds, gene=paste0(i), intgroup = "condition", returnData = T)
+## Pairwise Plot
+If we want to plot lung vs control, we need to remove the melanoma counts from the dataframe:
+```{R, message=F, warning=F}
+d <- subset(d, d$condition != "melanoma")
+d
+```
 
-  # need to remove melanoma
-  d <- subset(d, d$condition != "melanoma")
-
-  # set up comparisons
-  comps <- list(c("lung", "control"))
-
-  # ggpubr, for loops must assign plot to variable and use plot(var)
-  p <- ggboxplot(d, x = "condition", y = "count",
+Now plot the data using `ggpubr`:
+```{R, message=F, warning=F}
+ggboxplot(d, x = "condition", y = "count",
                  fill = "condition", color = "black", palette = "jco",
-                 ylab ="Normalized Counts", title = paste0(i),
+                 ylab ="Normalized Counts", title = "PTEN Expression",
                  xlab="", add = c("dotplot"),
                  add.params = list(size=0.75, jitter=0.01),
                  legend = "none", bxp.errorbar = T,
@@ -714,37 +709,56 @@ for(i in gene_list){
                  theme(axis.text.x = element_text( colour = "black", size=14)) +
                  theme(axis.title.y = element_text( colour = "black", size=14)) +
                  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
-
-  z <- p + stat_compare_means(comparisons=comps,
-                              method="t.test",
-                              aes(label = ifelse(
-                                  p < 1.e-2,
-                                  sprintf("p = %2.1e", as.numeric(..p.format..)),
-                                  sprintf("p = %5.4f", as.numeric(..p.format..)))))
-
-  plot(z)
-}
 ```
 
-## Anova
-Create plots for control, lung and melanoma:
+### Add significance values
+We can perform a pairwise t-test and add the significance values for the boxplot. First, set up the comparison of interest `comp` using a list. We will call this variable using `stat_compare_means`.
+
+I like to bump the significance value label slightly higher than the default. To do this dynamically, simply add 5% to the max value and set this as the y axis value for the significance label (`signif_yaxis` variable).
+
+In the plot below we can see that `PTEN` is more highly expressed in the lung samples, however not at a significant level.
 ```{R, message=F, warning=F}
-for(i in gene_list){
+comps <- list(c("lung", "control"))
 
-  # handy deseq2 function plotCounts to get data into ggplot2 format
-  d <- plotCounts(dds, gene=paste0(i), intgroup = "condition", returnData = T)
+signif_yaxis = max(d$count) + (max(d$count)*0.05)
 
-  # we need to bump the anova value above the other signif icons or else it is overlayed.
-  # just add 10% of value ..
-  max <- max(d$count)
-  max <- max + (max*0.10)
+ggboxplot(d, x = "condition", y = "count",
+                 fill = "condition", color = "black", palette = "jco",
+                 ylab ="Normalized Counts", title = "PTEN Expression",
+                 xlab="", add = c("dotplot"),
+                 add.params = list(size=0.75, jitter=0.01),
+                 legend = "none", bxp.errorbar = T,
+                 bxp.errorbar.width = 0.2, width=0.3, ggtheme = theme_classic()) +
+                 theme(axis.text.x = element_text( colour = "black", size=14)) +
+                 theme(axis.title.y = element_text( colour = "black", size=14)) +
+                 theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
+                 stat_compare_means(comparisons = comps, method = "t.test", label.y = signif_yaxis)
+```
 
-  compare_means(count ~ condition,  data = d,
+
+
+## Anova
+Lets plot lung vs control vs melanoma for `PNN` and run an ANOVA test to see if `PNN` is significantly over or under expressed in a condition compared to *all*. Re-run the `plotCounts` function to obtain the dataframe with all three conditions:
+```{r, message=F, warning=F}
+d <- plotCounts(dds, gene="PNN", intgroup = "condition", returnData = T)
+d
+```
+
+To perform pairwise test vs. *all* (i.e the base-mean), use `compare_means` and set the `ref.group` to `".all."`. We are going to change the signficance labels for each pairwise comparison to `ns, *, ** and ***` instead of reporting precise p-values. This can be toggled using `label` in the `stat_compare_means` function.
+
+We will be plotting two significance labels (ANOVA and pairwise) thus we will need to make two `signif_yaxis` variables at 5% and 10% of the max value respectively to produce a tidy plot.
+
+In the plot below, we see that `PNN` is underexpressed in melanoma compared to control and lung, and the ANOVA test suggests the results are significant.
+```{R, message=F, warning=F}
+signif_yaxis = max(d$count) + (max(d$count)*0.10)
+signif_yaxis2 = max(d$count) + (max(d$count)*0.05)
+
+compare_means(count ~ condition,  data = d,
               ref.group = ".all.", method = "t.test")
 
-   p <- ggboxplot(d, x = "condition", y = "count",
+ggboxplot(d, x = "condition", y = "count",
                  fill = "condition", color = "black", palette = "jco",
-                 ylab ="Normalized Counts", title = paste0(i),
+                 ylab ="Normalized Counts", title = "PNN Expression",
                  xlab="", add = c("dotplot"),
                  add.params = list(size=0.75, jitter=0.01),
                  legend = "none", bxp.errorbar = T,
@@ -754,9 +768,7 @@ for(i in gene_list){
                  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
                  rotate_x_text(angle = 45) +
                  geom_hline(yintercept = mean(d$count), linetype = 2) +
-                 stat_compare_means(method = "anova", label.y = max) +        
+                 stat_compare_means(method = "anova", label.y = signif_yaxis) +        
                  stat_compare_means(label = "p.signif", method = "t.test",
-                                    ref.group = ".all.")
-   plot(p)
-}
+                                    ref.group = ".all.", label.y = signif_yaxis2)
 ```
