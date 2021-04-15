@@ -11,7 +11,7 @@ Everything you need to run the pipeline is available at the following directory 
 > /data/MSc/2020/MA5112/scRNA-Seq/
 
 1. Reference file (indexed): `reference/Homo_sapiens.cDNA.idx`
-2. FASTQ files: `reads/*_R{1,2}_001.fastq.gz`
+2. FASTQ read pair: `reads/*_R{1,2}_001.fastq.gz`
 3. Whitelist file: `assets/10xv3_whitelist.txt`
 4. Container: `container/scRNA.img`
 
@@ -26,21 +26,15 @@ Everything you need to run the pipeline is available at the following directory 
 
 ***
 
-# 1. Indexing {#index}
-
-:heavy_exclamation_mark: **DO NOT RUN THE INDEX STEP** :heavy_exclamation_mark:
-
-Kallisto requires an indexed genome file for downstream quantification.
+# 1. Indexing {#index} DO NOT RUN
+Kallisto requires an indexed genome file for downstream quantification. This has been generated for you already and is available at `/data/MSc/2020/MA5112/scRNA-Seq/reference/Homo_sapiens.cDNA.idx`
 
 ##### *Inputs*
-- Reference Genome
+- cDNA Reference file (`Homo_sapiens.GRCh38.cdna.all.fa`)
 
 ```bash
-kallisto index -i GRCh37.idx GRCh37.fa
+kallisto index -i Homo_sapiens.cDNA.idx Homo_sapiens.GRCh38.cdna.all.fa
 ```
-
-##### *Flags*
-* `-i`: Filename for the kallisto index to be constructed
 
 ##### *Outputs*
 Kallisto index produces an indexed genome file with the filename specified by `-i`
@@ -48,7 +42,7 @@ Kallisto index produces an indexed genome file with the filename specified by `-
 ***
 
 # 2. Kallisto bus {#bus}
-Generate BUS files for single-cell sequencing
+`kallisto bus` works with raw FASTQ files for single-cell RNA-Seq datasets. For each read the cell barcode, UMI information and the equivalence class resulting from pseudoalignment are stored in a BUS file `output.bus` **stored in the output directory specified by `-o`**, along with `matrix.ec` and `transcripts.txt` which store information about the equivalence classes and transcript names for downstream processing. Run the following commands in your directory, and specify the path to the indexed transcriptome and fastq.gz files given at the top of the page. 
 
 ##### *Inputs*
 - Genome Index file
