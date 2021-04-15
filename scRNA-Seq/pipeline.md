@@ -187,4 +187,17 @@ The output directory should look like this:
     |--matrix.mtx
 ```
 
-Tarzip the `seurat` directory and move it to your local machine for analysis in R. 
+There is an ENSEMBL gene ID in the `genes.tsv` file that is missing a gene symbol. This will create an error in `R`, so we will remove it from the dataset (alternatively, we could add the gene symbol manually).
+
+Check which ID has a blank 2nd column i.e no gene symbol and remove it:
+
+```bash
+awk 'NF!=2' genes.tsv
+ENSG00000237235.2
+```
+
+```bash
+grep -v "ENSG00000237235.2" genes.tsv > tmp.tsv && rm genes.tsv && mv tmp.tsv genes.tsv
+```
+
+Tarzip the `seurat` directory and move it to your local machine for analysis in R.
