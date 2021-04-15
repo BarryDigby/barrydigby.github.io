@@ -4,10 +4,20 @@ layout: page
 permalink: /scRNA-Seq/pipeline
 ---
 
-A description of the `kallisto bustools` pipeline has been provided for you below.
+Request compute resources on the MSC queue and step through the `Kallisto Bustools` pipeline in an interactive shell.  
 
-There is no need to run this for this weeks tutorial, it has been posted as a learning resource.
+Everything you need to run the pipeline is available at the following directory on lugh:
 
+> /data/MSc/2020/MA5112/scRNA-Seq/
+
+1. Reference file (indexed): `reference/Homo_sapiens.cDNA.idx`
+2. FASTQ files: `reads/*_R{1,2}_001.fastq.gz`
+3. Whitelist file: `assets/10xv3_whitelist.txt`
+4. Container: `container/scRNA.img`
+
+***
+
+##### Skip to
 1. [Indexing](#index)
 2. [kallisto bus](#bus)
 3. [bustools correct](#correct)
@@ -17,6 +27,9 @@ There is no need to run this for this weeks tutorial, it has been posted as a le
 ***
 
 # 1. Indexing {#index}
+
+:heavy_exclamation_mark: **DO NOT RUN THE INDEX STEP** :heavy_exclamation_mark:
+
 Kallisto requires an indexed genome file for downstream quantification.
 
 ##### *Inputs*
