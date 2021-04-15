@@ -24,6 +24,7 @@ Everything you need to run the pipeline is available at the following directory 
 3. [bustools correct](#correct)
 4. [bustools sort](#sort)
 5. [bustools text](#text)
+6. [Process outputs](#proc)
 
 ***
 
@@ -152,7 +153,7 @@ Bustools `text` produces a BUS file in text format.
 
 ***
 
-# 6. Process Outputs
+# 6. Process Outputs {#proc}
 Exit the interactive container for this step. Copy the `tx2gene.txt` file to your directory where you ran the `kallisto` analysis: `cp /data/MSc/2020/MA5112/scRNA-Seq/assets/tx2gene.txt .`
 
 Copy and paste this [python script](https://github.com/BarryDigby/barrydigby.github.io/blob/master/scRNA-Seq/format_seurat.py) into your directory as a new file, and call it `format_bustools.py`. Open `format_bustools.py`, and edit line 8 to your directory:
