@@ -14,6 +14,7 @@ Everything you need to run the pipeline is available at the following directory 
 2. FASTQ read pair: `reads/*_R{1,2}_001.fastq.gz`
 3. Whitelist barcode file: `assets/10xv3_whitelist.txt`
 4. Container: `container/scRNA.img`
+5. tx2gene file: `assets/tx2gene.txt`
 
 ***
 
@@ -56,7 +57,7 @@ kallisto bus \
          -o bus_output/ \
          -x 10xv3 \
          -t 2 \
-         pbmc_1k_protein_v3_gex_S1_L001_R1_001.fastq.gz, pbmc_1k_protein_v3_gex_S1_L001_R2_001.fastq.gz
+         pbmc_1k_protein_v3_gex_S1_L001_R1_001.fastq.gz pbmc_1k_protein_v3_gex_S1_L001_R2_001.fastq.gz
 
 ```
 
@@ -113,7 +114,7 @@ Before running the command, make a `tmp/` directory in your directory. Run the f
 bustools sort \
          -T tmp/ \
          -t 2 \
-         -o output.sort.bus \
+         -o output_sort.bus \
          output_corrected.bus
 ```
 
@@ -139,7 +140,7 @@ Run the following commands, referencing the sorted bus file generated in the pre
 
 ```bash
 bustools text \
-         -o output.sort.txt \
+         -o output_sort.txt \
          output.sort.bus
 ```
 
@@ -148,3 +149,39 @@ bustools text \
 
 ##### *Outputs*
 Bustools `text` produces a BUS file in text format.
+
+***
+
+# 6. Process Outputs
+Exit the interactive container for this step. Copy the `tx2gene.txt` file to your directory where you ran the `kallisto` analysis: `cp /data/MSc/2020/MA5112/scRNA-Seq/assets/tx2gene.txt .`
+
+Copy and paste this [python script](https://github.com/BarryDigby/barrydigby.github.io/blob/master/scRNA-Seq/format_seurat.py) into your directory as a new file, and call it `format_bustools.py`. Open `format_bustools.py`, and edit line 8 to your directory:
+
+```bash
+#!/usr/bin/env python
+
+gene_min = 200
+gene_max = 10000
+
+#setup working directory
+import os
+os.chdir("ADD_YOUR_PATH_HERE")  <- # change to os.chdir('/data/your_username/scRNA')
+```
+
+Before running the script, make a directory called `seurat` to store the results.
+
+Run the script:
+
+```bash
+python format_seurat.py
+```
+
+The output directory should look like this:
+
+```bash
+--seurat
+    |--barcodes.tsv  
+    |--gene_hist.png  
+    |--genes.tsv  
+    |--matrix.mtx
+```
