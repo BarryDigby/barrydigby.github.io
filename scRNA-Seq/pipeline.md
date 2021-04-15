@@ -186,3 +186,5 @@ The output directory should look like this:
     |--genes.tsv  
     |--matrix.mtx
 ```
+
+Tarzip the `seurat` directory and move it to your local machine for analysis in R. 
