@@ -7,7 +7,7 @@ permalink: /scRNA-Seq/Nextflow
 # Walkthrough
 The analysis using `kallisto` and `bustools` uses directory as outputs and inputs to downstream processes which we have not encountered before.
 
-I will demonstrate how these work with some proof of concept scripts below.
+I will demonstrate how these work.
 
 ***
 
@@ -16,175 +16,132 @@ Save the below script as `test.nf` and run `nextflow run test.nf`
 ```bash
 #!/usr/bin/env nextflow
 
+/*
+ * Use process to create output directory
+ * with some files in it.
+ */
 
-// create a directory in a process
-// add some empty files
+process create_dir{
 
-process foo{
+    output:
+        file("bus_output") into dir_out
 
-	output:
-	file("folder") into foo_out
-
-	script:
-	"""
-	mkdir -p folder/
-	touch file{1..3}.txt
-	mv *.txt folder/
-	"""
+    script:
+    """
+    mkdir -p bus_output
+    touch bus_output/output.bus
+    touch bus_output/matrix.ec
+    touch bus_output/transcripts.txt
+    """
 }
 
-// place foo_out into two new channels
-(foo1, foo2) = foo_out.into(2)
+process stage_files{
 
-//view the channel
-foo1.view()
+    echo true
 
-process bar{
+    input:
+        file(bus_output) from dir_out
 
-	echo true
+    output:
+        stdout to out
 
-	input:
-	file(dir) from foo2
-
-	output:
-	file(folder) into bar_out
-
-	script:
-	file1 = "${dir}/file1.txt"
-	"""
-	echo "$file1"
-	"""
-}
-
-process baz{
-
-	echo true
-
-	input:
-	file(dir) from bar_out
-
-	output:
-	stdout to out
-
-	script:
-	"""
-	for i in $dir/*; do
-
-		printf "\$i\n"
-
-	done
-	"""
+    script:
+    """
+    printf "\nAccessing files in the directory is straight forward.\nTreat the input variable as a literal directory,\ni.e access files in it by appending 'directory/<file name>'\n\n"
+    printf "Surrounding the variable with curly braces and a dollar sign still applies..\n\n"
+    printf "Ouput BUS file: ${bus_output}/output.bus \n"
+    printf "Matrix file: ${bus_output}/matrix.ec \n"
+    printf "Transcripts file: ${bus_output}/transcripts.txt \n"
+    """
 }
 ```
-
 ***
 
 # Exercise
 Complete the scRNA-Seq pipeline below. Refer to the `pipeline` section of this weeks tutorial to check process requirements.
+
+This is a very staright forward pipeline as all variables are hard coded within the script.
 
 Save the below script as `kallisto_bustools.nf` and run in your directory:
 
 ```bash
 nextflow -bg -q \
 run kallisto_bustools.nf \
---outDir $(pwd) \
 -with-singularity /data/MSc/2020/MA5112/scRNA-Seq/container/scRNA.img
 ```
 
-*N.B* `bustools correct` will use the output directory from `kallisto bus`, account for this in the script. Refer to the walkthrough examples above of how to handle directories in processes.
+*N.B* I've tweaked the output directories slightly, all output files will end up in `bus_output/` which is slightly different from the interactive shell version we ran previously.
 
 ***
 
 ```bash
 #!/usr/bin/env nextflow
 
-// FASTQ reads
-params.reads = "/data/MSc/2019/1k_pbmc_protein_v3_gex_fastqs/*_R{1,2}_*"
-Channel
-	.fromFilePairs(params.reads)
-	.set{reads_ch}
-
-// 10x Genomics whitelist
-params.whitelist = Channel.fromPath("/data/MSc/2020/MA5112/scRNA-Seq/assets/10xv3_whitelist.txt").getVal()
-
-// Transcripts to Gene
-params.tx2gene = Channel.fromPath("/data/MSc/2020/MA5112/scRNA-Seq/assets/tx2gene.txt").getVal()
-
-// Kallisto Index file (pre-made to save time)
-params.idx = Channel.fromPath("/data/MSc/2020/MA5112/scRNA-Seq/reference/Homo_sapiens.cDNA.idx").getVal()
-
-// Experiment chemistry (v2 or v3)
-params.chemistry = "10xv3"
-
-/*
-  Kallisto Bustools
-*/
-
-process kallisto{
-
-	publishDir "$params.outDir/analysis/raw", mode:'copy'
-
-	input:
+reads = Channel.fromFilePairs("/data/MSc/2020/MA5112/scRNA-Seq/reads/*_R{1,2}_*")
+index = Channel.value(file("/data/MSc/2020/MA5112/scRNA-Seq/reference/Homo_sapiens.cDNA.idx"))
+whitelist = Channel.value(file("/data/MSc/2020/MA5112/scRNA-Seq/assets/10xv3_whitelist.txt"))
+chemistry = "10xv3"
+outdir = "."
 
 
-	output:
+process kallisto_bus{
 
+    publishDir "${outdir}", mode:'copy'
 
-	script:
-	"""
+    input:
 
-	"""
+    output:
+
+    script:
+    """
+    kallisto bus \
+    """
 }
-
 
 process bustools_correct{
 
-	publishDir "$params.outDir/analysis/sorted", mode:'copy'
+    publishDir "${outdir}/bus_output", mode:'copy'
 
-	input:
+    input:
 
+    output:
 
-	output:
-
-
-	script:
-	"""
-
-	"""
+    script:
+    """
+    bustools correct
+    """
 }
+
 
 process bustools_sort{
 
-	publishDir "$params.outDir/analysis/sorted", mode:'copy'
+    publishDir "${outdir}/bus_output", mode:'copy'
 
-	input:
+    input:
 
+    output:
 
-	output:
+    script:
+    """
+    mkdir -p tmp
 
-
-	script:
-	"""
-	mkdir -p tmp/
-
-
-	"""
+    bustools sort \
+    """
 }
 
 
 process bustools_text{
 
-	publishDir "$params.outDir/analysis/counts", mode:'copy'
+    publishDir "${outdir}/bus_output", mode:'copy'
 
-	input:
+    input:
 
+    output:
 
-	output:
-
-
-	script:
-	"""
-
-	"""
+    script:
+    """
+    bustools text \
+    """
 }
+
 ```
