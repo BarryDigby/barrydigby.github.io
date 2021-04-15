@@ -174,7 +174,7 @@ Before running the script, make a directory called `seurat` to store the results
 Run the script:
 
 ```bash
-python format_seurat.py
+python format_bustools.py
 ```
 
 The output directory should look like this:
