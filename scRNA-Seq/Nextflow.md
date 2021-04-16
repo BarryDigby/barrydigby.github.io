@@ -49,8 +49,7 @@ process stage_files{
 
     script:
     """
-    printf "\nAccessing files in the directory is straight forward.\nTreat the input variable as a literal directory,\ni.e access files in it by appending 'directory/<file name>'\n\n"
-    printf "Surrounding the variable with curly braces and a dollar sign still applies..\n\n"
+    printf "\n" 
     printf "Ouput BUS file: ${bus_output}/output.bus \n"
     printf "Matrix file: ${bus_output}/matrix.ec \n"
     printf "Transcripts file: ${bus_output}/transcripts.txt \n"
