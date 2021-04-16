@@ -108,7 +108,7 @@ process bustools_correct{
 
     script:
     """
-    bustools correct
+    bustools correct \
     """
 }
 

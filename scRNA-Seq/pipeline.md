@@ -4,7 +4,7 @@ layout: page
 permalink: /scRNA-Seq/pipeline
 ---
 
-Request compute resources on the MSC queue and step through the `Kallisto Bustools` pipeline in an interactive container shell.  
+Request compute resources on the MSC queue, ssh to the node and step through the `Kallisto Bustools` pipeline in an interactive container shell.  
 
 Everything you need to run the pipeline is available at the following directory on lugh:
 
