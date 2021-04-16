@@ -7,7 +7,9 @@ permalink: /scRNA-Seq/Nextflow
 # Walkthrough
 The analysis using `kallisto` and `bustools` uses directory as outputs and inputs to downstream processes which we have not encountered before.
 
-To call files in the directory (which has been called as an input variable), use parameter expansion: `${variable}`. Append a forward slash `/`, treating the variable as a directory: `${variable}/file.txt`
+To call files in the directory, use parameter expansion: `${variable}`. 
+
+Append a forward slash `/`, treating the variable as a directory: `${variable}/file.txt`
 
 ***
 
