@@ -69,7 +69,7 @@ kallisto bus \
 * `-t` *n* threads to use
 
 ##### *Outputs*
-Kallisto `bus` generates an output directory with the following files:
+`Kallisto bus` generates an output directory with the following files:
 
 - `matrix.ec`
 - `output.bus`
