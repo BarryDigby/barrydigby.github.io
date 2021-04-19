@@ -49,7 +49,7 @@ process stage_files{
 
     script:
     """
-    printf "\n" 
+    printf "\n"
     printf "Ouput BUS file: ${bus_output}/output.bus \n"
     printf "Matrix file: ${bus_output}/matrix.ec \n"
     printf "Transcripts file: ${bus_output}/transcripts.txt \n"
