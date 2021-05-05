@@ -8,13 +8,15 @@ Request compute resources on the MSC queue, ssh to the node and step through the
 
 Everything you need to run the pipeline is available at the following directory on lugh:
 
-> /data/MSc/2020/MA5112/scRNA-Seq/
+```
+data_dir="/data/MSc/2020/MA5112/scRNA-Seq"
+```
 
-1. Reference file (indexed): `reference/Homo_sapiens.cDNA.idx`
-2. FASTQ read pair: `reads/*_R{1,2}_001.fastq.gz`
-3. Whitelist barcode file: `assets/10xv3_whitelist.txt`
-4. Container: `container/scRNA.img`
-5. tx2gene file: `assets/tx2gene.txt`
+1. Reference file (indexed): `${data_dir}/reference/Homo_sapiens.cDNA.idx`
+2. FASTQ read pair: `${data_dir}/reads/*_R{1,2}_001.fastq.gz`
+3. Whitelist barcode file: `${data_dir}/assets/10xv3_whitelist.txt`
+4. Container: `${data_dir}/container/scRNA.img`
+5. tx2gene file: `${data_dir}/assets/tx2gene.txt`
 
 ***
 
@@ -169,11 +171,10 @@ import os
 os.chdir("ADD_YOUR_PATH_HERE")  <- # change to os.chdir('/data/your_username/scRNA')
 ```
 
-Before running the script, make a directory called `seurat` to store the results.
-
-Run the script:
+Before running the script, make a directory called `seurat` to store the results and run the script:
 
 ```bash
+mkdir seurat
 python format_bustools.py
 ```
 

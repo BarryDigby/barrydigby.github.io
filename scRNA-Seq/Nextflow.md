@@ -66,12 +66,12 @@ This is a very staright forward pipeline as all variables are hard coded within 
 Save the below script as `kallisto_bustools.nf` and run in your directory:
 
 ```bash
-nextflow -bg -q \
+nextflow -bg \
 run kallisto_bustools.nf \
 -with-singularity /data/MSc/2020/MA5112/scRNA-Seq/container/scRNA.img
 ```
 
-*N.B* I've tweaked the output directories slightly, all output files will end up in `bus_output/` which is slightly different from the interactive shell version we ran previously.
+*N.B* I've tweaked the output directories slightly, all output files will end up in `bus_output/` which is slightly different from the interactive shell session we ran previously.
 
 ***
 
