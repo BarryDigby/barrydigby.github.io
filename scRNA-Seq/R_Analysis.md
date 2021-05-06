@@ -4,12 +4,10 @@ layout: page
 permalink: /scRNA-Seq/R_Analysis
 ---
 
-Move the `seurat/` directory to your local machine for analysis in R:
+Copy the tarball containing analysis results to your local machine.
 
-`tarzip` the dirctory so we can move it to your `bactsrv` directory:
-
-```bash
-tar -zcvf seurat.tar.gz seurat/
+```
+/data/containers/seurat.tar.gz
 ```
 
 Using `scp`, transfer the file to your own bactsrv account:

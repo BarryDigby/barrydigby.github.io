@@ -1,0 +1,11 @@
+name: Publish Document
+title:
+username:
+account: rpubs
+server: rpubs.com
+hostUrl: rpubs.com
+appId: https://api.rpubs.com/api/v1/document/765418/218c8e1708104db98b9e9ef9742ffad9
+bundleId: https://api.rpubs.com/api/v1/document/765418/218c8e1708104db98b9e9ef9742ffad9
+url: http://rpubs.com/BarryDigby/765418/edit
+when: 1620224173.26263
+lastSyncTime: 1620224173.26265
