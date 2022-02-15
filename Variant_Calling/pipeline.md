@@ -98,7 +98,7 @@ BWA requires building an index for your reference genome to allow computationall
 - Reference Genome
 
 ```bash
-bwa index -a bwtsw GRCh38.fasta
+bwa index -a bwtsw GRCh37.fasta
 ```
 
 ##### *Flags*
