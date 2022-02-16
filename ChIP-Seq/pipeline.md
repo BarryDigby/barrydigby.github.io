@@ -49,7 +49,7 @@ Shell into the compute node using `ssh`:
 ssh compute[1/2/3]
 ```
 
-**Be sure to change to your directory on `/data/MSc/2022/` after this step.** 
+**Be sure to change to your directory on `/data/MSc/2022/username` after this step.** 
 
 Finally, shell into the container to access the suite of tools required for the tutorial:
 
@@ -60,39 +60,34 @@ singularity shell -B /data/ /data/containers/nfcore-chipseq-1.2.2.img
 
 # Workflow
 
+Copy the tutorial files to your directory on `/data/MSc/2022/username`:
+
+```bash
+cp -R /data/MSc/2022/chip_scratch/files/ .
+```
+
 # 1. BWA Index
 
 Copy the `genome.fa` file to your current working directory and index the reference genome file using `bwa index`:
 
 ```bash
-cp /data/MSc/2022/chip_scratch/files/genome.fa .
+cp files/genome.fa .
 bwa index -a bwtsw genome.fa
 mkdir -p BWAIndex 
 mv genome.fa* BWAIndex/
 ```
 
 
-
 # 2. Quality Control
 
 The `fastq` files provided for the analysis are already of high quality with no contamination. Regardless, we will generate `FastQC` reports for the sequencing reads as this is a step inherent in all genomic assays.
-
-First, copy the sequencing reads to your directory, placing them in a directory called `reads`:
-
-```bash
-mkdir -p reads && cp /data/MSc/2022/chip_scratch/files/*fastq.gz reads/
-```
-
-Confirm the 4 read pairs are present in the `reads` directory. 
 
 Make a directory for quality control files called `fastqc`, and run `fastqc` on the reads:
 
 ```bash
 mkdir -p fastqc
-fastqc reads/* --outdir fastqc/
+fastqc files/*.fastq.gz --outdir fastqc/
 ```
-
-
 
 # 3. Align Reads
 
@@ -120,11 +115,10 @@ ln -s ../BWAIndex/* .
 ```
 
 
-
 Inspect the symbolic links, ask questions if what we are doing here is unclear. (I'm using symbolic links here as this is the underlying mechanism nextflow uses in its processes).
 
 ```bash
-Singularity germline_vc.img:/data/MSc/2022/chip_scratch/bwa> ls -la
+Singularity germline_vc.img:/data/MSc/2022/bdigby/chip_seq/bwa> ls -la
 total 0
 drwxr-xr-x  2 bdigby bdigby 155 Feb 15 15:01 .
 drwxrwxr-x 10 bdigby bdigby 230 Feb 15 15:00 ..
@@ -135,7 +129,6 @@ lrwxrwxrwx  1 bdigby bdigby  25 Feb 15 15:01 genome.fa.bwt -> ../BWAIndex/genome
 lrwxrwxrwx  1 bdigby bdigby  25 Feb 15 15:01 genome.fa.pac -> ../BWAIndex/genome.fa.pac
 lrwxrwxrwx  1 bdigby bdigby  24 Feb 15 15:01 genome.fa.sa -> ../BWAIndex/genome.fa.sa
 ```
-
 
 
 ### @RG Headers
@@ -150,17 +143,19 @@ Using `SPT5_T0_1_R1.fastq.gz` and `SPT5_T0_1_R2.fastq.gz` as an example, the cor
 
 Notice the `SM:` sample identifier specifies this sample belongs to `SPT5_T0` of which there are two replicates. 
 
+> The `ID` provided for each sample must be unique
+
 ## bwa mem
 
 Align the files using the following command:
 
 ```bash
-bwa mem -t 2 -M -R '@RG\tID:SPT5_T0_1\tSM:SPT5_T0\tPL:ILLUMINA\tLB:SPT5_T0_1\tPU:1' genome.fa ../reads/SPT5_T0_1_R1.fastq.gz ../reads/SPT5_T0_1_R2.fastq.gz | samtools view -@ 2 -b -h -F 0x0100 -O BAM -o SPT5_T0_1.bam
+bwa mem -t 2 -M -R '@RG\tID:SPT5_T0_1\tSM:SPT5_T0\tPL:ILLUMINA\tLB:SPT5_T0_1\tPU:1' genome.fa ../files/SPT5_T0_1_R1.fastq.gz ../files/SPT5_T0_1_R2.fastq.gz | samtools view -@ 2 -b -h -F 0x0100 -O BAM -o SPT5_T0_1.bam
 ```
 
 > `genome.fa` is pointing to both the reference FASTA genome and the index files `genome.fa.*`
 
-Repeat the above code for the 3 other samples `SPT5_T0_2_*`, `SPT5_Input_1_*` and `SPT5_Input_2_*`. Update the input `@RG` header, the input reads and output `bam` name for each iteration. 
+Repeat the above code for the 3 other samples `SPT5_T0_2_*`, `SPT5_Input_1_*` and `SPT5_Input_2_*`. Update the input `@RG` header, the input reads and output `bam` name for each iteration.
 
 When you are finished the following `bam` files should be in your `bwa` directory:
 
@@ -175,24 +170,24 @@ Automating this process is slightly tricky but solution is broken down below:
 ### Capturing read pairs
 
 ```bash
-for file in ../reads/*_R1.fastq.gz; do R1=$file; R2=${file/_R1.fastq.gz/}_R2.fastq.gz; echo $R1 $R2; done
+for file in ../files/*_R1.fastq.gz; do R1=$file; R2=${file/_R1.fastq.gz/}_R2.fastq.gz; echo $R1 $R2; done
 ```
 
 gives:
 
 ```bash
-../reads/SPT5_Input_1_R1.fastq.gz ../reads/SPT5_Input_1_R2.fastq.gz
-../reads/SPT5_Input_2_R1.fastq.gz ../reads/SPT5_Input_2_R2.fastq.gz
-../reads/SPT5_T0_1_R1.fastq.gz ../reads/SPT5_T0_1_R2.fastq.gz
-../reads/SPT5_T0_2_R1.fastq.gz ../reads/SPT5_T0_2_R2.fastq.gz
+../files/SPT5_Input_1_R1.fastq.gz ../files/SPT5_Input_1_R2.fastq.gz
+../files/SPT5_Input_2_R1.fastq.gz ../files/SPT5_Input_2_R2.fastq.gz
+../files/SPT5_T0_1_R1.fastq.gz ../files/SPT5_T0_1_R2.fastq.gz
+../files/SPT5_T0_2_R1.fastq.gz ../files/SPT5_T0_2_R2.fastq.gz
 ```
 
-which is exactly the input we want to `bwa`, pairs passed at the same time. 
+which is exactly the input we want to pass to `bwa`, read pairs passed at the same time. 
 
 The next step is to extract the ID name and Sample name for the `@RG` header. Build on your previous code (Indentation optional, helps readability..):
 
 ```bash
-for file in ../reads/*_R1.fastq.gz; do \
+for file in ../files/*_R1.fastq.gz; do \
     
     R1=$file; \
     R2=${file/_R1.fastq.gz/}_R2.fastq.gz; \
@@ -207,20 +202,20 @@ done
 gives:
 
 ```bash
-../reads/SPT5_Input_1_R1.fastq.gz ../reads/SPT5_Input_1_R2.fastq.gz SPT5_Input_1 SPT5_Input
-../reads/SPT5_Input_2_R1.fastq.gz ../reads/SPT5_Input_2_R2.fastq.gz SPT5_Input_2 SPT5_Input
-../reads/SPT5_T0_1_R1.fastq.gz ../reads/SPT5_T0_1_R2.fastq.gz SPT5_T0_1 SPT5_T0
-../reads/SPT5_T0_2_R1.fastq.gz ../reads/SPT5_T0_2_R2.fastq.gz SPT5_T0_2 SPT5_T0
+../files/SPT5_Input_1_R1.fastq.gz ../files/SPT5_Input_1_R2.fastq.gz SPT5_Input_1 SPT5_Input
+../files/SPT5_Input_2_R1.fastq.gz ../files/SPT5_Input_2_R2.fastq.gz SPT5_Input_2 SPT5_Input
+../files/SPT5_T0_1_R1.fastq.gz ../files/SPT5_T0_1_R2.fastq.gz SPT5_T0_1 SPT5_T0
+../files/SPT5_T0_2_R1.fastq.gz ../files/SPT5_T0_2_R2.fastq.gz SPT5_T0_2 SPT5_T0
 ```
 
 We have everything we need for `bwa` automation, just wrap the for loop in the `bwa` command.
 
-> Don't worry about the code used (I literally googled everything here) the important part is that you are able to identify patterns in the file names and think critically about how they map to the `bwa` command.
+> Don't worry about the code used - the important part is that you are able to identify patterns in the file names and think critically about how they map to the `bwa` command. Once you know what you want to achieve, googling the code becomes much easier.
 
 ### Full Monty
 
 ```bash
-for file in ../reads/*_R1.fastq.gz; do \
+for file in ../files/*_R1.fastq.gz; do \
 
     R1=$file; \
     R2=${file/_R1.fastq.gz/}_R2.fastq.gz; \
@@ -232,18 +227,27 @@ for file in ../reads/*_R1.fastq.gz; do \
             -R "@RG\tID:${id}\tSM:${sample}\tPL:ILLUMINA\tLB:${id}\tPU:1" \
             genome.fa \
             $R1 $R2 | samtools view -@ 2 -b -h -F 0x0100 -O BAM -o ${id}.bam; \
+
 done
 ```
 
-
-
 > You must place the `@RG` string in double quotes for the variable expansion to work.
+
+#### Sanity Check
+
+Make sure that the `@RG` headers are correctly formatted. You can use the command `samtools view -H <bam>` to inspect the header information of a `bam` file which contains chromosome information, `@RG` headers, and the history of commands used to generate the `bam` file. We will use `grep` to isolate the `@RG` headers:
+
+```bash
+for bam in *.bam; do samtools view -H $bam | grep "@RG"; done
+```
+
+> Note: If you recieve `bam` files for an analysis and want to know how they were produced, inspect the `@PG` lines in the header.
 
 # 3. Samtools sort
 
 After generating `bam` files for all of the samples the next step is to sort and index the files.
 
-> run this in the `bwa/` directory containing the `bam` files.
+> run this in the `bwa/` directory containing the `bam` files generated in the previous step.
 
 In the interest of time, use the for loop to do this step:
 
@@ -258,11 +262,13 @@ for bam in *.bam; do \
 done
 ```
 
-
+The `bam` files are now sorted by coordinates and indexed. This is done for computational efficiency and required for downstream steps.
 
 # 4. picard
 
-Now we can merge replicates into one `bam` file before marking duplicates, the final preprocessing step prior to `macs2` analysis:
+Now we can merge our replicates into one `bam` file before marking duplicates, the final preprocessing step prior to `macs2` analysis.
+
+> At each step, we must index the output `bam` files
 
 ## 4a. MergeSamFiles
 
@@ -299,15 +305,13 @@ picard MarkDuplicates \
 samtools index SPT5_T0.markdups.bam
 ```
 
-Repeat these 4 steps for the `SPT5_Input` sample. We will be using the `markdups.bam` files for peak calling. 
+Repeat these 4 steps for the `SPT5_Input` samples. We will be using the `markdups.bam` files for peak calling.
 
 This is seriously repetitive stuff..... . . . . . ..... . . .  . and we only have 4 replicates 0_o
 
 # 5. Macs2
 
 At long last.... 
-
-
 
 move to the top of your directory tree for the analysis. make a new directory called `macs2` which is where we will store the results. 
 
@@ -323,7 +327,7 @@ macs2 callpeak -t bwa/SPT5_T0.markdups.bam -c bwa/SPT5_Input.markdups.bam -f BAM
 
 # 6. Annotate Peaks
 
-A bed file with p-values is not very informative. `annotatePeaks.pl` is a cool perl script that provides dense annotation of each peak using the input `GTF` file:
+`annotatePeaks.pl` is a cool perl script that provides dense annotation of each peak using the input `GTF` file:
 
 ```bash
 annotatePeaks.pl macs2/SPT5_summits.bed files/genome.fa -gid -gtf files/genes.gtf > SPT5_annotated_peaks.txt
