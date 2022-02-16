@@ -236,7 +236,7 @@ There exists multiple ways to go about this!
 > If you need help with this sort of operation in your final assignment please do not hesitate to ask me for help.
 
 <center>
-<img src="https://raw.githubusercontent.com/BarryDigby/BarryDigby.github.io/master/_images/mergesams.png" width="100%" height="100%"/>
+<img src="https://raw.githubusercontent.com/BarryDigby/BarryDigby.github.io/master/_images/mergesam.png" width="100%" height="100%"/>
 </center>
 
 ```groovy
